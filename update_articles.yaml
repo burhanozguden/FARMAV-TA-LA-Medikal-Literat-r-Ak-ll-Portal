@@ -1,0 +1,28 @@
+name: PubMed Veri Güncelleyici
+
+on:
+  schedule:
+    - cron: '0 6 * * *' # Her sabah 06:00'da
+  workflow_dispatch: # Manuel tetikleme için
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Python Kurulumu
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: İstek Kütüphanesini Yükle
+        run: pip install requests
+      - name: Betiği Çalıştır
+        run: python script.py
+      - name: Değişiklikleri GitHub'a Kaydet
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add articles.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Otomatik PubMed veri güncellemesi" && git push)

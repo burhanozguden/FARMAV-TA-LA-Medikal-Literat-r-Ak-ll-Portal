@@ -5,20 +5,22 @@ from datetime import datetime
 
 TARGET_QUERIES = [
     {
-        "category": "Probiyotik / Suş Bazlı",
+        "category": "CULTURELLE",
+        "badgeText": "Culturelle® • LGG® & BB-12®",
+        "badgeClass": "bg-emerald-50 text-emerald-700 border-emerald-200",
         "query": "Lactobacillus rhamnosus GG clinical efficacy gut barrier"
     },
     {
-        "category": "Probiyotik / Suş Bazlı",
-        "query": "Bifidobacterium animalis subsp lactis BB 12 immune modulation"
+        "category": "MOLLERS",
+        "badgeText": "Möller's • Trigliserid Omega-3",
+        "badgeClass": "bg-amber-50 text-amber-700 border-amber-200",
+        "query": "omega 3 fatty acids triglyceride form bioavailability"
     },
     {
-        "category": "Omega-3 / Balık Yağı",
-        "query": "omega 3 fatty acids triglyceride form bioavailability cardiovascular"
-    },
-    {
-        "category": "Omega-3 / Balık Yağı",
-        "query": "cod liver oil vitamin D clinical benefits children health"
+        "category": "GUT_BRAIN",
+        "badgeText": "Bağırsak-Beyin Ekseni",
+        "badgeClass": "bg-blue-50 text-blue-700 border-blue-200",
+        "query": "microbiome gut brain axis probiotic omega 3"
     }
 ]
 
@@ -65,36 +67,31 @@ def fetch_pubmed_articles():
             if pmid in summary_data:
                 article_info = summary_data[pmid]
                 title = article_info.get("title", "Başlık bulunamadı")
-                pub_date = article_info.get("pubdate", "Tarih yok")
-                source_journal = article_info.get("source", "Kaynak dergi yok")
+                pub_date = article_info.get("pubdate", "Güncel")
+                source_journal = article_info.get("source", "PubMed Dergisi")
                 
-                # Kategoriye özel güçlü saha rasyoneli notları
-                if "Probiyotik" in category:
-                    insight = f"Bu klinik çalışma; ilgili probiyotik suşunun (LGG / BB-12) gastrointestinal mukoza üzerindeki koruyucu bariyer etkisini ve immün sistem modülasyonundaki güvenilirlik profilini desteklemektedir."
-                else:
-                    insight = f"Bu güncel literatür verisi; omega-3 yağ asitlerinin trigliserid formundaki yüksek biyoyararlanım oranını ve kardiyovasküler/bilişsel fonksiyonlar üzerindeki olumlu klinik çıktıklarını doğrulamaktadır."
-
                 all_articles.append({
-                    "id": pmid,
+                    "pmid": pmid,
+                    "link": f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/",
                     "category": category,
-                    "search_term": search_query,
+                    "badgeText": item["badgeText"],
+                    "badgeClass": item["badgeClass"],
                     "title": title,
                     "journal": source_journal,
                     "date": pub_date,
-                    "link": f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/",
-                    "clinical_insight": insight
+                    "insight": "Bu güncel PubMed literatür verisi, saha çalışmalarında ürün rasyonelini destekleyen klinik bulgular sunmaktadır.",
+                    "abstract": f"PubMed üzerinden otomatik olarak çekilen bu makale ({title}), ilgili suş ve omega-3 parametrelerinin klinik etkinlik, biyoyararlanım ve güvenilirlik profillerini incelemektedir."
                 })
 
     output = {
-        "last_updated": datetime.now().strftime("%d.%m.%Y %H:%M:%S"),
-        "total_articles": len(all_articles),
+        "last_updated": datetime.now().strftime("%d.%m.%Y %H:%M"),
         "articles": all_articles
     }
     
     with open("articles.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=4)
         
-    print(f"Toplam {len(all_articles)} makale başarıyla güncellendi.")
+    print(f"Toplam {len(all_articles)} makale işlendi.")
 
 if __name__ == "__main__":
     fetch_pubmed_articles()
