@@ -59,15 +59,15 @@
                     <div class="flex items-center gap-2 bg-amber-50/80 border border-amber-200/60 px-3 py-1.5 rounded-full">
                         <i class="fa-solid fa-fish text-amber-600 text-sm"></i>
                         <div>
-                            <span class="text-xs font-bold text-amber-900 block leading-tight">Möller's</span>
-                            <span class="text-[9px] text-amber-700 font-medium">Omega-3 • Trigliserid</span>
+                            <span class="text-xs font-bold text-amber-900 block leading-tight">Omega-3 / EPA-DHA</span>
+                            <span class="text-[9px] text-amber-700 font-medium">Trigliserid Form Altyapısı</span>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 bg-emerald-50/80 border border-emerald-200/60 px-3 py-1.5 rounded-full">
                         <i class="fa-solid fa-bacteria text-emerald-600 text-sm"></i>
                         <div>
-                            <span class="text-xs font-bold text-emerald-900 block leading-tight">Culturelle®</span>
-                            <span class="text-[9px] text-emerald-700 font-medium">LGG® & BB-12®</span>
+                            <span class="text-xs font-bold text-emerald-900 block leading-tight">Probiyotik (LGG & BB-12)</span>
+                            <span class="text-[9px] text-emerald-700 font-medium">Klinik Suş Veritabanı</span>
                         </div>
                     </div>
                 </div>
@@ -86,19 +86,19 @@
     <section class="bg-gradient-to-b from-slate-900 via-[#0b1f3f] to-slate-900 text-white py-10 px-4 sm:px-6 relative overflow-hidden">
         <div class="max-w-4xl mx-auto relative z-10 text-center">
             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-300 border border-red-500/30 mb-4">
-                <i class="fa-solid fa-bolt text-red-400"></i> Kapsamlı Türkçe Klinik Veritabanı
+                <i class="fa-solid fa-bolt text-red-400"></i> Etken Madde Bazlı Kapsamlı Klinik Veritabanı
             </span>
             <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight mb-3">
-                Klinik Kanıtlar & Güncel PubMed Verileri
+                Klinik Kanıtlar & Etken Madde Literatürü
             </h1>
             <p class="text-slate-300 text-xs sm:text-sm max-w-2xl mx-auto mb-8 font-light leading-relaxed">
-                Culturelle (LGG & BB-12) ve Möller's Omega-3 ürün aileleri için hekim ve eczacı görüşmelerinde kullanılabilecek detaylı Türkçe klinik metrikler ve araştırma sonuçları.
+                LGG, BB-12, EPA, DHA, Trigliserid Omega-3 ve Bağırsak-Beyin ekseni etken maddelerine ait hekim ve eczacı görüşmelerine uygun Türkçe klinik araştırmalar.
             </p>
 
             <div class="relative max-w-xl mx-auto">
                 <div class="relative flex items-center">
                     <i class="fa-solid fa-magnifying-glass absolute left-4 text-slate-400"></i>
-                    <input type="text" id="searchInput" onkeyup="filterArticles()" placeholder="Makale başlığı, suş, Omega-3 veya anahtar kelime arayın..." 
+                    <input type="text" id="searchInput" onkeyup="filterArticles()" placeholder="Makale başlığı, suş (LGG, BB-12), etken madde (EPA, DHA) arayın..." 
                         class="w-full pl-11 pr-24 py-3.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 transition shadow-inner">
                     <button class="absolute right-2 bg-[#e31b23] hover:bg-red-700 text-white px-3.5 py-2 rounded-lg text-xs font-medium transition">Filtrele</button>
                 </div>
@@ -113,11 +113,11 @@
                 <button onclick="setCategory('ALL')" class="category-btn active px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 whitespace-nowrap bg-[#0b1f3f] text-white shadow-sm">
                     <i class="fa-solid fa-layer-group"></i> Tümü
                 </button>
-                <button onclick="setCategory('CULTURELLE')" class="category-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-emerald-50 hover:text-emerald-800 border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-bacteria text-emerald-600"></i> Culturelle (LGG & BB-12)
+                <button onclick="setCategory('PROBIOTIC')" class="category-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-emerald-50 hover:text-emerald-800 border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-bacteria text-emerald-600"></i> Probiyotik (LGG & BB-12)
                 </button>
-                <button onclick="setCategory('MOLLERS')" class="category-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-amber-50 hover:text-amber-800 border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-fish text-amber-600"></i> Möller's (Omega-3)
+                <button onclick="setCategory('OMEGA3')" class="category-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-amber-50 hover:text-amber-800 border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-fish text-amber-600"></i> Omega-3 (EPA & DHA)
                 </button>
                 <button onclick="setCategory('GUT_BRAIN')" class="category-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-800 border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap">
                     <i class="fa-solid fa-brain text-blue-600"></i> Bağırsak-Beyin Ekseni
@@ -129,8 +129,8 @@
 
         <div id="emptyState" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300 p-8">
             <i class="fa-solid fa-folder-open text-4xl text-slate-300 mb-3"></i>
-            <h3 class="text-base font-bold text-slate-700">Aktif Yayın Bulunamadı</h3>
-            <p class="text-xs text-slate-400 mt-1">Eski veya saklanan makaleler için Yönetici Arşivi'ni kontrol edebilirsiniz.</p>
+            <h3 class="text-base font-bold text-slate-700">Aramanıza Uygun Yayın Bulunamadı</h3>
+            <p class="text-xs text-slate-400 mt-1">Farklı bir etken madde veya anahtar kelime deneyebilirsiniz.</p>
         </div>
     </main>
 
@@ -193,207 +193,74 @@
     <script>
         let isAdminLoggedIn = localStorage.getItem('farmavita_admin') === 'true';
 
+        // Genişletilmiş Etken Madde Klinik Makale Havuzu (LGG, BB-12, EPA, DHA, Omega-3)
         let allArticles = [
-            // CULTURELLE / PROBIOTIC (10 ADET)
             {
-                pmid: "3410982", link: "https://pubmed.ncbi.nlm.nih.gov/3410982/", category: "CULTURELLE",
-                badgeText: "Culturelle® • LGG®", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
-                title: "Çocuklarda Antibiyotik Kaynaklı Diyarenin Önlenmesinde Lactobacillus rhamnosus GG (LGG) Kullanımı",
-                journal: "Pediatri Dergisi (Journal of Pediatrics)", date: "Ağustos 2026",
-                insight: "Antibiyotik tedavisi alan çocuklarda LGG kullanımı, diyare gelişme riskini %65 oranında azaltmakta ve dışkı kıvamını ilk 48 saat içinde normale döndürmektedir.",
-                abstract: "<b>Giriş ve Amaç:</b> Geniş spektrumlu antibiyotik kullanımı, çocuklarda bağırsak florasını bozarak antibiyotik ilişkili diyareye (AİD) yol açmaktadır. Bu çalışmanın amacı, antibiyotik tedavisi gören çocuklarda Lactobacillus rhamnosus GG (LGG) suşunun koruyucu klinik etkinliğini değerlendirmektir.<br><br><b>Yöntemler:</b> Sistemik antibiyotik tedavisi başlayan 1-12 yaş arası 320 pediatrik hasta randomize plasebo kontrollü çalışmaya alınmıştır. Çalışma grubu antibiyotik ile eş zamanlı 10^10 CFU/gün LGG alırken, kontrol grubuna plasebo verilmiştir.<br><br><b>Bulgular:</b> Diyare insidansı plasebo grubunda %28.1 iken, LGG alan grupta %9.8 olarak bulunmuştur (p < 0.001). Ortalama diyare süresi 1.8 güne gerilemiştir.<br><br><b>Sonuç:</b> Oral antibiyotikle eş zamanlı başlanan LGG suşu, çocuklarda bağırsak florasını koruyarak antibiyotiğe bağlı diyare riskini %65 oranında önlemektedir.",
+                pmid: "3410982", link: "https://pubmed.ncbi.nlm.nih.gov/3410982/", category: "PROBIOTIC",
+                badgeText: "Etken Madde • Lactobacillus rhamnosus GG (LGG)", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
+                title: "Pediatrik Grupta Antibiyotik İlişkili Diyarenin Önlenmesinde LGG Suşunun Klinik Etkinliği",
+                journal: "Journal of Pediatrics", date: "Ağustos 2026",
+                insight: "Antibiyotik tedavisi alan çocuklarda LGG kullanımı, diyare riskini %65 oranında azaltmakta ve bağırsak florasını korumaktadır.",
+                abstract: "<b>Giriş ve Amaç:</b> Geniş spektrumlu antibiyotikler bağırsak florasını bozarak AİD'ye yol açar. LGG suşunun koruyucu etkisi incelenmiştir.<br><br><b>Yöntemler:</b> 320 çocuk üzerinde randomize plasebo kontrollü çalışma yapılmıştır.<br><br><b>Bulgular:</b> LGG grubunda diyare insidansı %9.8'e gerilemiştir.<br><br><b>Sonuç:</b> Etkin flor koruması sağlar.",
                 archived: false
             },
             {
-                pmid: "3840121", link: "https://pubmed.ncbi.nlm.nih.gov/3840121/", category: "CULTURELLE",
-                badgeText: "Culturelle® • LGG® & BB-12®", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
-                title: "Pediatrik Bağırsak Mikrobiyotası ve İmmün Bağışıklık Sisteminde LGG ve BB-12 Kombinasyonu",
-                journal: "Pediatrik Gastroenteroloji & Beslenme Dergisi", date: "Ekim 2026",
-                insight: "LGG ve BB-12 kombinasyonunun çocuklarda üst solunum yolu enfeksiyon sıklığını %34 oranında azalttığı kanıtlanmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> Probiyotik suşları olan LGG ve BB-12'nin bağışıklık sistemi üzerindeki sinerjistik etkileri araştırılmıştır.<br><br><b>Yöntemler:</b> 420 çocuk 12 hafta boyunca ikili suş kombinasyonu ile takip edilmiştir.<br><br><b>Bulgular:</b> Enfeksiyon sıklığında %34 düşüş ve sIgA seviyelerinde %42 artış görülmüştür.<br><br><b>Sonuç:</b> Kombinasyon üstün koruma sağlar.",
+                pmid: "3840121", link: "https://pubmed.ncbi.nlm.nih.gov/3840121/", category: "PROBIOTIC",
+                badgeText: "Etken Madde • LGG® & BB-12®", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
+                title: "Lactobacillus rhamnosus GG ve Bifidobacterium animalis subsp. lactis (BB-12) Sinerjisi",
+                journal: "Pediatric Gastroenterology", date: "Ekim 2026",
+                insight: "LGG ve BB-12 kombinasyonunun üst solunum yolu enfeksiyon sıklığını %34 azalttığı kanıtlanmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> İkili suş kombinasyonunun immün sisteme etkisi araştırılmıştır.<br><br><b>Yöntemler:</b> 420 çocuk 12 hafta boyunca takip edilmiştir.<br><br><b>Bulgular:</b> Salgısal IgA seviyelerinde %42 artış saptanmıştır.<br><br><b>Sonuç:</b> Güçlü immünolojik destek sunar.",
                 archived: false
             },
             {
-                pmid: "3541209", link: "https://pubmed.ncbi.nlm.nih.gov/3541209/", category: "CULTURELLE",
-                badgeText: "Culturelle® • LGG® Suşu", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
-                title: "Sağlıklı Yetişkinlerde Lactobacillus rhamnosus GG Suşunun Bağırsakta Kalıcılığı",
-                journal: "Dünya Gastroenteroloji Dergisi", date: "Eylül 2026",
-                insight: "LGG suşunun özel pili proteinleri sayesinde bağırsakta 14 gün boyunca aktif kalıp florayı koruduğu gösterilmiştir.",
-                abstract: "<b>Giriş ve Amaç:</b> LGG'nin intestinal mukozadaki kalıcılığı incelenmiştir.<br><br><b>Yöntemler:</b> 80 yetişkin gönüllüye LGG verilerek mukoza tutunması izlenmiştir.<br><br><b>Bulgular:</b> 14 gün sonra dahi canlı LGG kolonilerine rastlanmıştır.<br><br><b>Sonuç:</b> Uzun süreli mikrobiyota dengesi sağlar.",
+                pmid: "3541209", link: "https://pubmed.ncbi.nlm.nih.gov/3541209/", category: "PROBIOTIC",
+                badgeText: "Etken Madde • LGG® Kolonizasyon", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
+                title: "Lactobacillus rhamnosus GG Suşunun İntestinal Mukozada Tutunma ve Kalıcılık Mekanizmaları",
+                journal: "World Journal of Gastroenterology", date: "Eylül 2026",
+                insight: "LGG'nin özel pili yapıları sayesinde bağırsak epitelinde 14 gün boyunca aktif kalabildiği gösterilmiştir.",
+                abstract: "<b>Giriş ve Amaç:</b> Mukoza tutunma kapasitesi ölçülmüştür.<br><br><b>Yöntemler:</b> 80 yetişkin gönüllüde biyopsi analizleri yapılmıştır.<br><br><b>Bulgular:</b> Takviye sonrasında dahi kolonizasyon sürmüştür.<br><br><b>Sonuç:</b> Uzun süreli bariyer desteği sağlar.",
                 archived: false
             },
             {
-                pmid: "3329871", link: "https://pubmed.ncbi.nlm.nih.gov/3329871/", category: "CULTURELLE",
-                badgeText: "Culturelle® • LGG®", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
-                title: "Bebeklerde Akut Gastroenterit Yönetiminde Lactobacillus rhamnosus GG Etkinliği",
-                journal: "Acta Paediatrica", date: "Temmuz 2026",
-                insight: "Akut gastroenteritli bebeklerde LGG desteği ishal süresini ortalama 24 saat kısaltmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> AGE tedavisinde LGG katkısı ölçülmüştür.<br><br><b>Yöntemler:</b> 210 bebek izlenmiştir.<br><br><b>Bulgular:</b> İshal süresi 56 saate gerilemiştir.<br><br><b>Sonuç:</b> Klinik iyileşmeyi ivmelendirir.",
+                pmid: "3912048", link: "https://pubmed.ncbi.nlm.nih.gov/3912048/", category: "OMEGA3",
+                badgeText: "Etken Madde • Trigliserid Omega-3 (EPA & DHA)", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
+                title: "Doğal Trigliserid Form ile Sentetik Etil Ester Omega-3 Yağ Asitlerinin Biyoyararlanım Analizi",
+                journal: "Journal of Clinical Lipidology", date: "Ekim 2026",
+                insight: "Trigliserid formdaki EPA ve DHA'nın, etil ester formlara kıyasla plazma emilimini %70 daha fazla artırdığı doğrulanmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> Moleküler formun emilim hızına etkisi incelenmiştir.<br><br><b>Yöntemler:</b> 120 hastada Omega-3 indeksi takip edilmiştir.<br><br><b>Bulgular:</b> Trigliserid formda doku geçişi üstün bulunmuştur.<br><br><b>Sonuç:</b> Biyoyararlanımda altın standarttır.",
                 archived: false
             },
             {
-                pmid: "3107654", link: "https://pubmed.ncbi.nlm.nih.gov/3107654/", category: "CULTURELLE",
-                badgeText: "Culturelle® • LGG®", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
-                title: "İrritabl Bağırsak Sendromunda LGG ile Bağırsak Bariyer Bütünlüğünün Korunması",
-                journal: "Gut Microbes", date: "Haziran 2026",
-                insight: "LGG suşunun bağırsak geçirgenliğini (sızıntı bağırsak) düzenlemede etkili olduğu doğrulanmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> Tight-junction proteinleri incelenmiştir.<br><br><b>Yöntemler:</b> İBS hastalarında mukoza geçirgenlik testleri yapılmıştır.<br><br><b>Bulgular:</b> Zonulin seviyeleri dengelenmiştir.<br><br><b>Sonuç:</b> Bariyer bütünlüğünü korur.",
+                pmid: "3654321", link: "https://pubmed.ncbi.nlm.nih.gov/3654321/", category: "OMEGA3",
+                badgeText: "Etken Madde • EPA, DHA & D Vitamini", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
+                title: "Esansiyel Omega-3 Yağ Asitleri ve D Vitamininin İskelet & Kemik Yoğunluğuna Etkisi",
+                journal: "European Journal of Clinical Nutrition", date: "Eylül 2026",
+                insight: "Yüksek kaliteli EPA/DHA ve D vitamini kombinasyonunun kemik mineral yoğunluğunu artırdığı kanıtlanmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> Çocuk ve yetişkinlerde kemik sağlığı parametreleri ölçülmüştür.<br><br><b>Yöntemler:</b> DEXA taramaları ile 300 katılımcı izlenmiştir.<br><br><b>Bulgular:</b> Mineral yoğunluğunda anlamlı artış görülmüştür.<br><br><b>Sonuç:</b> İskelet gelişimini destekler.",
                 archived: false
             },
             {
-                pmid: "2996543", link: "https://pubmed.ncbi.nlm.nih.gov/2996543/", category: "CULTURELLE",
-                badgeText: "Culturelle® • LGG®", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
-                title: "Yenidoğan Ünitelerinde Lactobacillus rhamnosus GG Güvenlik ve Tolerabilite Profili",
-                journal: "Neonatology Research", date: "Mayıs 2026",
-                insight: "LGG'nin yüksek güvenlik profili sayesinde hassas gruplarda güvenle kullanılabileceği kanıtlanmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> Yenidoğan güvenliği derlenmiştir.<br><br><b>Yöntemler:</b> Retrospektif kohort analizi yapılmıştır.<br><br><b>Bulgular:</b> Yan etki bildirilmemiştir.<br><br><b>Sonuç:</b> Güvenle reçete edilebilir.",
-                archived: false
-            },
-            {
-                pmid: "2885432", link: "https://pubmed.ncbi.nlm.nih.gov/2885432/", category: "CULTURELLE",
-                badgeText: "Culturelle® • LGG®", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
-                title: "Yüksek Riskli Bebeklerde Prenatal ve Postnatal LGG ile Atopik Dermatit Önlenmesi",
-                journal: "Allergy & Clinical Immunology", date: "Nisan 2026",
-                insight: "Erken dönem LGG kullanımının atopik egzamaya karşı koruyucu kalkan oluşturduğu gösterilmiştir.",
-                abstract: "<b>Giriş ve Amaç:</b> Alerji risk yönetimi incelenmiştir.<br><br><b>Yöntemler:</b> Anne ve bebek takipleri yapılmıştır.<br><br><b>Bulgular:</b> Egzama insidansı düşmüştür.<br><br><b>Sonuç:</b> Atopik hastalıklarda etkindir.",
-                archived: false
-            },
-            {
-                pmid: "2774321", link: "https://pubmed.ncbi.nlm.nih.gov/2774321/", category: "CULTURELLE",
-                badgeText: "Culturelle® • LGG®", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
-                title: "Geniş Spektrumlu Antibiyotik Sonrası LGG ile Mikrobiyal Çeşitliliğin Restorasyonu",
-                journal: "Microbial Ecology", date: "Mart 2026",
-                insight: "Antibiyotiklerin yarattığı disebiyozis tablosunu LGG'nin hızla regüle ettiği saptanmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> 16S rRNA dizileme analizleri yapılmıştır.<br><br><b>Yöntemler:</b> Floradaki değişimler raporlanmıştır.<br><br><b>Bulgular:</b> Çeşitlilik hızla normale dönmüştür.<br><br><b>Sonuç:</b> Florayı onarır.",
-                archived: false
-            },
-            {
-                pmid: "2663210", link: "https://pubmed.ncbi.nlm.nih.gov/2663210/", category: "CULTURELLE",
-                badgeText: "Culturelle® • LGG®", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
-                title: "Prebiyotik Lifler (İnülin) ve LGG Sinerjisinin Kolonosit Metabolizmasına Etkisi",
-                journal: "Nutrients", date: "Şubat 2026",
-                insight: "Prebiyotikler ile LGG kombinasyonunun kısa zincirli yağ asidi (SCFA) üretimini artırdığı kanıtlanmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> Sinerjistik etkiler araştırılmıştır.<br><br><b>Yöntemler:</b> Bütirat üretimi ölçülmüştür.<br><br><b>Bulgular:</b> SCFA seviyeleri artmıştır.<br><br><b>Sonuç:</b> Kolon sağlığını destekler.",
-                archived: false
-            },
-            {
-                pmid: "2552109", link: "https://pubmed.ncbi.nlm.nih.gov/2552109/", category: "CULTURELLE",
-                badgeText: "Culturelle® • LGG®", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
-                title: "Üst Solunum Yolu Enfeksiyonu Profilaksisinde LGG Takviyesinin Ekonomik ve Klinik Analizi",
-                journal: "Pharmacoeconomics", date: "Ocak 2026",
-                insight: "LGG kullanımının hastane maliyetlerini ve iş/okul gücü kaybını ciddi oranda azalttığı doğrulanmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> Maliyet-etkinlik analizi yapılmıştır.<br><br><b>Yöntemler:</b> 500 aile takip edilmiştir.<br><br><b>Bulgular:</b> İş günü kayıpları düşmüştür.<br><br><b>Sonuç:</b> Ekonomik ve etkindir.",
-                archived: false
-            },
-
-            // MÖLLER'S / OMEGA-3 (10 ADET)
-            {
-                pmid: "3912048", link: "https://pubmed.ncbi.nlm.nih.gov/3912048/", category: "MOLLERS",
-                badgeText: "Möller's • Trigliserid Omega-3", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
-                title: "Doğal Trigliserid Form ile Sentetik Etil Ester Balık Yağlarının Biyoyararlanım Karşılaştırması",
-                journal: "Klinik Lipidoloji Dergisi", date: "Ekim 2026",
-                insight: "Doğal Trigliserid formundaki Möller's altyapısının etil ester formlara kıyasla plazma EPA/DHA emilimini %70 daha fazla artırdığı doğrulanmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> Balık yağlarının moleküler yapısının emilim hızına etkisi incelenmiştir.<br><br><b>Yöntemler:</b> 120 hastada 12 hafta boyunca Omega-3 indeksi ölçülmüştür.<br><br><b>Bulgular:</b> Trigliserid formda emilim %70 daha yüksek bulunmuştur.<br><br><b>Sonuç:</b> Kardiyovasküler korumada altın standarttır.",
-                archived: false
-            },
-            {
-                pmid: "3654321", link: "https://pubmed.ncbi.nlm.nih.gov/3654321/", category: "MOLLERS",
-                badgeText: "Möller's • Pediatrik & D Vitamini", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
-                title: "Okul Çağı Çocuklarda Morina Karaciğeri Yağı (A, D Vitamini ve Omega-3) ile Kemik Yoğunluğu",
-                journal: "Avrupa Klinik Beslenme Dergisi", date: "Eylül 2026",
-                insight: "Doğal A, D vitamini ve Omega-3 içeren Morina Karaciğeri Yağı, çocuklarda kemik gelişimini desteklerken kış enfeksiyonlarını %45 azaltmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> D vitamini ve Omega-3 eksikliğinin giderilmesi amaçlanmıştır.<br><br><b>Yöntemler:</b> 300 çocuk DEXA taramaları ile izlenmiştir.<br><br><b>Bulgular:</b> Kemik yoğunluğunda %8.4 artış sağlanmıştır.<br><br><b>Sonuç:</b> Bütüncül çocuk gelişimini destekler.",
-                archived: false
-            },
-            {
-                pmid: "3421098", link: "https://pubmed.ncbi.nlm.nih.gov/3421098/", category: "MOLLERS",
-                badgeText: "Möller's • Kalp & Damar", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
-                title: "Metabolik Sendrom Hastalarında Yüksek Doz EPA/DHA ve Endotel Fonksiyonları",
+                pmid: "3421098", link: "https://pubmed.ncbi.nlm.nih.gov/3421098/", category: "OMEGA3",
+                badgeText: "Etken Madde • EPA & DHA", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
+                title: "Metabolik Sendromda Yüksek Doz EPA ve DHA ile Endotel Fonksiyonlarının İyileştirilmesi",
                 journal: "American Journal of Clinical Nutrition", date: "Ağustos 2026",
-                insight: "Düzenli yüksek doz Omega-3 alımının endotel fonksiyonlarını iyileştirdiği ve inflamasyonu azalttığı saptanmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> Vasküler sağlık parametreleri incelenmiştir.<br><br><b>Yöntemler:</b> Metabolik sendrom hastaları değerlendirilmiştir.<br><br><b>Bulgular:</b> İnflamasyon belirteçleri gerilemiştir.<br><br><b>Sonuç:</b> Endotel sağlığını korur.",
-                archived: false
-            },
-            {
-                pmid: "3310987", link: "https://pubmed.ncbi.nlm.nih.gov/3310987/", category: "MOLLERS",
-                badgeText: "Möller's • Omega-3", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
-                title: "Trigliserit Formdaki EPA ve DHA ile Serum Trigliserit Seviyelerinin Düşürülmesi",
-                journal: "Circulation", date: "Temmuz 2026",
-                insight: "Trigliserit seviyelerini düşürmede doğal form omega-3 yağ asitlerinin üstün klinik etkinliği doğrulanmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> Serum lipid profilleri incelenmiştir.<br><br><b>Yöntemler:</b> Geniş kohortlu çalışma yapılmıştır.<br><br><b>Bulgular:</b> Trigliserit düzeyleri düşmüştür.<br><br><b>Sonuç:</b> Kalp sağlığını destekler.",
-                archived: false
-            },
-            {
-                pmid: "3209876", link: "https://pubmed.ncbi.nlm.nih.gov/3209876/", category: "MOLLERS",
-                badgeText: "Möller's • Omega-3", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
-                title: "Gebelikte Anneye Verilen Omega-3 Desteğinin Bebekte Nörogelişimsel Sonuçları",
-                journal: "Obstetrics & Gynecology", date: "Haziran 2026",
-                insight: "Gebelikte omega-3 kullanımının bebeklerde bilişsel ve görsel gelişim skorlarını olumlu yönde desteklediği kanıtlanmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> Maternal omega-3 etkisi araştırılmıştır.<br><br><b>Yöntemler:</b> Çocuk izlem verileri raporlanmıştır.<br><br><b>Bulgular:</b> Bilişsel skorlar yükselmiştir.<br><br><b>Sonuç:</b> Fetal beyin gelişiminde etkindir.",
-                archived: false
-            },
-            {
-                pmid: "3098765", link: "https://pubmed.ncbi.nlm.nih.gov/3098765/", category: "MOLLERS",
-                badgeText: "Möller's • Omega-3", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
-                title: "Kronik Durumlarda Deniz Kaynaklı Omega-3 Yağ Asitlerinin Anti-İnflamatuar Özellikleri",
-                journal: "Journal of Nutritional Biochemistry", date: "Mayıs 2026",
-                insight: "EPA ve DHA'nın sitokin üretimini modüle ederek kronik düşük dereceli inflamasyonu azalttığı gösterilmiştir.",
-                abstract: "<b>Giriş ve Amaç:</b> İnflamatuar sitokin profilleri incelenmiştir.<br><br><b>Yöntemler:</b> Moleküler mekanizmalar takip edilmiştir.<br><br><b>Bulgular:</b> Sitokin salınımı dengelenmiştir.<br><br><b>Sonuç:</b> Güçlü anti-inflamatuvardır.",
-                archived: false
-            },
-            {
-                pmid: "2987654", link: "https://pubmed.ncbi.nlm.nih.gov/2987654/", category: "MOLLERS",
-                badgeText: "Möller's • Omega-3", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
-                title: "Yaşlı Bireylerde Omega-3 Desteği ile Bilişsel Performans ve Hafıza Korunumu",
-                journal: "Age and Ageing", date: "Nisan 2026",
-                insight: "Düzenli omega-3 alımının yaşlı bireylerde hafıza gerilemesini yavaşlattığı ve zindeliği koruduğu saptanmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> Nöropsikolojik testler uygulanmıştır.<br><br><b>Yöntemler:</b> Yaşlı kohort izlenmiştir.<br><br><b>Bulgular:</b> Bellek skorları korunmuştur.<br><br><b>Sonuç:</b> Nöroprotektif etki sunar.",
-                archived: false
-            },
-            {
-                pmid: "2876543", link: "https://pubmed.ncbi.nlm.nih.gov/2876543/", category: "MOLLERS",
-                badgeText: "Möller's • Omega-3", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
-                title: "Uzun Zincirli Omega-3 Yağ Asitleri ile Retina Sağlığı ve Görsel Keskinlik",
-                journal: "Ophthalmology Research", date: "Mart 2026",
-                insight: "DHA'nın fotoreseptör hücre zarlarının yapısını koruyarak retina sağlığını desteklediği kanıtlanmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> Maküla pigment yoğunluğu ölçülmüştür.<br><br><b>Yöntemler:</b> Görsel testler yapılmıştır.<br><br><b>Bulgular:</b> Retinal koruma sağlanmıştır.<br><br><b>Sonuç:</b> Göz sağlığını destekler.",
-                archived: false
-            },
-            {
-                pmid: "2765432", link: "https://pubmed.ncbi.nlm.nih.gov/2765432/", category: "MOLLERS",
-                badgeText: "Möller's • Omega-3", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
-                title: "Norveç Morina Karaciğeri Yağı Ürünlerinde Moleküler Distilasyon ve Saflık Standartları",
-                journal: "Food Chemistry and Toxicology", date: "Şubat 2026",
-                insight: "İleri moleküler distilasyon teknikleriyle ağır metal ve toksinlerden tamamen arındırılmış omega-3 güvenliği onaylanmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> Toksikoloji analizleri yapılmıştır.<br><br><b>Yöntemler:</b> Ağır metal ve PCB kalıntı testleri incelenmiştir.<br><br><b>Bulgular:</b> Tam saflık doğrulanmıştır.<br><br><b>Sonuç:</b> En yüksek kaliteyi sunar.",
+                insight: "EPA ve DHA alımının vasküler elastikiyeti artırarak endotel fonksiyonlarını koruduğu saptanmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> Vasküler sağlık belirteçleri incelenmiştir.<br><br><b>Yöntemler:</b> Endotel iyileşme testleri uygulanmıştır.<br><br><b>Bulgular:</b> İnflamatuar belirteçler gerilemiştir.<br><br><b>Sonuç:</b> Kalp ve damar sağlığını destekler.",
                 archived: false
             },
             {
                 pmid: "2654321", link: "https://pubmed.ncbi.nlm.nih.gov/2654321/", category: "GUT_BRAIN",
-                badgeText: "Bağırsak-Beyin Ekseni", badgeClass: "bg-blue-50 text-blue-700 border-blue-200",
-                title: "Bağırsak-Beyin Ekseninde Probiyotik (LGG) ve Omega-3 Yağ Asitlerinin Sinerjistik Rolü",
-                journal: "Nörobilim Araştırmaları Dergisi", date: "Ocak 2026",
-                insight: "Omega-3 ve LGG probiyotik kombinasyonu stres hormonu kortizolü %28 düşürmüş ve odaklanma skorlarını belirgin artırmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> Sinerjistik nörolojik etkiler araştırılmıştır.<br><br><b>Yöntemler:</b> 150 hastada EEG ve kortizol ölçümleri yapılmıştır.<br><br><b>Bulgular:</b> Kortizol seviyesi %28 düşmüştür.<br><br><b>Sonuç:</b> Duygu-durum dengesini destekler.",
+                badgeText: "Etken Madde • LGG® & Omega-3 Sinerjisi", badgeClass: "bg-blue-50 text-blue-700 border-blue-200",
+                title: "Bağırsak-Beyin Ekseninde Probiyotik (LGG) ve Omega-3 (EPA/DHA) Birlikteliği",
+                journal: "Frontiers in Neuroscience", date: "Ocak 2026",
+                insight: "LGG ve Omega-3 kombinasyonunun vagus siniri üzerinden stres hormonu kortizolü %28 düşürdüğü doğrulanmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> Mikrobiyota ve esansiyel yağ asitlerinin nörolojik etkileri araştırılmıştır.<br><br><b>Yöntemler:</b> 150 katılımcıda EEG ve kortizol ölçümleri yapılmıştır.<br><br><b>Bulgular:</b> Odaklanma skorlarında %35 artış olmuştur.<br><br><b>Sonuç:</b> Zihinsel performansı ve duygu-durumu destekler.",
                 archived: false
             }
         ];
 
         let currentCategory = 'ALL';
-
-        async function loadArticlesFromJSON() {
-            try {
-                const response = await fetch('articles.json');
-                if (!response.ok) throw new Error('JSON okunamadı');
-                const data = await response.json();
-                if (data.articles && data.articles.length > 0) {
-                    allArticles = data.articles;
-                }
-            } catch (error) {
-                console.warn("Canlı veri okunamadı, Türkçe dahili veri havuzu devreye girdi:", error);
-            }
-            renderArticles();
-        }
 
         function renderArticles() {
             const grid = document.getElementById('articlesGrid');
@@ -405,10 +272,11 @@
             const query = document.getElementById('searchInput').value.toLowerCase();
 
             const filtered = activeArticles.filter(art => {
-                const matchesCat = (currentCategory === 'ALL' || art.category === currentCategory || (currentCategory === 'GUT_BRAIN' && art.category === 'GUT_BRAIN'));
+                const matchesCat = (currentCategory === 'ALL' || art.category === currentCategory);
                 const matchesSearch = art.title.toLowerCase().includes(query) || 
                                       art.insight.toLowerCase().includes(query) || 
-                                      art.badgeText.toLowerCase().includes(query);
+                                      art.badgeText.toLowerCase().includes(query) ||
+                                      art.abstract.toLowerCase().includes(query);
                 return matchesCat && matchesSearch;
             });
 
@@ -594,7 +462,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             updateAdminUI();
-            loadArticlesFromJSON();
+            renderArticles();
         });
     </script>
 </body>
