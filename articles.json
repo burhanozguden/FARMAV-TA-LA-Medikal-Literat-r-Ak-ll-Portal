@@ -1,17 +1,29 @@
 {
-    "last_updated": "Bugün 21:30",
+    "last_updated": "13.10.2026 20:51",
     "articles": [
         {
-            "pmid": "3840121",
-            "link": "https://pubmed.ncbi.nlm.nih.gov/3840121/",
+            "pmid": "42477751",
+            "link": "https://pubmed.ncbi.nlm.nih.gov/42477751/",
             "category": "CULTURELLE",
             "badgeText": "Culturelle® • LGG® & BB-12®",
             "badgeClass": "bg-emerald-50 text-emerald-700 border-emerald-200",
-            "title": "Lactobacillus rhamnosus GG (LGG) and Bifidobacterium animalis subsp. lactis (BB-12) in Pediatric Gut Microbiota and Immune Function",
-            "journal": "Pediatric Gastroenterology & Nutrition",
-            "date": "Ekim 2026",
-            "insight": "LGG® ve BB-12® kombinasyonunun çocuklarda mide-bağırsak florasını düzenleyerek üst solunum yolu enfeksiyon sıklığını azalttığı klinik olarak kanıtlanmıştır.",
-            "abstract": "Giriş ve Amaç: Probiyotik suşları olan Lactobacillus rhamnosus GG (LGG) ve Bifidobacterium animalis subsp. lactis (BB-12), pediatrik bağırsak kolonizasyonu ve mikrobiyota dengesi üzerindeki etkileri nedeniyle incelenmiştir."
+            "title": "AI-2 combined with Lactobacillus rhamnosus GG remodels gut microbiota structure to alleviate intestinal oxidative stress injury in a mouse necrotizing enterocolitis model.",
+            "journal": "J Transl Med",
+            "date": "2026 Jul 20",
+            "insight": "Bu güncel PubMed literatür verisi, saha çalışmalarında ürün rasyonelini destekleyen klinik bulgular sunmaktadır.",
+            "abstract": "PubMed üzerinden otomatik olarak çekilen bu makale (AI-2 combined with Lactobacillus rhamnosus GG remodels gut microbiota structure to alleviate intestinal oxidative stress injury in a mouse necrotizing enterocolitis model.), ilgili suş ve omega-3 parametrelerinin klinik etkinlik, biyoyararlanım ve güvenilirlik profillerini incelemektedir."
+        },
+        {
+            "pmid": "41644858",
+            "link": "https://pubmed.ncbi.nlm.nih.gov/41644858/",
+            "category": "CULTURELLE",
+            "badgeText": "Culturelle® • LGG® & BB-12®",
+            "badgeClass": "bg-emerald-50 text-emerald-700 border-emerald-200",
+            "title": "Redrawing the gut map: evolving probiotic approaches to microbiota modulation in inflammatory bowel disease.",
+            "journal": "Antonie Van Leeuwenhoek",
+            "date": "2026 Feb 5",
+            "insight": "Bu güncel PubMed literatür verisi, saha çalışmalarında ürün rasyonelini destekleyen klinik bulgular sunmaktadır.",
+            "abstract": "PubMed üzerinden otomatik olarak çekilen bu makale (Redrawing the gut map: evolving probiotic approaches to microbiota modulation in inflammatory bowel disease.), ilgili suş ve omega-3 parametrelerinin klinik etkinlik, biyoyararlanım ve güvenilirlik profillerini incelemektedir."
         }
     ]
 }
