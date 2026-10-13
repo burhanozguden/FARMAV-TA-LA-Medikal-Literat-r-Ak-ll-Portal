@@ -86,7 +86,7 @@
     <section class="bg-gradient-to-b from-slate-900 via-[#0b1f3f] to-slate-900 text-white py-10 px-4 sm:px-6 relative overflow-hidden">
         <div class="max-w-4xl mx-auto relative z-10 text-center">
             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-300 border border-red-500/30 mb-4">
-                <i class="fa-solid fa-bolt text-red-400"></i> Türkçe Klinik Veritabanı & Medikal Sunum Paneli
+                <i class="fa-solid fa-bolt text-red-400"></i> Aylık Arşivlenen Türkçe Klinik Veritabanı
             </span>
             <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight mb-3">
                 Klinik Kanıtlar & Güncel PubMed Verileri
@@ -134,7 +134,7 @@
         </div>
     </main>
 
-    <!-- ADMIN MODAL -->
+    <!-- ADMIN MODAL (Yönetici Arşivi & Oturum Kapatma) -->
     <div id="adminModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
             <div class="p-6 bg-[#0b1f3f] text-white flex justify-between items-center">
@@ -149,8 +149,8 @@
             </div>
             <div class="p-6 overflow-y-auto space-y-4 flex-grow bg-slate-50" id="archiveListContainer"></div>
             <div class="p-4 bg-white border-t border-slate-200 flex justify-between items-center">
-                <button onclick="logoutAdmin()" class="bg-red-50 hover:bg-red-100 text-red-600 text-xs px-4 py-2 rounded-xl font-semibold transition border border-red-200">
-                    <i class="fa-solid fa-right-from-bracket mr-1"></i> Oturumu Kapat
+                <button onclick="logoutAdmin()" class="bg-red-50 hover:bg-red-100 text-red-600 text-xs px-4 py-2 rounded-xl font-semibold transition border border-red-200 flex items-center gap-1.5">
+                    <i class="fa-solid fa-right-from-bracket"></i> Yönetici Oturumunu Kapat
                 </button>
                 <button onclick="closeAdminModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs px-5 py-2 rounded-xl font-semibold transition">Kapat</button>
             </div>
