@@ -1,5 +1,250 @@
-<script>
-        // Veriler doğrudan tanımlıdır, harici json yükleme fonksiyonuna gerek yoktur.
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmavita İlaç | Medikal Literatür & Klinik Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        farmavita: {
+                            navy: '#0b1f3f',
+                            red: '#e31b23',
+                            light: '#f8fafc',
+                            card: '#ffffff'
+                        },
+                        mollers: {
+                            gold: '#d97706',
+                            blue: '#0284c7'
+                        },
+                        culturelle: {
+                            teal: '#0d9488',
+                            green: '#16a34a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .glass-header {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+        }
+        .custom-shadow {
+            box-shadow: 0 4px 20px -2px rgba(11, 31, 63, 0.05);
+        }
+    </style>
+</head>
+<body class="text-slate-800 bg-slate-50 min-h-screen flex flex-col antialiased">
+
+    <!-- TOP BAR / HEADER -->
+    <header class="sticky top-0 z-50 glass-header border-b border-slate-200/80 transition-all">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- BRAND LOGO (FARMAVITA) -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 flex-shrink-0">
+                        <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-sm">
+                            <polygon points="50,10 90,50 72,50 50,28 28,50 10,50" fill="#e31b23" />
+                            <polygon points="50,90 90,50 72,50 50,72 28,50 10,50" fill="#0b1f3f" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="font-black text-xl tracking-tight text-[#0b1f3f]">FARMAVİTA</span>
+                            <span class="text-xs font-bold text-[#e31b23] tracking-widest uppercase">İLAÇ</span>
+                        </div>
+                        <p class="text-[10px] font-medium text-slate-400 tracking-wider uppercase">Medikal Literatür & Akıllı Portal</p>
+                    </div>
+                </div>
+
+                <!-- PRODUCT LOGO BADGES (Desktop) -->
+                <div class="hidden md:flex items-center gap-4 border-l border-slate-200 pl-6">
+                    <div class="flex items-center gap-2 bg-amber-50/80 border border-amber-200/60 px-3 py-1.5 rounded-full">
+                        <i class="fa-solid fa-fish text-amber-600 text-sm"></i>
+                        <div>
+                            <span class="text-xs font-bold text-amber-900 block leading-tight">Möller's</span>
+                            <span class="text-[9px] text-amber-700 font-medium">Omega-3 • Trigliserid</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 bg-emerald-50/80 border border-emerald-200/60 px-3 py-1.5 rounded-full">
+                        <i class="fa-solid fa-bacteria text-emerald-600 text-sm"></i>
+                        <div>
+                            <span class="text-xs font-bold text-emerald-900 block leading-tight">Culturelle®</span>
+                            <span class="text-[9px] text-emerald-700 font-medium">LGG® & BB-12®</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LIVE SYNC STATUS -->
+                <div class="flex items-center gap-2 text-xs">
+                    <span class="relative flex h-2.5 w-2.5">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                    </span>
+                    <span class="hidden sm:inline font-medium text-slate-500">PubMed Canlı Akış</span>
+                </div>
+            </div>
+
+            <!-- MOBILE PRODUCT BADGES -->
+            <div class="flex md:hidden items-center justify-center gap-2 pb-3 border-t border-slate-100 pt-2">
+                <span class="text-[10px] bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-1 rounded-full font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-fish text-xs text-amber-600"></i> Möller's Omega-3
+                </span>
+                <span class="text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-bacteria text-xs text-emerald-600"></i> Culturelle (LGG/BB-12)
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO / SEARCH & DASHBOARD BANNER -->
+    <section class="bg-gradient-to-b from-slate-900 via-[#0b1f3f] to-slate-900 text-white py-10 px-4 sm:px-6 relative overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-4xl mx-auto relative z-10 text-center">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-300 border border-red-500/30 mb-4">
+                <i class="fa-solid fa-bolt text-red-400"></i> Günlük Literatür & Saha Klinik Özetleri
+            </span>
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight mb-3">
+                Klinik Kanıtlar & Güncel PubMed Verileri
+            </h1>
+            <p class="text-slate-300 text-xs sm:text-sm max-w-2xl mx-auto mb-8 font-light leading-relaxed">
+                Farmavita İlaç saha ekibi ve hekim bilgilendirmeleri için otomatize edilmiş; Möller's Omega-3, Culturelle probiyotik suşları (LGG, BB-12) ve pediatrik/erişkin sağlık verileri.
+            </p>
+
+            <!-- SEARCH BAR -->
+            <div class="relative max-w-xl mx-auto">
+                <div class="relative flex items-center">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 text-slate-400"></i>
+                    <input type="text" id="searchInput" onkeyup="filterArticles()" placeholder="Makale başlığı, suş (LGG, BB-12), Omega-3 veya anahtar kelime arayın..." 
+                        class="w-full pl-11 pr-24 py-3.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 transition shadow-inner">
+                    <button class="absolute right-2 bg-[#e31b23] hover:bg-red-700 text-white px-3.5 py-2 rounded-lg text-xs font-medium transition flex items-center gap-1">
+                        <span>Filtrele</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- CATEGORY TABS & STATS BAR -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-4 border-b border-slate-200">
+            <div class="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-none" id="categoryFilters">
+                <button onclick="setCategory('ALL')" class="category-btn active px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 whitespace-nowrap bg-[#0b1f3f] text-white shadow-sm">
+                    <i class="fa-solid fa-layer-group"></i> Tümü
+                </button>
+                <button onclick="setCategory('CULTURELLE')" class="category-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-emerald-50 hover:text-emerald-800 border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-bacteria text-emerald-600"></i> Culturelle (LGG & BB-12)
+                </button>
+                <button onclick="setCategory('MOLLERS')" class="category-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-amber-50 hover:text-amber-800 border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-fish text-amber-600"></i> Möller's (Omega-3)
+                </button>
+                <button onclick="setCategory('GUT_BRAIN')" class="category-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-800 border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-brain text-blue-600"></i> Bağırsak-Beyin Ekseni
+                </button>
+            </div>
+
+            <div class="flex items-center gap-2 text-xs text-slate-500 font-medium">
+                <i class="fa-regular fa-clock text-slate-400"></i>
+                <span>Son Otomatik Güncelleme: <strong class="text-slate-700">Bugün 06:00</strong></span>
+            </div>
+        </div>
+
+        <!-- ARTICLES CONTAINER / GRID -->
+        <div id="articlesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+
+        <!-- EMPTY STATE -->
+        <div id="emptyState" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300 p-8">
+            <i class="fa-solid fa-folder-open text-4xl text-slate-300 mb-3"></i>
+            <h3 class="text-base font-bold text-slate-700">Aramanızla Eşleşen Makale Bulunamadı</h3>
+            <p class="text-xs text-slate-400 mt-1">Lütfen farklı anahtar kelimeler deneyin veya filtreleri temizleyin.</p>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 border-t border-slate-800 text-slate-400 py-10 px-4 mt-12">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8">
+                    <svg viewBox="0 0 100 100" class="w-full h-full">
+                        <polygon points="50,10 90,50 72,50 50,28 28,50 10,50" fill="#e31b23" />
+                        <polygon points="50,90 90,50 72,50 50,72 28,50 10,50" fill="#ffffff" />
+                    </svg>
+                </div>
+                <div>
+                    <span class="text-white font-bold text-sm tracking-wide">FARMAVİTA İLAÇ</span>
+                    <p class="text-[11px] text-slate-500">Klinik & Medikal Yayın Bilgilendirme Sistemi</p>
+                </div>
+            </div>
+
+            <div class="text-xs text-center md:text-right text-slate-500 leading-relaxed">
+                <p>© 2026 Farmavita İlaç. Tüm hakları saklıdır.</p>
+                <p class="text-[10px] text-slate-600 mt-1">Bu web portalı otomatik PubMed API entegrasyonu ve yapay zeka özetleme algoritması ile beslenmektedir.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE MODAL FOR FULL ABSTRACT -->
+    <div id="articleModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div class="p-6 bg-slate-50 border-b border-slate-200 flex justify-between items-start gap-4">
+                <div>
+                    <span id="modalBadge" class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md mb-2 inline-block">Kategori</span>
+                    <h3 id="modalTitle" class="text-base font-bold text-slate-900 leading-snug">Makale Başlığı</h3>
+                    <p id="modalMeta" class="text-xs text-slate-500 mt-1">Dergi | Tarih</p>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-2 rounded-lg hover:bg-slate-200/60 transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-4 text-xs leading-relaxed text-slate-600">
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl">
+                    <h4 class="font-bold text-amber-900 text-xs mb-1 flex items-center gap-1.5">
+                        <i class="fa-solid fa-lightbulb text-amber-600"></i> Saha & Klinik Hap Bilgi
+                    </h4>
+                    <p id="modalInsight" class="text-amber-950 font-medium"></p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-800 mb-1.5 text-xs uppercase tracking-wider">Tam Abstract / Kapsamlı Türkçe Özet</h4>
+                    <p id="modalAbstract" class="text-slate-700 leading-relaxed space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-200"></p>
+                </div>
+            </div>
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-between items-center">
+                <span class="text-[11px] text-slate-400">Kaynak: PubMed (NCBI)</span>
+                <a id="modalLink" href="#" target="_blank" class="bg-[#0b1f3f] hover:bg-slate-800 text-white text-xs px-4 py-2.5 rounded-xl font-medium transition flex items-center gap-1.5 shadow-sm">
+                    <span>PubMed'de Oku</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
         const articlesData = [
             {
                 pmid: "3840121",
@@ -44,13 +289,14 @@
         function renderArticles(articles) {
             const grid = document.getElementById('articlesGrid');
             const emptyState = document.getElementById('emptyState');
+            if (!grid) return;
             grid.innerHTML = '';
 
             if (articles.length === 0) {
-                emptyState.classList.remove('hidden');
+                if (emptyState) emptyState.classList.remove('hidden');
                 return;
             } else {
-                emptyState.classList.add('hidden');
+                if (emptyState) emptyState.classList.add('hidden');
             }
 
             articles.forEach(art => {
@@ -153,3 +399,5 @@
             renderArticles(articlesData);
         });
     </script>
+</body>
+</html>
