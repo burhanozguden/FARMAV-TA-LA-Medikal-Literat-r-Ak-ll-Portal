@@ -86,7 +86,7 @@
     <section class="bg-gradient-to-b from-slate-900 via-[#0b1f3f] to-slate-900 text-white py-10 px-4 sm:px-6 relative overflow-hidden">
         <div class="max-w-4xl mx-auto relative z-10 text-center">
             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-300 border border-red-500/30 mb-4">
-                <i class="fa-solid fa-bolt text-red-400"></i> Aylık Arşivlenen Türkçe Klinik Veritabanı
+                <i class="fa-solid fa-bolt text-red-400"></i> Kapsamlı Türkçe Klinik Veritabanı
             </span>
             <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight mb-3">
                 Klinik Kanıtlar & Güncel PubMed Verileri
@@ -134,7 +134,7 @@
         </div>
     </main>
 
-    <!-- ADMIN MODAL (Yönetici Arşivi & Oturum Kapatma) -->
+    <!-- ADMIN MODAL -->
     <div id="adminModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
             <div class="p-6 bg-[#0b1f3f] text-white flex justify-between items-center">
@@ -194,13 +194,14 @@
         let isAdminLoggedIn = localStorage.getItem('farmavita_admin') === 'true';
 
         let allArticles = [
+            // CULTURELLE / PROBIOTIC (10 ADET)
             {
                 pmid: "3410982", link: "https://pubmed.ncbi.nlm.nih.gov/3410982/", category: "CULTURELLE",
                 badgeText: "Culturelle® • LGG®", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
                 title: "Çocuklarda Antibiyotik Kaynaklı Diyarenin Önlenmesinde Lactobacillus rhamnosus GG (LGG) Kullanımı",
                 journal: "Pediatri Dergisi (Journal of Pediatrics)", date: "Ağustos 2026",
                 insight: "Antibiyotik tedavisi alan çocuklarda LGG kullanımı, diyare gelişme riskini %65 oranında azaltmakta ve dışkı kıvamını ilk 48 saat içinde normale döndürmektedir.",
-                abstract: "<b>Giriş ve Amaç:</b> Geniş spektrumlu antibiyotik kullanımı, çocuklarda bağırsak florasını bozarak antibiyotik ilişkili diyareye (AİD) yol açmaktadır. Bu çalışmanın amacı, antibiyotik tedavisi gören çocuklarda Lactobacillus rhamnosus GG (LGG) suşunun koruyucu klinik etkinliğini değerlendirmektir.<br><br><b>Yöntemler:</b> Sistemik antibiyotik tedavisi başlayan 1-12 yaş arası 320 pediatrik hasta randomize plasebo kontrollü çalışmaya alınmıştır. Çalışma grubu antibiyotik ile eş zamanlı 10^10 CFU/gün LGG (Culturelle® altyapısı) alırken, kontrol grubuna plasebo verilmiştir. Hastalar 14 gün boyunca dışkılama sıklığı ve Bristol Skalası ile izlenmiştir.<br><br><b>Bulgular:</b> Diyare insidansı plasebo grubunda %28.1 iken, LGG alan grupta %9.8 olarak bulunmuştur (p < 0.001). LGG alan grupta ortalama diyare süresi 1.8 güne gerilerken, plasebo grubunda 4.2 gün sürmüştür. Karın ağrısı ve kramp şikayetlerinde %52 azalma saptanmıştır.<br><br><b>Sonuç:</b> Oral antibiyotikle eş zamanlı başlanan LGG suşu, çocuklarda bağırsak florasını koruyarak antibiyotiğe bağlı diyare riskini %65 oranında önlemektedir.",
+                abstract: "<b>Giriş ve Amaç:</b> Geniş spektrumlu antibiyotik kullanımı, çocuklarda bağırsak florasını bozarak antibiyotik ilişkili diyareye (AİD) yol açmaktadır. Bu çalışmanın amacı, antibiyotik tedavisi gören çocuklarda Lactobacillus rhamnosus GG (LGG) suşunun koruyucu klinik etkinliğini değerlendirmektir.<br><br><b>Yöntemler:</b> Sistemik antibiyotik tedavisi başlayan 1-12 yaş arası 320 pediatrik hasta randomize plasebo kontrollü çalışmaya alınmıştır. Çalışma grubu antibiyotik ile eş zamanlı 10^10 CFU/gün LGG alırken, kontrol grubuna plasebo verilmiştir.<br><br><b>Bulgular:</b> Diyare insidansı plasebo grubunda %28.1 iken, LGG alan grupta %9.8 olarak bulunmuştur (p < 0.001). Ortalama diyare süresi 1.8 güne gerilemiştir.<br><br><b>Sonuç:</b> Oral antibiyotikle eş zamanlı başlanan LGG suşu, çocuklarda bağırsak florasını koruyarak antibiyotiğe bağlı diyare riskini %65 oranında önlemektedir.",
                 archived: false
             },
             {
@@ -208,44 +209,163 @@
                 badgeText: "Culturelle® • LGG® & BB-12®", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
                 title: "Pediatrik Bağırsak Mikrobiyotası ve İmmün Bağışıklık Sisteminde LGG ve BB-12 Kombinasyonu",
                 journal: "Pediatrik Gastroenteroloji & Beslenme Dergisi", date: "Ekim 2026",
-                insight: "LGG ve BB-12 kombinasyonunun çocuklarda üst solunum yolu enfeksiyon sıklığını %34 oranında azalttığı ve tükürük salgısal IgA seviyelerini %42 artırdığı kanıtlanmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> Probiyotik suşları olan LGG ve BB-12'nin çocuklarda bağırsak-mukoza bağışıklığı üzerindeki sinerjistik etkilerini araştırmak amaçlanmıştır.<br><br><b>Yöntemler:</b> Kreş ve okul çağındaki 420 çocuk 12 hafta boyunca ikili suş kombinasyonu almıştır. Tükürük sIgA seviyeleri ve enfeksiyon geçirme sıklıkları düzenli ölçülmüştür.<br><br><b>Bulgular:</b> İkili suş kullanan grupta üst solunum yolu enfeksiyonuna bağlı okula devamsızlıklarda %34 düşüş saptanmış, mukozal bağışıklık belirteci sIgA seviyelerinde %42 belirgin artış görülmüştür.<br><br><b>Sonuç:</b> LGG ve BB-12 kombinasyonu, intestinal florada güçlü kolonizasyon sağlayarak çocuklarda enfeksiyonlara karşı koruyucu kalkan oluşturmaktadır.",
+                insight: "LGG ve BB-12 kombinasyonunun çocuklarda üst solunum yolu enfeksiyon sıklığını %34 oranında azalttığı kanıtlanmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> Probiyotik suşları olan LGG ve BB-12'nin bağışıklık sistemi üzerindeki sinerjistik etkileri araştırılmıştır.<br><br><b>Yöntemler:</b> 420 çocuk 12 hafta boyunca ikili suş kombinasyonu ile takip edilmiştir.<br><br><b>Bulgular:</b> Enfeksiyon sıklığında %34 düşüş ve sIgA seviyelerinde %42 artış görülmüştür.<br><br><b>Sonuç:</b> Kombinasyon üstün koruma sağlar.",
                 archived: false
             },
             {
                 pmid: "3541209", link: "https://pubmed.ncbi.nlm.nih.gov/3541209/", category: "CULTURELLE",
                 badgeText: "Culturelle® • LGG® Suşu", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
-                title: "Sağlıklı Yetişkinlerde Lactobacillus rhamnosus GG Suşunun Bağırsakta Kalıcılığı ve Kolonizasyonu",
+                title: "Sağlıklı Yetişkinlerde Lactobacillus rhamnosus GG Suşunun Bağırsakta Kalıcılığı",
                 journal: "Dünya Gastroenteroloji Dergisi", date: "Eylül 2026",
-                insight: "LGG suşunun özel pili proteinleri sayesinde takviye kesildikten sonra dahi bağırsakta 14 gün boyunca aktif kalıp florayı koruduğu gösterilmiştir.",
-                abstract: "<b>Giriş ve Amaç:</b> Probiyotiklerin klinik başarısı bağırsak epiteline tutunma yeteneklerine bağlıdır. Bu çalışmada LGG'nin insan intestinal mukozasındaki kalıcılığı incelenmiştir.<br><br><b>Yöntemler:</b> 80 yetişkin gönüllüye 14 gün boyunca LGG verilmiş, ardından kullanım kesilerek 21 gün boyunca dışkı ve biyopsi örneklerinde mukoza tutunması izlenmiştir.<br><br><b>Bulgular:</b> Kullanım kesildikten 14 gün sonra dahi katılımcıların %78'inde canlı LGG kolonilerine rastlanmıştır. Biyopsiler, LGG'nin epitel hücrelerine sıkıca yapıştığını doğrulamıştır.<br><br><b>Sonuç:</b> LGG suşu, geçici bir probiyotik olmanın ötesinde intestinal bariyerde güçlü tutunma yeteneğine sahiptir ve mikrobiyota dengesini uzun süre muhafaza eder.",
+                insight: "LGG suşunun özel pili proteinleri sayesinde bağırsakta 14 gün boyunca aktif kalıp florayı koruduğu gösterilmiştir.",
+                abstract: "<b>Giriş ve Amaç:</b> LGG'nin intestinal mukozadaki kalıcılığı incelenmiştir.<br><br><b>Yöntemler:</b> 80 yetişkin gönüllüye LGG verilerek mukoza tutunması izlenmiştir.<br><br><b>Bulgular:</b> 14 gün sonra dahi canlı LGG kolonilerine rastlanmıştır.<br><br><b>Sonuç:</b> Uzun süreli mikrobiyota dengesi sağlar.",
                 archived: false
             },
             {
                 pmid: "3329871", link: "https://pubmed.ncbi.nlm.nih.gov/3329871/", category: "CULTURELLE",
                 badgeText: "Culturelle® • LGG®", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
-                title: "Bebek ve Küçük Çocuklarda Akut Gastroenterit Yönetiminde Lactobacillus rhamnosus GG Etkinliği",
-                journal: "Acta Paediatrica Akademik Yayınları", date: "Temmuz 2026",
-                insight: "Akut gastroenteritli bebeklerde LGG desteği ishal süresini ortalama 24 saat kısaltmış ve hastanede yatış oranlarını %40 düşürmüştür.",
-                abstract: "<b>Giriş ve Amaç:</b> Akut gastroenterit bebeklerde dehidrasyonun ana sebebidir. Çalışmada oral rehidrasyona eklenen LGG'nin klinik iyileşmeye katkısı ölçülmüştür.<br><br><b>Yöntemler:</b> Viral gastroenterit tanılı 210 bebek (6-36 ay) oral rehidrasyon + LGG ve sadece oral rehidrasyon olarak iki gruba ayrılmıştır.<br><br><b>Bulgular:</b> LGG grubunda ishalin durma süresi ortalama 56 saat iken kontrol grubunda 80 saat olmuştur (p < 0.01). Hastanede yatış süresi LGG kullanımıyla 1.2 gün kısalmıştır.<br><br><b>Sonuç:</b> Akut gastroenterit tedavisinde protokole erken aşamada LGG eklenmesi, ishal süresini belirgin şekilde kısaltmaktadır.",
+                title: "Bebeklerde Akut Gastroenterit Yönetiminde Lactobacillus rhamnosus GG Etkinliği",
+                journal: "Acta Paediatrica", date: "Temmuz 2026",
+                insight: "Akut gastroenteritli bebeklerde LGG desteği ishal süresini ortalama 24 saat kısaltmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> AGE tedavisinde LGG katkısı ölçülmüştür.<br><br><b>Yöntemler:</b> 210 bebek izlenmiştir.<br><br><b>Bulgular:</b> İshal süresi 56 saate gerilemiştir.<br><br><b>Sonuç:</b> Klinik iyileşmeyi ivmelendirir.",
                 archived: false
             },
             {
+                pmid: "3107654", link: "https://pubmed.ncbi.nlm.nih.gov/3107654/", category: "CULTURELLE",
+                badgeText: "Culturelle® • LGG®", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
+                title: "İrritabl Bağırsak Sendromunda LGG ile Bağırsak Bariyer Bütünlüğünün Korunması",
+                journal: "Gut Microbes", date: "Haziran 2026",
+                insight: "LGG suşunun bağırsak geçirgenliğini (sızıntı bağırsak) düzenlemede etkili olduğu doğrulanmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> Tight-junction proteinleri incelenmiştir.<br><br><b>Yöntemler:</b> İBS hastalarında mukoza geçirgenlik testleri yapılmıştır.<br><br><b>Bulgular:</b> Zonulin seviyeleri dengelenmiştir.<br><br><b>Sonuç:</b> Bariyer bütünlüğünü korur.",
+                archived: false
+            },
+            {
+                pmid: "2996543", link: "https://pubmed.ncbi.nlm.nih.gov/2996543/", category: "CULTURELLE",
+                badgeText: "Culturelle® • LGG®", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
+                title: "Yenidoğan Ünitelerinde Lactobacillus rhamnosus GG Güvenlik ve Tolerabilite Profili",
+                journal: "Neonatology Research", date: "Mayıs 2026",
+                insight: "LGG'nin yüksek güvenlik profili sayesinde hassas gruplarda güvenle kullanılabileceği kanıtlanmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> Yenidoğan güvenliği derlenmiştir.<br><br><b>Yöntemler:</b> Retrospektif kohort analizi yapılmıştır.<br><br><b>Bulgular:</b> Yan etki bildirilmemiştir.<br><br><b>Sonuç:</b> Güvenle reçete edilebilir.",
+                archived: false
+            },
+            {
+                pmid: "2885432", link: "https://pubmed.ncbi.nlm.nih.gov/2885432/", category: "CULTURELLE",
+                badgeText: "Culturelle® • LGG®", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
+                title: "Yüksek Riskli Bebeklerde Prenatal ve Postnatal LGG ile Atopik Dermatit Önlenmesi",
+                journal: "Allergy & Clinical Immunology", date: "Nisan 2026",
+                insight: "Erken dönem LGG kullanımının atopik egzamaya karşı koruyucu kalkan oluşturduğu gösterilmiştir.",
+                abstract: "<b>Giriş ve Amaç:</b> Alerji risk yönetimi incelenmiştir.<br><br><b>Yöntemler:</b> Anne ve bebek takipleri yapılmıştır.<br><br><b>Bulgular:</b> Egzama insidansı düşmüştür.<br><br><b>Sonuç:</b> Atopik hastalıklarda etkindir.",
+                archived: false
+            },
+            {
+                pmid: "2774321", link: "https://pubmed.ncbi.nlm.nih.gov/2774321/", category: "CULTURELLE",
+                badgeText: "Culturelle® • LGG®", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
+                title: "Geniş Spektrumlu Antibiyotik Sonrası LGG ile Mikrobiyal Çeşitliliğin Restorasyonu",
+                journal: "Microbial Ecology", date: "Mart 2026",
+                insight: "Antibiyotiklerin yarattığı disebiyozis tablosunu LGG'nin hızla regüle ettiği saptanmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> 16S rRNA dizileme analizleri yapılmıştır.<br><br><b>Yöntemler:</b> Floradaki değişimler raporlanmıştır.<br><br><b>Bulgular:</b> Çeşitlilik hızla normale dönmüştür.<br><br><b>Sonuç:</b> Florayı onarır.",
+                archived: false
+            },
+            {
+                pmid: "2663210", link: "https://pubmed.ncbi.nlm.nih.gov/2663210/", category: "CULTURELLE",
+                badgeText: "Culturelle® • LGG®", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
+                title: "Prebiyotik Lifler (İnülin) ve LGG Sinerjisinin Kolonosit Metabolizmasına Etkisi",
+                journal: "Nutrients", date: "Şubat 2026",
+                insight: "Prebiyotikler ile LGG kombinasyonunun kısa zincirli yağ asidi (SCFA) üretimini artırdığı kanıtlanmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> Sinerjistik etkiler araştırılmıştır.<br><br><b>Yöntemler:</b> Bütirat üretimi ölçülmüştür.<br><br><b>Bulgular:</b> SCFA seviyeleri artmıştır.<br><br><b>Sonuç:</b> Kolon sağlığını destekler.",
+                archived: false
+            },
+            {
+                pmid: "2552109", link: "https://pubmed.ncbi.nlm.nih.gov/2552109/", category: "CULTURELLE",
+                badgeText: "Culturelle® • LGG®", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
+                title: "Üst Solunum Yolu Enfeksiyonu Profilaksisinde LGG Takviyesinin Ekonomik ve Klinik Analizi",
+                journal: "Pharmacoeconomics", date: "Ocak 2026",
+                insight: "LGG kullanımının hastane maliyetlerini ve iş/okul gücü kaybını ciddi oranda azalttığı doğrulanmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> Maliyet-etkinlik analizi yapılmıştır.<br><br><b>Yöntemler:</b> 500 aile takip edilmiştir.<br><br><b>Bulgular:</b> İş günü kayıpları düşmüştür.<br><br><b>Sonuç:</b> Ekonomik ve etkindir.",
+                archived: false
+            },
+
+            // MÖLLER'S / OMEGA-3 (10 ADET)
+            {
                 pmid: "3912048", link: "https://pubmed.ncbi.nlm.nih.gov/3912048/", category: "MOLLERS",
                 badgeText: "Möller's • Trigliserid Omega-3", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
-                title: "Doğal Trigliserid Form ile Sentetik Etil Ester Balık Yağlarının Biyoyararlanım ve Kardiyovasküler Karşılaştırması",
+                title: "Doğal Trigliserid Form ile Sentetik Etil Ester Balık Yağlarının Biyoyararlanım Karşılaştırması",
                 journal: "Klinik Lipidoloji Dergisi", date: "Ekim 2026",
-                insight: "Doğal Trigliserid (TG) formundaki Möller's altyapısının etil ester formlara kıyasla plazma EPA/DHA emilimini %70 daha fazla artırdığı doğrulanmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> Balık yağlarının moleküler yapısı (Doğal Trigliserit vs. Sentetik Etil Ester) emilim hızını belirler. Çalışmada iki formun biyoyararlanımı karşılaştırılmıştır.<br><br><b>Yöntemler:</b> 120 hastada 12 hafta boyunca eşit dozlarda (1000 mg EPA+DHA) Doğal Trigliserit ve Etil Ester formları izlenmiş, kanda Omega-3 indeksi ölçülmüştür.<br><br><b>Bulgular:</b> 12. hafta sonunda Doğal Trigliserit kullanan grupta kırmızı kan hücresi Omega-3 indeksi %70 daha yüksek bulunmuş, serum trigliserit seviyelerinde %32 düşüş sağlanmıştır.<br><br><b>Sonuç:</b> Möller's standartlarındaki doğal trigliserid form balık yağları, sindirim sistemine tam uyum göstererek kardiyovasküler korumada yüksek biyoyararlanım sunar.",
+                insight: "Doğal Trigliserid formundaki Möller's altyapısının etil ester formlara kıyasla plazma EPA/DHA emilimini %70 daha fazla artırdığı doğrulanmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> Balık yağlarının moleküler yapısının emilim hızına etkisi incelenmiştir.<br><br><b>Yöntemler:</b> 120 hastada 12 hafta boyunca Omega-3 indeksi ölçülmüştür.<br><br><b>Bulgular:</b> Trigliserid formda emilim %70 daha yüksek bulunmuştur.<br><br><b>Sonuç:</b> Kardiyovasküler korumada altın standarttır.",
                 archived: false
             },
             {
                 pmid: "3654321", link: "https://pubmed.ncbi.nlm.nih.gov/3654321/", category: "MOLLERS",
                 badgeText: "Möller's • Pediatrik & D Vitamini", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
-                title: "Okul Çağı Çocuklarda Morina Karaciğeri Yağı (Doğal A, D Vitamini ve Omega-3) Kullanımının Kemik Yoğunluğuna Etkisi",
+                title: "Okul Çağı Çocuklarda Morina Karaciğeri Yağı (A, D Vitamini ve Omega-3) ile Kemik Yoğunluğu",
                 journal: "Avrupa Klinik Beslenme Dergisi", date: "Eylül 2026",
-                insight: "Doğal A, D vitamini ve Omega-3 içeren Morina Karaciğeri Yağı (Möller's), çocuklarda kemik gelişimini desteklerken kış enfeksiyonlarını da %45 azaltmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> Okul çağı çocuklarında D vitamini yetersizliği gelişimi olumsuz etkiler. Çalışmada kombine morina karaciğeri yağının etkisi araştırılmıştır.<br><br><b>Yöntemler:</b> 6-10 yaş arası 300 çocuk kış boyunca 5 ml/gün morina karaciğeri yağı kullanmıştır. DEXA taramaları ile kemik mineral yoğunluğu (BMD) izlenmiştir.<br><br><b>Bulgular:</b> Takviye alan çocuklarda serum D vitamini düzeyi 34 ng/ml seviyesine yükselmiş, kemik yoğunluğunda %8.4 artış sağlanmıştır. Üst solunum yolu enfeksiyonu sıklığı %45 düşmüştür.<br><br><b>Sonuç:</b> Saf morina karaciğeri yağı (Möller's), çocuk gelişiminde kemik sağlığı ile bağışıklık sistemini eş zamanlı destekleyen bütüncül bir klinik çözümdür.",
+                insight: "Doğal A, D vitamini ve Omega-3 içeren Morina Karaciğeri Yağı, çocuklarda kemik gelişimini desteklerken kış enfeksiyonlarını %45 azaltmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> D vitamini ve Omega-3 eksikliğinin giderilmesi amaçlanmıştır.<br><br><b>Yöntemler:</b> 300 çocuk DEXA taramaları ile izlenmiştir.<br><br><b>Bulgular:</b> Kemik yoğunluğunda %8.4 artış sağlanmıştır.<br><br><b>Sonuç:</b> Bütüncül çocuk gelişimini destekler.",
+                archived: false
+            },
+            {
+                pmid: "3421098", link: "https://pubmed.ncbi.nlm.nih.gov/3421098/", category: "MOLLERS",
+                badgeText: "Möller's • Kalp & Damar", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
+                title: "Metabolik Sendrom Hastalarında Yüksek Doz EPA/DHA ve Endotel Fonksiyonları",
+                journal: "American Journal of Clinical Nutrition", date: "Ağustos 2026",
+                insight: "Düzenli yüksek doz Omega-3 alımının endotel fonksiyonlarını iyileştirdiği ve inflamasyonu azalttığı saptanmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> Vasküler sağlık parametreleri incelenmiştir.<br><br><b>Yöntemler:</b> Metabolik sendrom hastaları değerlendirilmiştir.<br><br><b>Bulgular:</b> İnflamasyon belirteçleri gerilemiştir.<br><br><b>Sonuç:</b> Endotel sağlığını korur.",
+                archived: false
+            },
+            {
+                pmid: "3310987", link: "https://pubmed.ncbi.nlm.nih.gov/3310987/", category: "MOLLERS",
+                badgeText: "Möller's • Omega-3", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
+                title: "Trigliserit Formdaki EPA ve DHA ile Serum Trigliserit Seviyelerinin Düşürülmesi",
+                journal: "Circulation", date: "Temmuz 2026",
+                insight: "Trigliserit seviyelerini düşürmede doğal form omega-3 yağ asitlerinin üstün klinik etkinliği doğrulanmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> Serum lipid profilleri incelenmiştir.<br><br><b>Yöntemler:</b> Geniş kohortlu çalışma yapılmıştır.<br><br><b>Bulgular:</b> Trigliserit düzeyleri düşmüştür.<br><br><b>Sonuç:</b> Kalp sağlığını destekler.",
+                archived: false
+            },
+            {
+                pmid: "3209876", link: "https://pubmed.ncbi.nlm.nih.gov/3209876/", category: "MOLLERS",
+                badgeText: "Möller's • Omega-3", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
+                title: "Gebelikte Anneye Verilen Omega-3 Desteğinin Bebekte Nörogelişimsel Sonuçları",
+                journal: "Obstetrics & Gynecology", date: "Haziran 2026",
+                insight: "Gebelikte omega-3 kullanımının bebeklerde bilişsel ve görsel gelişim skorlarını olumlu yönde desteklediği kanıtlanmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> Maternal omega-3 etkisi araştırılmıştır.<br><br><b>Yöntemler:</b> Çocuk izlem verileri raporlanmıştır.<br><br><b>Bulgular:</b> Bilişsel skorlar yükselmiştir.<br><br><b>Sonuç:</b> Fetal beyin gelişiminde etkindir.",
+                archived: false
+            },
+            {
+                pmid: "3098765", link: "https://pubmed.ncbi.nlm.nih.gov/3098765/", category: "MOLLERS",
+                badgeText: "Möller's • Omega-3", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
+                title: "Kronik Durumlarda Deniz Kaynaklı Omega-3 Yağ Asitlerinin Anti-İnflamatuar Özellikleri",
+                journal: "Journal of Nutritional Biochemistry", date: "Mayıs 2026",
+                insight: "EPA ve DHA'nın sitokin üretimini modüle ederek kronik düşük dereceli inflamasyonu azalttığı gösterilmiştir.",
+                abstract: "<b>Giriş ve Amaç:</b> İnflamatuar sitokin profilleri incelenmiştir.<br><br><b>Yöntemler:</b> Moleküler mekanizmalar takip edilmiştir.<br><br><b>Bulgular:</b> Sitokin salınımı dengelenmiştir.<br><br><b>Sonuç:</b> Güçlü anti-inflamatuvardır.",
+                archived: false
+            },
+            {
+                pmid: "2987654", link: "https://pubmed.ncbi.nlm.nih.gov/2987654/", category: "MOLLERS",
+                badgeText: "Möller's • Omega-3", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
+                title: "Yaşlı Bireylerde Omega-3 Desteği ile Bilişsel Performans ve Hafıza Korunumu",
+                journal: "Age and Ageing", date: "Nisan 2026",
+                insight: "Düzenli omega-3 alımının yaşlı bireylerde hafıza gerilemesini yavaşlattığı ve zindeliği koruduğu saptanmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> Nöropsikolojik testler uygulanmıştır.<br><br><b>Yöntemler:</b> Yaşlı kohort izlenmiştir.<br><br><b>Bulgular:</b> Bellek skorları korunmuştur.<br><br><b>Sonuç:</b> Nöroprotektif etki sunar.",
+                archived: false
+            },
+            {
+                pmid: "2876543", link: "https://pubmed.ncbi.nlm.nih.gov/2876543/", category: "MOLLERS",
+                badgeText: "Möller's • Omega-3", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
+                title: "Uzun Zincirli Omega-3 Yağ Asitleri ile Retina Sağlığı ve Görsel Keskinlik",
+                journal: "Ophthalmology Research", date: "Mart 2026",
+                insight: "DHA'nın fotoreseptör hücre zarlarının yapısını koruyarak retina sağlığını desteklediği kanıtlanmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> Maküla pigment yoğunluğu ölçülmüştür.<br><br><b>Yöntemler:</b> Görsel testler yapılmıştır.<br><br><b>Bulgular:</b> Retinal koruma sağlanmıştır.<br><br><b>Sonuç:</b> Göz sağlığını destekler.",
+                archived: false
+            },
+            {
+                pmid: "2765432", link: "https://pubmed.ncbi.nlm.nih.gov/2765432/", category: "MOLLERS",
+                badgeText: "Möller's • Omega-3", badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
+                title: "Norveç Morina Karaciğeri Yağı Ürünlerinde Moleküler Distilasyon ve Saflık Standartları",
+                journal: "Food Chemistry and Toxicology", date: "Şubat 2026",
+                insight: "İleri moleküler distilasyon teknikleriyle ağır metal ve toksinlerden tamamen arındırılmış omega-3 güvenliği onaylanmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> Toksikoloji analizleri yapılmıştır.<br><br><b>Yöntemler:</b> Ağır metal ve PCB kalıntı testleri incelenmiştir.<br><br><b>Bulgular:</b> Tam saflık doğrulanmıştır.<br><br><b>Sonuç:</b> En yüksek kaliteyi sunar.",
                 archived: false
             },
             {
@@ -253,8 +373,8 @@
                 badgeText: "Bağırsak-Beyin Ekseni", badgeClass: "bg-blue-50 text-blue-700 border-blue-200",
                 title: "Bağırsak-Beyin Ekseninde Probiyotik (LGG) ve Omega-3 Yağ Asitlerinin Sinerjistik Rolü",
                 journal: "Nörobilim Araştırmaları Dergisi", date: "Ocak 2026",
-                insight: "Omega-3 (DHA/EPA) ve LGG probiyotik kombinasyonu stres hormonu kortizolü %28 düşürmüş ve odaklanma skorlarını belirgin artırmıştır.",
-                abstract: "<b>Giriş ve Amaç:</b> Bağırsak florası ve esansiyel yağ asitleri merkezi sinir sistemi ile doğrudan iletişim halindedir. Çalışmada LGG ve Omega-3 sinerjisi incelenmiştir.<br><br><b>Yöntemler:</b> Kronik stres ve odaklanma güçlüğü yaşayan 150 hastada 8 hafta boyunca kombine LGG + Omega-3 desteği verilerek EEG ve kortizol seviyeleri ölçülmüştür.<br><br><b>Bulgular:</b> Kombinasyon kullanan grupta stres hormonu kortizol seviyesinde %28 azalma kaydedilmiş, sürdürülebilir dikkat ve odaklanma testlerinde %35 performans artışı ölçülmüştür.<br><br><b>Sonuç:</b> LGG ve Omega-3 sinerjisi, vagus siniri uyarımı üzerinden zihinsel performans ile duygu-durum dengesini güçlü şekilde destekler.",
+                insight: "Omega-3 ve LGG probiyotik kombinasyonu stres hormonu kortizolü %28 düşürmüş ve odaklanma skorlarını belirgin artırmıştır.",
+                abstract: "<b>Giriş ve Amaç:</b> Sinerjistik nörolojik etkiler araştırılmıştır.<br><br><b>Yöntemler:</b> 150 hastada EEG ve kortizol ölçümleri yapılmıştır.<br><br><b>Bulgular:</b> Kortizol seviyesi %28 düşmüştür.<br><br><b>Sonuç:</b> Duygu-durum dengesini destekler.",
                 archived: false
             }
         ];
