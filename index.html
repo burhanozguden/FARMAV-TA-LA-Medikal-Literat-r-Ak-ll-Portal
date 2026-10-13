@@ -1,17 +1,21 @@
-async function loadArticlesFromJSON() {
+<script>
+        let articlesData = [];
+
+        async function loadArticlesFromJSON() {
             try {
                 const response = await fetch('articles.json');
                 const data = await response.json();
                 articlesData = data.articles;
-                
-                // Eğer sayfanızda updateTime elementi varsa tarihi yazar, yoksa atlar
-                const timeElement = document.getElementById('updateTime');
-                if (timeElement) {
-                    timeElement.innerText = data.last_updated;
-                }
-                
+                document.getElementById('updateTime').innerText = data.last_updated;
                 renderArticles(articlesData);
             } catch (error) {
-                console.error("JSON yüklenemedi:", error);
+                console.error("JSON yüklenemedi, yedek veriler kullanılıyor:", error);
             }
         }
+
+        // ... (önceki renderArticles, setCategory, filterArticles ve modal fonksiyonların buraya gelecek)
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadArticlesFromJSON();
+        });
+    </script>
