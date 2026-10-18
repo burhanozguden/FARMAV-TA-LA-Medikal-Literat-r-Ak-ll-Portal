@@ -1,5 +1,5 @@
 {
-    "last_updated": "17.10.2026 06:23",
+    "last_updated": "18.10.2026 06:23",
     "articles": [
         {
             "pmid": "41533318",
@@ -51,58 +51,6 @@
             "date": "Mar 2025",
             "insight": "Bu araştırma (Medicina (Kaunas, Lithuania)), Culturelle® • LGG® & BB-12® ürün gruplarının sahada hekim rasyonelini güçlendiren klinik başarı sonuçlarını sunmaktadır.",
             "abstract": "<b>Giriş ve Amaç:</b> Bu çalışmada ilgili suş ve omega-3 parametrelerinin klinik etkinliği ve hasta tolerabilitesi değerlendirilmiştir.<br><br><b>Yöntemler:</b> Randomize, plasebo kontrollü klinik çalışmada hedeflenen parametreler ve hasta izlem sonuçları incelenmiştir.<br><br><b>Bulgular:</b> ...<br><br><b>Klinik Sonuç:</b> Uygulanan tedavi protokolü hedef grupta anlamlı klinik iyileşme ve yüksek tolerabilite sağlamıştır.",
-            "archived": false
-        },
-        {
-            "pmid": "42589469",
-            "link": "https://pubmed.ncbi.nlm.nih.gov/42589469/",
-            "category": "GUT_BRAIN",
-            "badgeText": "Bağırsak-Beyin Ekseni",
-            "badgeClass": "bg-blue-50 text-blue-700 border-blue-200",
-            "title": "Bağırsak-Beyin Ekseni - Klinik Araştırma Raporu (PMID: 42589469)",
-            "journal": "International journal of molecular sciences",
-            "date": "Jul 2026",
-            "insight": "Bu araştırma (International journal of molecular sciences), Bağırsak-Beyin Ekseni ürün gruplarının sahada hekim rasyonelini güçlendiren klinik başarı sonuçlarını sunmaktadır.",
-            "abstract": "<b>Giriş ve Amaç:</b> Bu çalışmada ilgili suş ve omega-3 parametrelerinin klinik etkinliği ve hasta tolerabilitesi değerlendirilmiştir.<br><br><b>Yöntemler:</b> Randomize, plasebo kontrollü klinik çalışmada hedeflenen parametreler ve hasta izlem sonuçları incelenmiştir.<br><br><b>Bulgular:</b> Interactions among the gut, brain, and skin are increasingly understood as a systemic regulatory network connecting intestinal activity, neuroimmune communication, and cutaneous homeostasis. Microbiota-derived metabolites, immune mediators, and neuro...<br><br><b>Klinik Sonuç:</b> Uygulanan tedavi protokolü hedef grupta anlamlı klinik iyileşme ve yüksek tolerabilite sağlamıştır.",
-            "archived": false
-        },
-        {
-            "pmid": "42512539",
-            "link": "https://pubmed.ncbi.nlm.nih.gov/42512539/",
-            "category": "GUT_BRAIN",
-            "badgeText": "Bağırsak-Beyin Ekseni",
-            "badgeClass": "bg-blue-50 text-blue-700 border-blue-200",
-            "title": "Bağırsak-Beyin Ekseni - Klinik Araştırma Raporu (PMID: 42512539)",
-            "journal": "Brain sciences",
-            "date": "Jul 2026",
-            "insight": "Bu araştırma (Brain sciences), Bağırsak-Beyin Ekseni ürün gruplarının sahada hekim rasyonelini güçlendiren klinik başarı sonuçlarını sunmaktadır.",
-            "abstract": "<b>Giriş ve Amaç:</b> Bu çalışmada ilgili suş ve omega-3 parametrelerinin klinik etkinliği ve hasta tolerabilitesi değerlendirilmiştir.<br><br><b>Yöntemler:</b> Randomize, plasebo kontrollü klinik çalışmada hedeflenen parametreler ve hasta izlem sonuçları incelenmiştir.<br><br><b>Bulgular:</b> Chemotherapy is a treatment designed to contain or eradicate neoplastic cells; however, patients may experience various treatment-related adverse effects. Chemotherapy-related cognitive impairment (CRCI), clinically referred to as \"chemobrain,\" is a ...<br><br><b>Klinik Sonuç:</b> Uygulanan tedavi protokolü hedef grupta anlamlı klinik iyileşme ve yüksek tolerabilite sağlamıştır.",
-            "archived": false
-        },
-        {
-            "pmid": "42123920",
-            "link": "https://pubmed.ncbi.nlm.nih.gov/42123920/",
-            "category": "GUT_BRAIN",
-            "badgeText": "Bağırsak-Beyin Ekseni",
-            "badgeClass": "bg-blue-50 text-blue-700 border-blue-200",
-            "title": "Bağırsak-Beyin Ekseni - Klinik Araştırma Raporu (PMID: 42123920)",
-            "journal": "Nutrients",
-            "date": "Apr 2026",
-            "insight": "Bu araştırma (Nutrients), Bağırsak-Beyin Ekseni ürün gruplarının sahada hekim rasyonelini güçlendiren klinik başarı sonuçlarını sunmaktadır.",
-            "abstract": "<b>Giriş ve Amaç:</b> Bu çalışmada ilgili suş ve omega-3 parametrelerinin klinik etkinliği ve hasta tolerabilitesi değerlendirilmiştir.<br><br><b>Yöntemler:</b> Randomize, plasebo kontrollü klinik çalışmada hedeflenen parametreler ve hasta izlem sonuçları incelenmiştir.<br><br><b>Bulgular:</b> ...<br><br><b>Klinik Sonuç:</b> Uygulanan tedavi protokolü hedef grupta anlamlı klinik iyileşme ve yüksek tolerabilite sağlamıştır.",
-            "archived": false
-        },
-        {
-            "pmid": "41356231",
-            "link": "https://pubmed.ncbi.nlm.nih.gov/41356231/",
-            "category": "GUT_BRAIN",
-            "badgeText": "Bağırsak-Beyin Ekseni",
-            "badgeClass": "bg-blue-50 text-blue-700 border-blue-200",
-            "title": "Bağırsak-Beyin Ekseni - Klinik Araştırma Raporu (PMID: 41356231)",
-            "journal": "Food science & nutrition",
-            "date": "Dec 2025",
-            "insight": "Bu araştırma (Food science & nutrition), Bağırsak-Beyin Ekseni ürün gruplarının sahada hekim rasyonelini güçlendiren klinik başarı sonuçlarını sunmaktadır.",
-            "abstract": "<b>Giriş ve Amaç:</b> Bu çalışmada ilgili suş ve omega-3 parametrelerinin klinik etkinliği ve hasta tolerabilitesi değerlendirilmiştir.<br><br><b>Yöntemler:</b> Randomize, plasebo kontrollü klinik çalışmada hedeflenen parametreler ve hasta izlem sonuçları incelenmiştir.<br><br><b>Bulgular:</b> Sleep disorders and poor sleep quality are increasingly recognized as global health concerns, with substantial consequences for mental and physical health. While pharmacological treatments are available, growing evidence suggests that nutritional int...<br><br><b>Klinik Sonuç:</b> Uygulanan tedavi protokolü hedef grupta anlamlı klinik iyileşme ve yüksek tolerabilite sağlamıştır.",
             "archived": false
         }
     ]
