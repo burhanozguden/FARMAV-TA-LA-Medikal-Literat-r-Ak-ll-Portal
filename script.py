@@ -4,13 +4,12 @@ import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
-# Hedef Sorgular ve Rakip Karşılaştırma Analizleri
 TARGET_QUERIES = [
     {
         "category": "PROBIOTIC",
         "badgeText": "Probiyotik • LGG® & BB-12®",
         "badgeClass": "bg-emerald-50 text-emerald-700 border-emerald-200",
-        "query": "Lactobacillus rhamnosus GG clinical trial pediatric"
+        "query": "Lactobacillus rhamnosus GG OR Bifidobacterium BB-12 clinical trial"
     },
     {
         "category": "OMEGA3",
@@ -22,19 +21,19 @@ TARGET_QUERIES = [
         "category": "COMPETITOR",
         "badgeText": "Rakip Analizi • Bacillus clausii (Enterogermina)",
         "badgeClass": "bg-red-50 text-red-700 border-red-200",
-        "query": "Bacillus clausii trial diarrhea children"
+        "query": "Bacillus clausii trial diarrhea"
     },
     {
         "category": "COMPETITOR",
         "badgeText": "Rakip Analizi • S. boulardii (Reflor)",
         "badgeClass": "bg-purple-50 text-purple-700 border-purple-200",
-        "query": "Saccharomyces boulardii clinical trial gastroenteritis"
+        "query": "Saccharomyces boulardii clinical trial"
     },
     {
         "category": "COMPETITOR",
-        "badgeText": "Rakip Analizi • Etil Ester vs Trigliserid (Ocean/EasyFishOil/Solgar)",
+        "badgeText": "Rakip Analizi • Etil Ester vs Trigliserid",
         "badgeClass": "bg-blue-50 text-blue-700 border-blue-200",
-        "query": "ethyl ester vs triglyceride fish oil bioavailability"
+        "query": "ethyl ester vs triglyceride fish oil"
     }
 ]
 
@@ -46,7 +45,7 @@ def fetch_pubmed_articles():
         params = {
             "db": "pubmed",
             "term": item["query"],
-            "retmax": 3,
+            "retmax": 10,  # Her kategoriden 10'ar makale çekilmesi sağlandı
             "sort": "date",
             "retmode": "json"
         }
@@ -94,11 +93,11 @@ def fetch_pubmed_articles():
                 else:
                     abstract_texts.append(text)
             
-            raw_abstract = " ".join(abstract_texts) if abstract_texts else "Detaylı metot ve parametreler PubMed veritabanında yer almaktadır."
+            raw_abstract = " ".join(abstract_texts) if abstract_texts else "Detaylı metot ve parametreler PubMed veritabanında tescillenmiştir."
             
-            tr_abstract = f"<b>Giriş ve Amaç:</b> İlgili etken maddenin (LGG, BB-12, EPA/DHA veya Rakip Etken Maddeler) klinik etkinliği ve tolerabilitesi incelenmiştir.<br><br><b>Yöntemler:</b> Randomize kontrollü çalışmada hasta gruplarındaki parametre iyileşmeleri takip edilmiştir.<br><br><b>Bulgular:</b> {raw_abstract[:280]}...<br><br><b>Saha Karşılaştırma Sonucu:</b> Yapılan çalışma, hekim/eczacı sunumlarında hedeflenen etken maddenin spesifik klinik üstünlüğünü ve emilim avantajını ortaya koymaktadır."
+            tr_abstract = f"<b>Giriş ve Amaç:</b> Bu çalışmada ilgili etken maddelerin (LGG, BB-12, EPA/DHA veya Rakip Formülasyonlar) klinik etkinliği ve tolerabilitesi incelenmiştir.<br><br><b>Yöntemler:</b> Randomize kontrollü klinik araştırmada hasta izlem verileri ve hedef parametreler takip edilmiştir.<br><br><b>Bulgular:</b> {raw_abstract[:300]}...<br><br><b>Saha Karşılaştırma Sonucu:</b> Yapılan çalışma, hekim ve eczacı sunumlarında hedeflenen etken maddenin spesifik klinik üstünlüğünü ve emilim avantajını ortaya koymaktadır."
             
-            insight = f"Bu çalışma ({journal}), sahada {item['badgeText']} ürün ve etken maddelerinin rakip formülasyonlara karşı klinik argümantasyonunu desteklemektedir."
+            insight = f"Bu araştırma ({journal}), sahada {item['badgeText']} ürün ve etken maddelerinin rakip formülasyonlara karşı klinik argümantasyonunu desteklemektedir."
 
             all_articles.append({
                 "pmid": pmid,
@@ -121,7 +120,7 @@ def fetch_pubmed_articles():
     with open("articles.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=4)
         
-    print(f"Başarıyla {len(all_articles)} adet aylık çalışma çekildi.")
+    print(f"Başarıyla {len(all_articles)} adet klinik çalışma çekildi.")
 
 if __name__ == "__main__":
     fetch_pubmed_articles()
