@@ -1,142 +1,204 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="scroll-smooth">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Farmavita İlaç | Medikal Literatür Portalı</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farmavita İlaç | Medikal Literatür & Klinik Portal</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter','sans-serif'] },
+  colors: { farmavita: { navy:'#0b1f3f', red:'#e31b23', light:'#f8fafc', card:'#ffffff' } } } } }
+</script>
 <style>
-:root{--bg:#f6f7fa;--yuz:#fff;--yazi:#141b2d;--sol:#5b647a;--cizgi:#e1e5ee;--lacivert:#0f1b33;--kirmizi:#d8232a;--yesil:#0b7a55;--yesil-a:#e3f6ee;--sari:#fff6e0;--sari-k:#e0a100;--mavi-a:#e8eefc}
-@media (prefers-color-scheme:dark){:root{--bg:#0d1220;--yuz:#161d31;--yazi:#eef1f8;--sol:#9aa4bd;--cizgi:#27304a;--lacivert:#e8ecf7;--yesil:#4fd6a3;--yesil-a:#12372d;--sari:#2e2610;--mavi-a:#1c2748}}
-*{box-sizing:border-box}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--yazi);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-.kap{max-width:1120px;margin:0 auto;padding:0 20px}
-header{background:var(--yuz);border-bottom:1px solid var(--cizgi);position:sticky;top:0;z-index:5}
-.ust{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0;flex-wrap:wrap}
-.logo{font-weight:800;font-size:22px;letter-spacing:.5px}.logo b{color:var(--kirmizi);font-size:13px;margin-left:4px}
-nav{display:flex;gap:4px}
-nav button{border:0;background:none;color:var(--sol);font:inherit;font-weight:600;padding:8px 14px;border-radius:8px;cursor:pointer}
-nav button[aria-selected=true]{background:var(--lacivert);color:var(--yuz)}
-button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--kirmizi);outline-offset:2px}
-.hero{background:var(--lacivert);color:#fff;padding:36px 0 30px}
-.hero h1{margin:0 0 8px;font-size:clamp(26px,4vw,38px);line-height:1.15}
-.hero p{margin:0 0 18px;color:#c3cce2;max-width:620px}
-.ara{display:flex;gap:8px;flex-wrap:wrap}
-.ara input,.ara select{flex:1 1 220px;padding:12px 14px;border-radius:10px;border:1px solid #33415f;background:#17233f;color:#fff;font:inherit}
-.ara select{flex:0 1 150px}
-.cip{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 6px;align-items:center}
-.cip button{border:1px solid var(--cizgi);background:var(--yuz);color:var(--yazi);font:inherit;font-size:14px;padding:7px 14px;border-radius:99px;cursor:pointer}
-.cip button[aria-pressed=true]{background:var(--lacivert);color:var(--yuz);border-color:var(--lacivert)}
-.cip .ayrac{width:1px;height:22px;background:var(--cizgi);margin:0 4px}
-.durum{color:var(--sol);font-size:14px;margin:8px 0 16px}
-.izgara{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-bottom:40px}
-.kart{background:var(--yuz);border:1px solid var(--cizgi);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px}
-.kart h3{margin:0;font-size:17px;line-height:1.35}
-.meta{color:var(--sol);font-size:13px}
-.rozet{display:inline-block;font-size:12px;font-weight:600;padding:2px 10px;border-radius:99px;background:var(--yesil-a);color:var(--yesil)}
-.rozet.tip{background:var(--mavi-a);color:var(--yazi)}.rozet.yeni{background:var(--kirmizi);color:#fff}.rozet.rakip{background:var(--sari);color:var(--yazi)}
-.satir{display:flex;gap:6px;flex-wrap:wrap;align-items:center;justify-content:space-between}
-.saha{background:var(--sari);border-left:4px solid var(--sari-k);padding:8px 12px;font-size:14px;border-radius:4px}
-.alt{display:flex;justify-content:space-between;gap:10px;margin-top:auto;padding-top:10px;border-top:1px solid var(--cizgi)}
-.alt button,.alt a,.btn{font:inherit;font-weight:600;font-size:14px;background:none;border:0;color:var(--yazi);cursor:pointer;text-decoration:none;padding:4px 0}
-.alt a,.btn.kirmizi{color:var(--kirmizi)}
-.btn.dolu{background:var(--lacivert);color:var(--yuz);padding:9px 16px;border-radius:8px}
-.bos{text-align:center;color:var(--sol);padding:48px 16px;grid-column:1/-1;background:var(--yuz);border:1px dashed var(--cizgi);border-radius:12px}
-.iskelet{height:190px;border-radius:12px;background:linear-gradient(90deg,var(--cizgi),var(--yuz),var(--cizgi));background-size:200% 100%;animation:k 1.2s infinite linear}
-@keyframes k{to{background-position:-200% 0}}
-@media (prefers-reduced-motion:reduce){.iskelet{animation:none}}
-.tablo{overflow-x:auto;background:var(--yuz);border:1px solid var(--cizgi);border-radius:12px;margin-bottom:40px}
-table{border-collapse:collapse;width:100%;min-width:1000px;font-size:14px}
-th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--cizgi);vertical-align:top}
-th{background:var(--bg);font-size:13px;color:var(--sol)}
-.bolum{margin:28px 0 12px;font-size:20px}
-dialog{border:0;border-radius:14px;padding:0;max-width:720px;width:calc(100% - 24px);background:var(--yuz);color:var(--yazi);max-height:90vh}
-dialog::backdrop{background:rgba(5,10,25,.6)}
-.m-ic{padding:22px;overflow-y:auto;max-height:90vh}
-.m-ic h2{margin:10px 0 4px;font-size:21px;line-height:1.3}
-.ozet{background:var(--bg);border:1px solid var(--cizgi);border-radius:10px;padding:14px;white-space:pre-wrap;margin:14px 0}
-.uyari{font-size:13px;color:var(--sol)}
-details summary{cursor:pointer;font-weight:600;font-size:14px}
-footer{color:var(--sol);font-size:13px;padding:20px 0 40px;border-top:1px solid var(--cizgi)}
+body{font-family:'Inter',sans-serif;background-color:#f8fafc}
+.glass-header{background:rgba(255,255,255,.92);backdrop-filter:blur(12px)}
+.custom-shadow{box-shadow:0 4px 20px -2px rgba(11,31,63,.05)}
+.scrollbar-none::-webkit-scrollbar{display:none}.scrollbar-none{scrollbar-width:none}
+.pre{white-space:pre-wrap}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #e31b23;outline-offset:2px}
 </style>
 </head>
-<body>
-<header><div class="kap ust">
-  <div class="logo">FARMAVİTA<b>İLAÇ</b></div>
-  <nav role="tablist" aria-label="Bölümler">
-    <button role="tab" id="t-lit" aria-selected="true" data-sekme="lit">Literatür</button>
-    <button role="tab" id="t-urun" aria-selected="false" data-sekme="urun">Ürünlerimiz</button>
-    <button role="tab" id="t-rak" aria-selected="false" data-sekme="rak">Rakip analizi</button>
-  </nav>
-</div></header>
+<body class="text-slate-800 bg-slate-50 min-h-screen flex flex-col antialiased">
 
-<section class="hero"><div class="kap">
-  <h1>Klinik kanıtlar ve etken madde literatürü</h1>
-  <p>Culturelle (LGG) ve Möller's (Omega-3) ile rakip suş ve formlara ait son 24 ayın PubMed yayınları. Liste her ay otomatik güncellenir.</p>
-  <div class="ara" id="araCubugu">
-    <input id="q" type="search" placeholder="Suş, etken madde, başlık veya dergi ara" aria-label="Yayın ara">
-    <select id="yil" aria-label="Yıl"><option value="">Tüm yıllar</option></select>
-    <select id="tip" aria-label="Çalışma tipi"><option value="">Tüm tipler</option></select>
-  </div>
-</div></section>
-
-<main class="kap">
-  <div id="lit" role="tabpanel" aria-labelledby="t-lit">
-    <div class="cip" id="kat">
-      <button data-k="tumu" aria-pressed="true">Tümü</button>
-      <button data-k="probiyotik" aria-pressed="false">Probiyotik</button>
-      <button data-k="omega3" aria-pressed="false">Omega-3</button>
-      <button data-k="form" aria-pressed="false">Form kıyaslamaları</button>
-      <span class="ayrac"></span>
-      <button data-g="hepsi" aria-pressed="true">Hepsi</button>
-      <button data-g="kendi" aria-pressed="false">Bizim ürünler</button>
-      <button data-g="rakip" aria-pressed="false">Rakipler</button>
+<header class="sticky top-0 z-40 glass-header border-b border-slate-200/80">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 flex-shrink-0">
+          <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-sm">
+            <polygon points="50,10 90,50 72,50 50,28 28,50 10,50" fill="#e31b23"/>
+            <polygon points="50,90 90,50 72,50 50,72 28,50 10,50" fill="#0b1f3f"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="font-black text-xl tracking-tight text-[#0b1f3f]">FARMAVİTA</span>
+            <span class="text-xs font-bold text-[#e31b23] tracking-widest uppercase">İLAÇ</span>
+          </div>
+          <p class="text-[10px] font-medium text-slate-400 tracking-wider uppercase">Medikal Literatür & Akıllı Portal</p>
+        </div>
+      </div>
+      <div class="hidden md:flex items-center gap-4 border-l border-slate-200 pl-6">
+        <div class="flex items-center gap-2 bg-amber-50/80 border border-amber-200/60 px-3 py-1.5 rounded-full">
+          <i class="fa-solid fa-fish text-amber-600 text-sm"></i>
+          <div><span class="text-xs font-bold text-amber-900 block leading-tight">Möller's</span><span class="text-[9px] text-amber-700 font-medium">Omega-3 • Trigliserid</span></div>
+        </div>
+        <div class="flex items-center gap-2 bg-emerald-50/80 border border-emerald-200/60 px-3 py-1.5 rounded-full">
+          <i class="fa-solid fa-bacteria text-emerald-600 text-sm"></i>
+          <div><span class="text-xs font-bold text-emerald-900 block leading-tight">Culturelle®</span><span class="text-[9px] text-emerald-700 font-medium">LGG® & BB-12®</span></div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 text-xs">
+        <span class="relative flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span></span>
+        <span class="hidden sm:inline font-medium text-slate-500">PubMed Akışı</span>
+      </div>
     </div>
-    <div class="durum" id="durum" aria-live="polite"></div>
-    <div class="izgara" id="liste"><div class="iskelet"></div><div class="iskelet"></div><div class="iskelet"></div></div>
+    <div class="flex md:hidden items-center justify-center gap-2 pb-3 border-t border-slate-100 pt-2">
+      <span class="text-[10px] bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-1 rounded-full font-semibold"><i class="fa-solid fa-fish text-xs text-amber-600"></i> Möller's Omega-3</span>
+      <span class="text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full font-semibold"><i class="fa-solid fa-bacteria text-xs text-emerald-600"></i> Culturelle (LGG/BB-12)</span>
+    </div>
+  </div>
+</header>
+
+<section class="bg-gradient-to-b from-slate-900 via-[#0b1f3f] to-slate-900 text-white py-10 px-4 sm:px-6 relative overflow-hidden">
+  <div class="absolute -top-24 -right-24 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="max-w-4xl mx-auto relative z-10 text-center">
+    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-300 border border-red-500/30 mb-4"><i class="fa-solid fa-bolt text-red-400"></i> Aylık Literatür & Saha Klinik Özetleri</span>
+    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight mb-3">Klinik Kanıtlar & Güncel PubMed Verileri</h1>
+    <p class="text-slate-300 text-xs sm:text-sm max-w-2xl mx-auto mb-8 font-light leading-relaxed">Farmavita İlaç saha ekibi ve hekim bilgilendirmeleri için PubMed'den otomatik derlenen; Möller's Omega-3, Culturelle probiyotik suşları (LGG, BB-12) ve rakip suş/form literatürü.</p>
+    <div id="araKutusu" class="relative max-w-xl mx-auto">
+      <div class="relative flex items-center">
+        <i class="fa-solid fa-magnifying-glass absolute left-4 text-slate-400"></i>
+        <input type="search" id="q" aria-label="Yayın ara" placeholder="Makale başlığı, suş (LGG, BB-12), Omega-3 veya anahtar kelime arayın..." class="w-full pl-11 pr-4 py-3.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 transition shadow-inner">
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+  <div class="flex items-center gap-2 mb-6 overflow-x-auto scrollbar-none" role="tablist" aria-label="Bölümler" id="sekmeler">
+    <button data-sekme="lit" class="sekme px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap"><i class="fa-solid fa-book-medical mr-1.5"></i>Literatür</button>
+    <button data-sekme="urun" class="sekme px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap"><i class="fa-solid fa-capsules mr-1.5"></i>Ürünlerimiz</button>
+    <button data-sekme="rak" class="sekme px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap"><i class="fa-solid fa-scale-balanced mr-1.5"></i>Rakip Analizi</button>
   </div>
 
-  <div id="urun" role="tabpanel" aria-labelledby="t-urun" hidden>
-    <h2 class="bolum">Ürünlerimiz</h2>
-    <div class="izgara" id="urunler"></div>
+  <div id="lit">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-200">
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-none" id="katFiltre">
+        <button data-k="tumu" class="kat px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-1.5"><i class="fa-solid fa-layer-group"></i> Tümü</button>
+        <button data-k="probiyotik" class="kat px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-1.5"><i class="fa-solid fa-bacteria text-emerald-600"></i> Probiyotik</button>
+        <button data-k="omega3" class="kat px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-1.5"><i class="fa-solid fa-fish text-amber-600"></i> Omega-3</button>
+        <button data-k="form" class="kat px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-1.5"><i class="fa-solid fa-scale-balanced text-blue-600"></i> Form Kıyaslamaları</button>
+      </div>
+      <div class="flex items-center gap-2 text-xs text-slate-500 font-medium">
+        <i class="fa-regular fa-clock text-slate-400"></i><span>Son güncelleme: <strong id="gunc" class="text-slate-700">—</strong></span>
+      </div>
+    </div>
+    <div class="flex flex-wrap items-center gap-2 mb-6">
+      <div class="flex items-center gap-1 bg-white border border-slate-200 rounded-xl p-1" id="grupFiltre">
+        <button data-g="hepsi" class="grp px-3 py-1.5 rounded-lg text-xs font-semibold">Hepsi</button>
+        <button data-g="kendi" class="grp px-3 py-1.5 rounded-lg text-xs font-semibold">Bizim ürünler</button>
+        <button data-g="rakip" class="grp px-3 py-1.5 rounded-lg text-xs font-semibold">Rakipler</button>
+      </div>
+      <select id="yil" aria-label="Yıl" class="text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 font-medium text-slate-600"><option value="">Tüm yıllar</option></select>
+      <select id="tip" aria-label="Çalışma tipi" class="text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 font-medium text-slate-600"><option value="">Tüm çalışma tipleri</option></select>
+      <span id="durum" class="text-xs text-slate-500 ml-auto" aria-live="polite"></span>
+    </div>
+    <div id="ceviriUyari" class="hidden mb-6 text-xs bg-slate-100 border border-slate-200 rounded-xl p-3 text-slate-600"></div>
+    <div id="liste" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
   </div>
 
-  <div id="rak" role="tabpanel" aria-labelledby="t-rak" hidden>
-    <h2 class="bolum">Rakip ürünler</h2>
-    <p class="uyari">Bilgiler ambalaj ve resmi sitelerden elle girilir (data/rakipler.json). "Doğrulanmadı" etiketli satırlar saha görüşmesinde kullanılmadan önce kontrol edilmelidir.</p>
-    <div class="tablo"><table id="tablo"></table></div>
+  <div id="urun" class="hidden">
+    <h2 class="text-lg font-bold text-slate-900 mb-4">Ürünlerimiz</h2>
+    <div id="urunler" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
   </div>
-  <footer>Kaynak: PubMed (NCBI). Türkçe özetler yapay zeka ile çevrilmiştir; orijinal metin esastır. Bu portal yalnızca sağlık profesyonellerine yöneliktir. <span id="gunc"></span></footer>
+
+  <div id="rak" class="hidden">
+    <h2 class="text-lg font-bold text-slate-900 mb-1">Rakip Ürünler</h2>
+    <p class="text-xs text-slate-500 mb-4">Bilgiler ambalaj ve resmi sitelerden elle girilir. "Doğrulanmadı" etiketli satırlar saha görüşmesinde kullanılmadan önce kontrol edilmelidir.</p>
+    <div class="overflow-x-auto bg-white rounded-2xl border border-slate-200/80 custom-shadow"><table id="tablo" class="w-full text-xs text-left" style="min-width:1000px"></table></div>
+  </div>
 </main>
 
-<dialog id="modal" aria-labelledby="mb"><div class="m-ic" id="mi"></div></dialog>
+<footer class="bg-slate-900 border-t border-slate-800 text-slate-400 py-10 px-4 mt-12">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8"><svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="50,10 90,50 72,50 50,28 28,50 10,50" fill="#e31b23"/><polygon points="50,90 90,50 72,50 50,72 28,50 10,50" fill="#ffffff"/></svg></div>
+      <div><span class="text-white font-bold text-sm tracking-wide">FARMAVİTA İLAÇ</span><p class="text-[11px] text-slate-500">Klinik & Medikal Yayın Bilgilendirme Sistemi</p></div>
+    </div>
+    <div class="text-xs text-center md:text-right text-slate-500 leading-relaxed">
+      <p>© 2026 Farmavita İlaç. Bu portal yalnızca sağlık profesyonellerine yöneliktir.</p>
+      <p class="text-[10px] text-slate-600 mt-1">Kaynak: PubMed (NCBI). Türkçe özetler yapay zeka ile çevrilmiştir; orijinal metin esastır.</p>
+    </div>
+  </div>
+</footer>
+
+<div id="modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="mBaslik">
+  <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+    <div class="p-6 bg-slate-50 border-b border-slate-200 flex justify-between items-start gap-4">
+      <div>
+        <span id="mRozet" class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md mb-2 inline-block border"></span>
+        <h3 id="mBaslik" class="text-base font-bold text-slate-900 leading-snug"></h3>
+        <p id="mMeta" class="text-xs text-slate-500 mt-1"></p>
+      </div>
+      <button id="mKapat" aria-label="Kapat" class="text-slate-400 hover:text-slate-600 p-2 rounded-lg hover:bg-slate-200/60 transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <div class="p-6 overflow-y-auto space-y-4 text-xs leading-relaxed text-slate-600">
+      <div id="mSaha" class="hidden bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl">
+        <h4 class="font-bold text-amber-900 text-xs mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-600"></i> Saha & Klinik Hap Bilgi</h4>
+        <p id="mSahaMetin" class="text-amber-950 font-medium"></p>
+      </div>
+      <div>
+        <h4 class="font-bold text-slate-800 mb-1 text-xs" id="mOzetBaslik">Özet</h4>
+        <p id="mOzet" class="pre text-slate-600 leading-normal"></p>
+        <p id="mNot" class="text-[11px] text-slate-400 mt-2"></p>
+      </div>
+      <details id="mEnDetay" class="hidden"><summary class="cursor-pointer font-semibold text-slate-700">Orijinal İngilizce özet</summary><p id="mEn" class="pre mt-2 text-slate-500"></p></details>
+    </div>
+    <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-between items-center gap-2">
+      <button id="mKopya" class="text-xs font-semibold text-slate-600 hover:text-[#0b1f3f] flex items-center gap-1.5"><i class="fa-regular fa-copy"></i> Görüşme özeti kopyala</button>
+      <a id="mLink" href="#" target="_blank" rel="noopener noreferrer" class="bg-[#0b1f3f] hover:bg-slate-800 text-white text-xs px-4 py-2 rounded-xl font-medium transition flex items-center gap-1.5"><span>PubMed'de İncele</span><i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a>
+    </div>
+  </div>
+</div>
 
 <script>
 "use strict";
 const $ = s => document.querySelector(s);
-const KAT = {probiyotik:"Probiyotik", omega3:"Omega-3", form:"Form kıyaslaması"};
-const st = {yay:[], sorgu:[], rak:{urunlerim:[],rakipler:[]}, k:"tumu", g:"hepsi", q:"", yil:"", tip:"", etiket:""};
-
-function esc(s){const d=document.createElement("div");d.textContent=s==null?"":String(s);return d.innerHTML}
-function el(tag, cls, txt){const e=document.createElement(tag); if(cls)e.className=cls; if(txt!=null)e.textContent=txt; return e}
-const pmUrl = p => /^\d+$/.test(p) ? "https://pubmed.ncbi.nlm.nih.gov/"+p+"/" : "#";
+const KAT = {
+  probiyotik:{ad:"Probiyotik", cls:"bg-emerald-50 text-emerald-700 border-emerald-200", ikon:"fa-bacteria", kenar:"border-l-emerald-500"},
+  omega3:{ad:"Omega-3", cls:"bg-amber-50 text-amber-700 border-amber-200", ikon:"fa-fish", kenar:"border-l-amber-500"},
+  form:{ad:"Form kıyaslaması", cls:"bg-blue-50 text-blue-700 border-blue-200", ikon:"fa-scale-balanced", kenar:"border-l-blue-500"}
+};
+const st = {yay:[], sorgu:[], rak:{urunlerim:[],rakipler:[]}, k:"tumu", g:"hepsi", q:"", yil:"", tip:"", etiket:"", sekme:"lit"};
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pmUrl = p => /^\d+$/.test(String(p)) ? "https://pubmed.ncbi.nlm.nih.gov/"+p+"/" : "#";
+const bos = v => v ? esc(v) : "—";
+const AKTIF = "bg-[#0b1f3f] text-white shadow-sm", PASIF = "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100";
 
 async function yukle(){
   try{
-    const [y,s,r] = await Promise.all(["yayinlar","sorgular","rakipler"].map(f=>fetch("data/"+f+".json",{cache:"no-cache"}).then(x=>x.json())));
+    const [y,s,r] = await Promise.all(["yayinlar","sorgular","rakipler"].map(f=>fetch("data/"+f+".json",{cache:"no-cache"}).then(x=>{if(!x.ok)throw new Error(f);return x.json()})));
     st.yay=y.yayinlar||[]; st.sorgu=s.sorgular||[]; st.rak=r;
-    $("#gunc").textContent = y.son_guncelleme ? "Son güncelleme: "+y.son_guncelleme+"." : "";
-  }catch(e){ st.yay=[]; $("#liste").replaceChildren(el("div","bos","Veri dosyaları yüklenemedi. Siteyi GitHub Pages üzerinden açtığınızdan emin olun.")); return; }
-  filtreDoldur(); cizYayin(); cizUrun(); cizRakip();
-  const h=location.hash.replace("#","");
-  if(["urun","rak"].includes(h)) sekme(h);
+    if(y.son_guncelleme){const [a,m,g]=y.son_guncelleme.split("-"); $("#gunc").textContent=g+"."+m+"."+a}
+    if(y.ceviri_bekleyen){
+      const u=$("#ceviriUyari"); u.classList.remove("hidden");
+      u.innerHTML='<i class="fa-solid fa-language mr-1"></i> '+y.ceviri_bekleyen+' yayının Türkçe özeti henüz hazır değil; İngilizce özet gösteriliyor.'+(y.ceviri_son_hata?' <span class="text-slate-400">Neden: '+esc(y.ceviri_son_hata)+'</span>':'');
+    }
+  }catch(e){ $("#liste").innerHTML='<div class="col-span-full text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300 text-sm text-slate-500">Veri dosyaları yüklenemedi ('+esc(e.message)+'). data klasöründeki dosyaları kontrol edin.</div>'; return; }
+  filtreDoldur(); guncelleDugmeler(); cizYayin(); cizUrun(); cizRakip();
+  const h=location.hash.replace("#",""); sekme(["urun","rak"].includes(h)?h:"lit");
 }
 
 function filtreDoldur(){
-  const yillar=[...new Set(st.yay.map(y=>y.yil).filter(Boolean))].sort((a,b)=>b-a);
-  yillar.forEach(v=>{const o=el("option",null,v);o.value=v;$("#yil").append(o)});
-  const tipler=[...new Set(st.yay.map(y=>y.tip).filter(Boolean))];
-  tipler.forEach(v=>{const o=el("option",null,v);o.value=v;$("#tip").append(o)});
+  [...new Set(st.yay.map(y=>y.yil).filter(Boolean))].sort((a,b)=>b-a).forEach(v=>$("#yil").insertAdjacentHTML("beforeend",'<option value="'+esc(v)+'">'+esc(v)+'</option>'));
+  [...new Set(st.yay.map(y=>y.tip).filter(Boolean))].forEach(v=>$("#tip").insertAdjacentHTML("beforeend",'<option value="'+esc(v)+'">'+esc(v)+'</option>'));
 }
 
 function eslesir(y){
@@ -146,108 +208,109 @@ function eslesir(y){
   if(st.tip && y.tip!==st.tip) return false;
   if(st.etiket && !(y.etiketler||[]).includes(st.etiket)) return false;
   if(st.q){
-    const h=[y.baslik_tr,y.baslik_en,y.dergi,y.pmid,y.yazarlar,(y.etiketler||[]).join(" ")].join(" ").toLocaleLowerCase("tr");
+    const h=[y.baslik_tr,y.baslik_en,y.dergi,y.pmid,y.yazarlar,y.saha_notu,(y.etiketler||[]).map(etiketAdi).join(" ")].join(" ").toLocaleLowerCase("tr");
     return st.q.toLocaleLowerCase("tr").split(/\s+/).every(w=>h.includes(w));
   }
   return true;
 }
-
-function etiketAdi(id){const s=st.sorgu.find(x=>x.id===id);return s?s.ad:id}
+const etiketAdi = id => (st.sorgu.find(x=>x.id===id)||{ad:id}).ad;
 
 function cizYayin(){
-  const liste=st.yay.filter(eslesir), kutu=$("#liste"); kutu.replaceChildren();
-  const bu=new Date(); const yeniSinir=new Date(bu.getFullYear(), bu.getMonth()-1, 1);
-  $("#durum").textContent = st.yay.length ? liste.length+" yayın gösteriliyor"+(st.etiket?" · Filtre: "+etiketAdi(st.etiket):"") : "";
-  if(st.etiket){const b=el("button","btn kirmizi","Etiket filtresini kaldır");b.onclick=()=>{st.etiket="";cizYayin()};$("#durum").append(" ",b)}
+  const liste=st.yay.filter(eslesir), kutu=$("#liste");
+  $("#durum").innerHTML = st.yay.length ? liste.length+" yayın"+(st.etiket?' · <button id="etTemizle" class="text-[#e31b23] font-semibold">'+esc(etiketAdi(st.etiket))+' filtresini kaldır ✕</button>':"") : "";
+  const t=$("#etTemizle"); if(t) t.onclick=()=>{st.etiket="";cizYayin()};
   if(!liste.length){
-    kutu.append(el("div","bos", st.yay.length ? "Bu filtreye uygun yayın yok. Filtreleri gevşetmeyi deneyin." : "Henüz yayın yok. GitHub'da Actions sekmesinden \"PubMed aylık güncelleme\" iş akışını bir kez çalıştırın."));
+    kutu.innerHTML='<div class="col-span-full text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300 p-8"><i class="fa-solid fa-folder-open text-4xl text-slate-300 mb-3"></i><h3 class="text-base font-bold text-slate-700">'+(st.yay.length?"Aramanızla Eşleşen Makale Bulunamadı":"Henüz yayın yok")+'</h3><p class="text-xs text-slate-400 mt-1">'+(st.yay.length?"Lütfen farklı anahtar kelimeler deneyin veya filtreleri temizleyin.":"GitHub'da Actions sekmesinden \"PubMed aylık güncelleme\" iş akışını bir kez çalıştırın.")+'</p></div>';
     return;
   }
-  liste.forEach(y=>{
-    const k=el("article","kart"), ust=el("div","satir");
-    const sol=el("div"); sol.style.cssText="display:flex;gap:6px;flex-wrap:wrap";
-    sol.append(el("span","rozet",KAT[y.kategori]||y.kategori));
-    if((y.grup||[]).includes("rakip")) sol.append(el("span","rozet rakip","Rakip"));
-    if(y.tip) sol.append(el("span","rozet tip",y.tip));
-    ust.append(sol, el("span","meta",y.yil||""));
-    const b=el("h3",null,y.baslik_tr||y.baslik_en);
-    const m=el("div","meta",[y.dergi,"PMID "+y.pmid].filter(Boolean).join(" • "));
-    k.append(ust,b,m);
-    if(y.saha_notu){const s=el("div","saha");const g=el("strong",null,"Saha notu: ");s.append(g,y.saha_notu);k.append(s)}
-    const alt=el("div","alt"), d=el("button",null,"Detay ve özet"); d.onclick=()=>ac(y);
-    const a=el("a",null,"PubMed'de oku ↗"); a.href=pmUrl(y.pmid); a.target="_blank"; a.rel="noopener noreferrer";
-    alt.append(d,a); k.append(alt); kutu.append(k);
-  });
+  kutu.innerHTML = liste.map((y,i)=>{
+    const k=KAT[y.kategori]||KAT.form, rakip=(y.grup||[]).includes("rakip");
+    return '<div class="bg-white rounded-2xl p-6 custom-shadow border border-slate-200/80 hover:border-slate-300 transition duration-200 flex flex-col justify-between group">'+
+    '<div><div class="flex items-center justify-between gap-2 mb-3"><div class="flex flex-wrap gap-1.5">'+
+      '<span class="text-[11px] font-bold px-2.5 py-1 rounded-lg border '+k.cls+'">'+esc(k.ad)+'</span>'+
+      (rakip?'<span class="text-[11px] font-bold px-2.5 py-1 rounded-lg border bg-slate-50 text-slate-600 border-slate-200">Rakip</span>':'')+
+      (y.tip?'<span class="text-[11px] font-bold px-2.5 py-1 rounded-lg border bg-blue-50 text-blue-700 border-blue-200">'+esc(y.tip)+'</span>':'')+
+    '</div><span class="text-[11px] font-medium text-slate-400 whitespace-nowrap"><i class="fa-regular fa-calendar-alt mr-1"></i>'+esc(y.yil)+'</span></div>'+
+    '<h3 class="text-base font-bold text-slate-900 group-hover:text-[#0b1f3f] transition leading-snug mb-2">'+esc(y.baslik_tr||y.baslik_en)+'</h3>'+
+    '<p class="text-xs text-slate-500 font-medium mb-4 flex items-center gap-1.5"><i class="fa-solid fa-book-open text-slate-400"></i> '+esc(y.dergi)+' • PMID '+esc(y.pmid)+'</p>'+
+    (y.saha_notu?'<div class="bg-gradient-to-r from-amber-50 to-orange-50/50 border-l-4 border-amber-500 p-3.5 rounded-r-xl text-xs text-slate-700 mb-5"><strong class="text-amber-900 font-bold block mb-1"><i class="fa-solid fa-lightbulb text-amber-600"></i> Saha & Klinik Hap Bilgi:</strong>'+esc(y.saha_notu)+'</div>':'')+
+    (y.ozet_tr?'':'<p class="text-[11px] text-slate-400 mb-4"><i class="fa-solid fa-language"></i> Türkçe özet hazırlanıyor, İngilizce özet gösterilir.</p>')+
+    '</div><div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">'+
+    '<button data-ac="'+i+'" class="text-xs font-semibold text-slate-600 hover:text-[#0b1f3f] transition flex items-center gap-1"><i class="fa-solid fa-align-left text-slate-400"></i> Detay & Özet</button>'+
+    '<a href="'+pmUrl(y.pmid)+'" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-[#e31b23] hover:text-red-700 transition flex items-center gap-1"><span>PubMed\'de Oku</span><i class="fa-solid fa-arrow-right text-[10px]"></i></a></div></div>';
+  }).join("");
+  kutu.querySelectorAll("[data-ac]").forEach(b=>b.onclick=()=>ac(liste[+b.dataset.ac]));
 }
 
 function ac(y){
-  const mi=$("#mi"); mi.replaceChildren();
-  const kapat=el("button","btn","Kapat ✕"); kapat.style.float="right"; kapat.onclick=()=>$("#modal").close();
-  const r=el("span","rozet",KAT[y.kategori]||""); const h=el("h2",null,y.baslik_tr||y.baslik_en); h.id="mb";
-  const m=el("div","meta",[y.yazarlar,y.dergi,y.yil,"PMID "+y.pmid].filter(Boolean).join(" • "));
-  mi.append(kapat,r,h,m);
-  if(y.saha_notu){const s=el("div","saha");s.style.marginTop="12px";s.append(el("strong",null,"Saha notu: "),y.saha_notu);mi.append(s)}
-  const tr=!!y.ozet_tr;
-  mi.append(el("div","ozet", tr?y.ozet_tr:y.ozet_en));
-  mi.append(el("p","uyari", tr?"Türkçe özet yapay zeka ile çevrilmiştir; orijinal metin esastır.":"Türkçe çeviri henüz hazır değil; orijinal İngilizce özet gösteriliyor."));
-  if(tr){const dt=el("details");dt.append(el("summary",null,"Orijinal İngilizce özet"),el("div","ozet",y.ozet_en));mi.append(dt)}
-  const alt=el("div","alt");
-  const kop=el("button","btn","Görüşme özeti kopyala");
-  kop.onclick=async()=>{const t=(y.baslik_tr||y.baslik_en)+"\n"+[y.dergi,y.yil].filter(Boolean).join(", ")+"\n"+pmUrl(y.pmid);
-    try{await navigator.clipboard.writeText(t);kop.textContent="Kopyalandı ✓"}catch(e){kop.textContent="Kopyalanamadı"}};
-  const a=el("a","btn dolu","PubMed'de oku ↗"); a.href=pmUrl(y.pmid); a.target="_blank"; a.rel="noopener noreferrer";
-  alt.append(kop,a); mi.append(alt);
-  $("#modal").showModal();
+  const k=KAT[y.kategori]||KAT.form, tr=!!y.ozet_tr;
+  $("#mRozet").className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md mb-2 inline-block border "+k.cls;
+  $("#mRozet").textContent=k.ad;
+  $("#mBaslik").textContent=y.baslik_tr||y.baslik_en;
+  $("#mMeta").textContent=[y.yazarlar,y.dergi,y.yil,"PMID "+y.pmid].filter(Boolean).join(" | ");
+  $("#mSaha").classList.toggle("hidden",!y.saha_notu); $("#mSahaMetin").textContent=y.saha_notu||"";
+  $("#mOzetBaslik").textContent=tr?"Türkçe Özet":"Özet (İngilizce)";
+  $("#mOzet").textContent=tr?y.ozet_tr:y.ozet_en;
+  $("#mNot").textContent=tr?"Türkçe özet yapay zeka ile çevrilmiştir; orijinal metin esastır.":"Türkçe çeviri henüz hazır değil; orijinal İngilizce özet gösteriliyor.";
+  $("#mEnDetay").classList.toggle("hidden",!tr); $("#mEn").textContent=y.ozet_en||"";
+  $("#mLink").href=pmUrl(y.pmid);
+  const kop=$("#mKopya"); kop.innerHTML='<i class="fa-regular fa-copy"></i> Görüşme özeti kopyala';
+  kop.onclick=async()=>{try{await navigator.clipboard.writeText((y.baslik_tr||y.baslik_en)+"\n"+[y.dergi,y.yil].filter(Boolean).join(", ")+"\n"+pmUrl(y.pmid));kop.textContent="Kopyalandı ✓"}catch(e){kop.textContent="Kopyalanamadı"}};
+  const m=$("#modal"); m.classList.remove("hidden"); m.classList.add("flex"); $("#mKapat").focus();
 }
+function kapat(){const m=$("#modal"); m.classList.add("hidden"); m.classList.remove("flex")}
+$("#mKapat").onclick=kapat;
+$("#modal").addEventListener("click",e=>{if(e.target.id==="modal")kapat()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")kapat()});
 
-function filtreyeGit(etiket){st.etiket=etiket;st.k="tumu";st.g="hepsi";guncelleDugmeler();sekme("lit");cizYayin();window.scrollTo({top:0,behavior:"smooth"})}
-function yayinSayisi(e){return st.yay.filter(y=>(y.etiketler||[]).includes(e)).length}
-const bos = v => v ? v : "—";
+function filtreyeGit(e){st.etiket=e;st.k="tumu";st.g="hepsi";guncelleDugmeler();sekme("lit");cizYayin();window.scrollTo({top:0,behavior:"smooth"})}
+const yayinSayisi = e => st.yay.filter(y=>(y.etiketler||[]).includes(e)).length;
 
 function cizUrun(){
-  const kutu=$("#urunler"); kutu.replaceChildren();
-  (st.rak.urunlerim||[]).forEach(u=>{
-    const k=el("article","kart"); k.append(el("span","rozet",KAT[u.kategori]||u.kategori), el("h3",null,u.marka));
-    [["Etken madde / suş",u.etken],["Form",u.form],["Doz",u.doz],["Ek etken maddeler",u.ek],["Odak noktası",u.hedef],["Notlar",u.notlar]].forEach(([a,b])=>{
-      const s=el("div","meta"); s.append(el("strong",null,a+": "),bos(b)); k.append(s)});
-    if(u.etiket){const n=yayinSayisi(u.etiket), alt=el("div","alt"), b=el("button",null,"İlgili yayınlar ("+n+")"); b.onclick=()=>filtreyeGit(u.etiket); alt.append(b); k.append(alt)}
-    kutu.append(k);
-  });
+  $("#urunler").innerHTML=(st.rak.urunlerim||[]).map((u,i)=>{
+    const k=KAT[u.kategori]||KAT.form;
+    const satir=[["Etken madde / suş",u.etken],["Form",u.form],["Doz",u.doz],["Ek etken maddeler",u.ek],["Odak noktası",u.hedef],["Notlar",u.notlar]].map(([a,b])=>'<p class="text-xs text-slate-600 mb-1.5"><strong class="text-slate-800">'+a+':</strong> '+bos(b)+'</p>').join("");
+    return '<div class="bg-white rounded-2xl p-6 custom-shadow border border-slate-200/80 border-l-4 '+k.kenar+' flex flex-col justify-between"><div>'+
+      '<span class="text-[11px] font-bold px-2.5 py-1 rounded-lg border '+k.cls+'"><i class="fa-solid '+k.ikon+' mr-1"></i>'+esc(k.ad)+'</span>'+
+      '<h3 class="text-base font-bold text-slate-900 mt-3 mb-3">'+esc(u.marka)+'</h3>'+satir+'</div>'+
+      (u.etiket?'<div class="pt-3 mt-3 border-t border-slate-100"><button data-et="'+esc(u.etiket)+'" class="text-xs font-bold text-[#e31b23] hover:text-red-700">İlgili yayınlar ('+yayinSayisi(u.etiket)+') <i class="fa-solid fa-arrow-right text-[10px]"></i></button></div>':'')+'</div>';
+  }).join("");
+  $("#urunler").querySelectorAll("[data-et]").forEach(b=>b.onclick=()=>filtreyeGit(b.dataset.et));
 }
 
 function cizRakip(){
-  const t=$("#tablo"); t.replaceChildren();
-  const bas=el("tr"); ["Marka","Kategori","Etken / suş","Form","Doz","Ek etken madde","Odak noktası","Kaynak","Durum","Yayınlar"].forEach(x=>bas.append(el("th",null,x)));
-  const th=el("thead"); th.append(bas); t.append(th);
-  const tb=el("tbody");
-  (st.rak.rakipler||[]).forEach(r=>{
-    const tr=el("tr");
-    [r.marka,KAT[r.kategori]||r.kategori,r.etken,r.form,r.doz,r.ek,r.hedef,[r.kaynak,r.tarih].filter(Boolean).join(", ")].forEach(v=>tr.append(el("td",null,bos(v))));
-    const d=el("td"); d.append(el("span", r.dogrulandi?"rozet":"rozet rakip", r.dogrulandi?"Doğrulandı":"Doğrulanmadı")); tr.append(d);
-    const y=el("td"); if(r.etiket){const b=el("button","btn kirmizi",yayinSayisi(r.etiket)+" yayın"); b.onclick=()=>filtreyeGit(r.etiket); y.append(b)} else y.textContent="—"; tr.append(y);
-    tb.append(tr);
-  });
-  t.append(tb);
+  const bas=["Marka","Kategori","Etken / suş","Form","Doz","Ek etken madde","Odak noktası","Kaynak","Durum","Yayınlar"];
+  const satirlar=(st.rak.rakipler||[]).map(r=>{
+    const k=KAT[r.kategori]||KAT.form;
+    const h=v=>'<td class="px-3 py-3 align-top text-slate-600">'+bos(v)+'</td>';
+    return '<tr class="border-t border-slate-100 hover:bg-slate-50/60"><td class="px-3 py-3 align-top font-bold text-slate-900">'+esc(r.marka)+'</td>'+
+      '<td class="px-3 py-3 align-top"><span class="text-[11px] font-bold px-2 py-0.5 rounded-lg border '+k.cls+'">'+esc(k.ad)+'</span></td>'+
+      h(r.etken)+h(r.form)+h(r.doz)+h(r.ek)+h(r.hedef)+h([r.kaynak,r.tarih].filter(Boolean).join(", "))+
+      '<td class="px-3 py-3 align-top"><span class="text-[11px] font-semibold px-2 py-0.5 rounded-lg border '+(r.dogrulandi?'bg-emerald-50 text-emerald-700 border-emerald-200':'bg-amber-50 text-amber-700 border-amber-200')+'">'+(r.dogrulandi?'Doğrulandı':'Doğrulanmadı')+'</span></td>'+
+      '<td class="px-3 py-3 align-top">'+(r.etiket?'<button data-et="'+esc(r.etiket)+'" class="font-bold text-[#e31b23] hover:text-red-700 whitespace-nowrap">'+yayinSayisi(r.etiket)+' yayın</button>':'—')+'</td></tr>';
+  }).join("");
+  $("#tablo").innerHTML='<thead class="bg-slate-50 text-slate-500"><tr>'+bas.map(b=>'<th class="px-3 py-3 font-semibold">'+b+'</th>').join("")+'</tr></thead><tbody>'+satirlar+'</tbody>';
+  $("#tablo").querySelectorAll("[data-et]").forEach(b=>b.onclick=()=>filtreyeGit(b.dataset.et));
 }
 
 function sekme(ad){
-  ["lit","urun","rak"].forEach(s=>{$("#"+s).hidden=s!==ad; $("#t-"+s).setAttribute("aria-selected",s===ad)});
-  $("#araCubugu").style.display = ad==="lit" ? "" : "none";
+  st.sekme=ad;
+  ["lit","urun","rak"].forEach(s=>$("#"+s).classList.toggle("hidden",s!==ad));
+  $("#araKutusu").classList.toggle("hidden",ad!=="lit");
+  document.querySelectorAll(".sekme").forEach(b=>{const a=b.dataset.sekme===ad; b.className="sekme px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap "+(a?AKTIF:PASIF); b.setAttribute("aria-selected",a)});
   history.replaceState(null,"",ad==="lit"?location.pathname:"#"+ad);
 }
 function guncelleDugmeler(){
-  document.querySelectorAll("#kat [data-k]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===st.k));
-  document.querySelectorAll("#kat [data-g]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.g===st.g));
+  document.querySelectorAll(".kat").forEach(b=>{const a=b.dataset.k===st.k; b.className="kat px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-1.5 "+(a?AKTIF:PASIF)});
+  document.querySelectorAll(".grp").forEach(b=>{const a=b.dataset.g===st.g; b.className="grp px-3 py-1.5 rounded-lg text-xs font-semibold "+(a?AKTIF:"text-slate-600 hover:bg-slate-100")});
 }
-
-document.querySelectorAll("nav [data-sekme]").forEach(b=>b.onclick=()=>sekme(b.dataset.sekme));
-$("#kat").addEventListener("click",e=>{const b=e.target.closest("button"); if(!b)return;
-  if(b.dataset.k) st.k=b.dataset.k; if(b.dataset.g) st.g=b.dataset.g; guncelleDugmeler(); cizYayin()});
-let zamanlayici; $("#q").addEventListener("input",e=>{clearTimeout(zamanlayici);zamanlayici=setTimeout(()=>{st.q=e.target.value.trim();cizYayin()},200)});
+document.querySelectorAll(".sekme").forEach(b=>b.onclick=()=>sekme(b.dataset.sekme));
+document.querySelectorAll(".kat").forEach(b=>b.onclick=()=>{st.k=b.dataset.k;guncelleDugmeler();cizYayin()});
+document.querySelectorAll(".grp").forEach(b=>b.onclick=()=>{st.g=b.dataset.g;guncelleDugmeler();cizYayin()});
+let zm; $("#q").addEventListener("input",e=>{clearTimeout(zm);zm=setTimeout(()=>{st.q=e.target.value.trim();cizYayin()},200)});
 $("#yil").onchange=e=>{st.yil=e.target.value;cizYayin()};
 $("#tip").onchange=e=>{st.tip=e.target.value;cizYayin()};
-$("#modal").addEventListener("click",e=>{if(e.target.id==="modal")e.target.close()});
-yukle();
+sekme("lit"); guncelleDugmeler(); yukle();
 </script>
 </body>
 </html>
