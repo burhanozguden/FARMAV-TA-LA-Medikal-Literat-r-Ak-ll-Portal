@@ -46,7 +46,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 @keyframes k{to{background-position:-200% 0}}
 @media (prefers-reduced-motion:reduce){.iskelet{animation:none}}
 .tablo{overflow-x:auto;background:var(--yuz);border:1px solid var(--cizgi);border-radius:12px;margin-bottom:40px}
-table{border-collapse:collapse;width:100%;min-width:760px;font-size:14px}
+table{border-collapse:collapse;width:100%;min-width:1000px;font-size:14px}
 th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--cizgi);vertical-align:top}
 th{background:var(--bg);font-size:13px;color:var(--sol)}
 .bolum{margin:28px 0 12px;font-size:20px}
@@ -208,23 +208,23 @@ function cizUrun(){
   const kutu=$("#urunler"); kutu.replaceChildren();
   (st.rak.urunlerim||[]).forEach(u=>{
     const k=el("article","kart"); k.append(el("span","rozet",KAT[u.kategori]||u.kategori), el("h3",null,u.marka));
-    [["Etken madde",u.etken],["Form",u.form],["Doz",u.doz],["Hedef kitle",u.hedef],["Notlar",u.notlar]].forEach(([a,b])=>{
+    [["Etken madde / suş",u.etken],["Form",u.form],["Doz",u.doz],["Ek etken maddeler",u.ek],["Odak noktası",u.hedef],["Notlar",u.notlar]].forEach(([a,b])=>{
       const s=el("div","meta"); s.append(el("strong",null,a+": "),bos(b)); k.append(s)});
-    const n=yayinSayisi(u.etiket), alt=el("div","alt"), b=el("button",null,"İlgili yayınlar ("+n+")"); b.onclick=()=>filtreyeGit(u.etiket);
-    alt.append(b); k.append(alt); kutu.append(k);
+    if(u.etiket){const n=yayinSayisi(u.etiket), alt=el("div","alt"), b=el("button",null,"İlgili yayınlar ("+n+")"); b.onclick=()=>filtreyeGit(u.etiket); alt.append(b); k.append(alt)}
+    kutu.append(k);
   });
 }
 
 function cizRakip(){
   const t=$("#tablo"); t.replaceChildren();
-  const bas=el("tr"); ["Marka","Kategori","Etken / suş","Form","Doz","Hedef kitle","Kaynak","Durum","Yayınlar"].forEach(x=>bas.append(el("th",null,x)));
+  const bas=el("tr"); ["Marka","Kategori","Etken / suş","Form","Doz","Ek etken madde","Odak noktası","Kaynak","Durum","Yayınlar"].forEach(x=>bas.append(el("th",null,x)));
   const th=el("thead"); th.append(bas); t.append(th);
   const tb=el("tbody");
   (st.rak.rakipler||[]).forEach(r=>{
     const tr=el("tr");
-    [r.marka,KAT[r.kategori]||r.kategori,r.etken,r.form,r.doz,r.hedef,[r.kaynak,r.tarih].filter(Boolean).join(", ")].forEach(v=>tr.append(el("td",null,bos(v))));
+    [r.marka,KAT[r.kategori]||r.kategori,r.etken,r.form,r.doz,r.ek,r.hedef,[r.kaynak,r.tarih].filter(Boolean).join(", ")].forEach(v=>tr.append(el("td",null,bos(v))));
     const d=el("td"); d.append(el("span", r.dogrulandi?"rozet":"rozet rakip", r.dogrulandi?"Doğrulandı":"Doğrulanmadı")); tr.append(d);
-    const y=el("td"), b=el("button","btn kirmizi",yayinSayisi(r.etiket)+" yayın"); b.onclick=()=>filtreyeGit(r.etiket); y.append(b); tr.append(y);
+    const y=el("td"); if(r.etiket){const b=el("button","btn kirmizi",yayinSayisi(r.etiket)+" yayın"); b.onclick=()=>filtreyeGit(r.etiket); y.append(b)} else y.textContent="—"; tr.append(y);
     tb.append(tr);
   });
   t.append(tb);
