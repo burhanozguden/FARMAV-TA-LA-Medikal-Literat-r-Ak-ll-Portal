@@ -85,8 +85,27 @@ SISTEM = ("Sen tıbbi bir çevirmensin. Verilen PubMed başlığını ve özetin
           "Kısaltmaları (LGG, RKÇ, CFU vb.) koru. Çıktı biçimi: ilk satır 'BASLIK: <Türkçe başlık>', "
           "sonra boş satır, sonra Türkçe özet (etiketli bölümler varsa etiketleri koru).")
 
-def _gemini(kullanici):
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+def gemini_model_bul():
+    """Hesabın erişebildiği modelleri listeler, metin üreten en güncel 'flash' modelini seçer."""
+    req = urllib.request.Request("https://generativelanguage.googleapis.com/v1beta/models?pageSize=200",
+                                 headers={"x-goog-api-key": GEMINI_KEY})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        modeller = json.loads(r.read()).get("models", [])
+    aday = []
+    for m in modeller:
+        ad = m.get("name", "").replace("models/", "")
+        if "generateContent" not in m.get("supportedGenerationMethods", []):
+            continue
+        if "flash" not in ad or any(x in ad for x in ("lite", "image", "tts", "live", "audio", "thinking", "exp", "preview")):
+            continue
+        aday.append(ad)
+    print("  Kullanılabilir flash modelleri:", aday)
+    if not aday:
+        raise RuntimeError("Uygun Gemini modeli bulunamadı")
+    return sorted(aday, reverse=True)[0]
+
+def _gemini_istek(model, kullanici):
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
     govde = {"systemInstruction": {"parts": [{"text": SISTEM}]},
              "contents": [{"role": "user", "parts": [{"text": kullanici}]}],
              "generationConfig": {"temperature": 0.1}}
@@ -94,6 +113,18 @@ def _gemini(kullanici):
                                  headers={"content-type": "application/json", "x-goog-api-key": GEMINI_KEY})
     with urllib.request.urlopen(req, timeout=120) as r:
         return json.loads(r.read())["candidates"][0]["content"]["parts"][0]["text"].strip()
+
+def _gemini(kullanici):
+    global GEMINI_MODEL
+    try:
+        return _gemini_istek(GEMINI_MODEL, kullanici)
+    except urllib.error.HTTPError as e:
+        if e.code != 404:
+            raise
+        print(f"  '{GEMINI_MODEL}' bulunamadı, güncel model aranıyor...")
+        GEMINI_MODEL = gemini_model_bul()
+        print("  Seçilen model:", GEMINI_MODEL)
+        return _gemini_istek(GEMINI_MODEL, kullanici)
 
 def _claude(kullanici):
     istek = {"model": MODEL, "max_tokens": 1800, "system": SISTEM,
@@ -111,7 +142,7 @@ def cevir(baslik, ozet):
     try:
         cevap = _gemini(kullanici) if GEMINI_KEY else _claude(kullanici)
     except Exception as e:
-        print("  çeviri hatası:", e); return None
+        print("  çeviri hatası:", e, getattr(e, "read", lambda: b"")()[:300]); return None
     baslik_tr, _, govde = cevap.partition("\n")
     return baslik_tr.replace("BASLIK:", "").strip(), govde.strip()
 
@@ -142,7 +173,7 @@ def main():
             y["kategori"] = kategoriler[pmid]
             y["grup"] = sorted(gruplar[pmid])
 
-    cevrilen = 0
+    cevrilen, ardisik_hata = 0, 0
     for y in sorted(mevcut.values(), key=lambda x: x.get("yil") or 0, reverse=True):
         if y.get("ozet_tr") or cevrilen >= MAX_CEVIRI or not (GEMINI_KEY or CLAUDE_KEY):
             continue
@@ -150,6 +181,12 @@ def main():
         if sonuc:
             y["baslik_tr"], y["ozet_tr"], y["ceviri"] = sonuc[0], sonuc[1], "yapay-zeka"
             cevrilen += 1
+            ardisik_hata = 0
+        else:
+            ardisik_hata += 1
+            if ardisik_hata >= 3:
+                print("Üst üste 3 çeviri hatası: çeviri adımı atlanıyor, yayınlar İngilizce özetle kaydedilecek.")
+                break
         time.sleep(5 if GEMINI_KEY else 0.5)  # Gemini ücretsiz katman dakika limiti için
 
     alt_yil = bugun.year - 2
