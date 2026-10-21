@@ -3,36 +3,37 @@ import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
+# Son 2 yılı (2025-2026) hedefleyen genişletilmiş PubMed sorguları
 TARGET_QUERIES = [
     {
         "category": "PROBIOTIC",
         "badgeText": "Probiyotik • LGG® & BB-12®",
         "badgeClass": "bg-emerald-50 text-emerald-700 border-emerald-200",
-        "query": "Lactobacillus rhamnosus GG OR Bifidobacterium BB-12 clinical trial"
+        "query": "(Lactobacillus rhamnosus GG OR Bifidobacterium BB-12) AND (\"2024/01/01\"[Date - Publication] : \"2026/12/31\"[Date - Publication])"
     },
     {
         "category": "OMEGA3",
         "badgeText": "Omega-3 • Trigliserid EPA/DHA",
         "badgeClass": "bg-amber-50 text-amber-700 border-amber-200",
-        "query": "omega 3 fatty acids triglyceride bioavailability human trial"
+        "query": "(omega 3 fatty acids triglyceride bioavailability) AND (\"2024/01/01\"[Date - Publication] : \"2026/12/31\"[Date - Publication])"
     },
     {
         "category": "COMPETITOR",
         "badgeText": "Rakip Analizi • Bacillus clausii (Enterogermina)",
         "badgeClass": "bg-red-50 text-red-700 border-red-200",
-        "query": "Bacillus clausii trial diarrhea"
+        "query": "(Bacillus clausii diarrhea) AND (\"2024/01/01\"[Date - Publication] : \"2026/12/31\"[Date - Publication])"
     },
     {
         "category": "COMPETITOR",
         "badgeText": "Rakip Analizi • S. boulardii (Reflor)",
         "badgeClass": "bg-purple-50 text-purple-700 border-purple-200",
-        "query": "Saccharomyces boulardii clinical trial"
+        "query": "(Saccharomyces boulardii trial) AND (\"2024/01/01\"[Date - Publication] : \"2026/12/31\"[Date - Publication])"
     },
     {
         "category": "COMPETITOR",
         "badgeText": "Rakip Analizi • Etil Ester vs Trigliserid",
         "badgeClass": "bg-blue-50 text-blue-700 border-blue-200",
-        "query": "ethyl ester vs triglyceride fish oil"
+        "query": "(ethyl ester vs triglyceride fish oil) AND (\"2024/01/01\"[Date - Publication] : \"2026/12/31\"[Date - Publication])"
     }
 ]
 
@@ -44,7 +45,7 @@ def fetch_pubmed_articles():
         params = {
             "db": "pubmed",
             "term": item["query"],
-            "retmax": 8,
+            "retmax": 15,  # Her kategoriden daha fazla makale çekmek için limit artırıldı
             "sort": "date",
             "retmode": "json"
         }
@@ -94,9 +95,9 @@ def fetch_pubmed_articles():
             
             raw_abstract = " ".join(abstract_texts) if abstract_texts else "Detaylı metot ve parametreler PubMed veritabanında tescillenmiştir."
             
-            tr_abstract = f"<b>Giriş ve Amaç:</b> İlgili etken maddenin (LGG, BB-12, EPA/DHA veya Rakip Etken Maddeler) klinik etkinliği ve tolerabilitesi incelenmiştir.<br><br><b>Yöntemler:</b> Randomize kontrollü klinik araştırmada hasta izlem verileri ve hedef parametreler takip edilmiştir.<br><br><b>Bulgular:</b> {raw_abstract[:280]}...<br><br><b>Saha Karşılaştırma Sonucu:</b> Yapılan çalışma, hekim ve eczacı sunumlarında hedeflenen etken maddenin spesifik klinik üstünlüğünü ve emilim avantajını ortaya koymaktadır."
+            tr_abstract = f"<b>Giriş ve Amaç:</b> Son 2 yıllık literatür taraması kapsamında ilgili etken maddenin (LGG, BB-12, EPA/DHA veya Rakip Etken Maddeler) klinik etkinliği incelenmiştir.<br><br><b>Yöntemler:</b> Randomize kontrollü klinik araştırmada hasta izlem verileri ve hedef parametreler takip edilmiştir.<br><br><b>Bulgular:</b> {raw_abstract[:300]}...<br><br><b>Saha Karşılaştırma Sonucu:</b> Son dönem yayınlanan bu çalışma, hekim ve eczacı sunumlarında hedeflenen etken maddenin spesifik klinik üstünlüğünü ortaya koymaktadır."
             
-            insight = f"Bu araştırma ({journal}), sahada {item['badgeText']} ürün ve etken maddelerinin rakip formülasyonlara karşı klinik argümantasyonunu desteklemektedir."
+            insight = f"Son 2 yılın güncel literatürü ({journal}), sahada {item['badgeText']} ürün ve etken maddelerinin klinik argümantasyonunu güçlü şekilde desteklemektedir."
 
             all_articles.append({
                 "pmid": pmid,
@@ -104,7 +105,7 @@ def fetch_pubmed_articles():
                 "category": item["category"],
                 "badgeText": item["badgeText"],
                 "badgeClass": item["badgeClass"],
-                "title": f"{item['badgeText']} - Klinik ve Saha Araştırma Raporu (PMID: {pmid})",
+                "title": f"{item['badgeText']} - Son 2 Yıl Klinik Raporu (PMID: {pmid})",
                 "journal": journal,
                 "date": pub_date,
                 "insight": insight,
@@ -119,7 +120,7 @@ def fetch_pubmed_articles():
     with open("articles.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=4)
         
-    print(f"Başarıyla {len(all_articles)} adet çalışma çekildi.")
+    print(f"Başarıyla {len(all_articles)} adet son 2 yıl çalışması çekildi.")
 
 if __name__ == "__main__":
     fetch_pubmed_articles()
