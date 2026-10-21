@@ -85,8 +85,11 @@ SISTEM = ("Sen tıbbi bir çevirmensin. Verilen PubMed başlığını ve özetin
           "Kısaltmaları (LGG, RKÇ, CFU vb.) koru. Çıktı biçimi: ilk satır 'BASLIK: <Türkçe başlık>', "
           "sonra boş satır, sonra Türkçe özet (etiketli bölümler varsa etiketleri koru).")
 
-def gemini_model_bul():
-    """Hesabın erişebildiği modelleri listeler, metin üreten en güncel 'flash' modelini seçer."""
+SON_HATA = ""
+
+def gemini_adaylar():
+    """Hesabın erişebildiği metin üreten flash modellerini en uygundan başlayarak sıralar."""
+    import re
     req = urllib.request.Request("https://generativelanguage.googleapis.com/v1beta/models?pageSize=200",
                                  headers={"x-goog-api-key": GEMINI_KEY})
     with urllib.request.urlopen(req, timeout=60) as r:
@@ -96,13 +99,12 @@ def gemini_model_bul():
         ad = m.get("name", "").replace("models/", "")
         if "generateContent" not in m.get("supportedGenerationMethods", []):
             continue
-        if "flash" not in ad or any(x in ad for x in ("lite", "image", "tts", "live", "audio", "thinking", "exp", "preview")):
+        if "flash" not in ad or any(x in ad for x in ("image", "tts", "live", "audio", "embed", "robotics", "vision")):
             continue
-        aday.append(ad)
-    print("  Kullanılabilir flash modelleri:", aday)
-    if not aday:
-        raise RuntimeError("Uygun Gemini modeli bulunamadı")
-    return sorted(aday, reverse=True)[0]
+        v = re.search(r"(\d+(?:\.\d+)?)", ad)
+        aday.append((("preview" in ad or "exp" in ad), ("lite" in ad), -(float(v.group(1)) if v else 0), ad))
+    aday.sort()
+    return [x[-1] for x in aday]
 
 def _gemini_istek(model, kullanici):
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
@@ -119,12 +121,26 @@ def _gemini(kullanici):
     try:
         return _gemini_istek(GEMINI_MODEL, kullanici)
     except urllib.error.HTTPError as e:
-        if e.code != 404:
+        if e.code == 429:
+            print("  Hız limiti (429): 40 sn bekleniyor...")
+            time.sleep(40)
+            return _gemini_istek(GEMINI_MODEL, kullanici)
+        if e.code not in (400, 404):
             raise
-        print(f"  '{GEMINI_MODEL}' bulunamadı, güncel model aranıyor...")
-        GEMINI_MODEL = gemini_model_bul()
-        print("  Seçilen model:", GEMINI_MODEL)
-        return _gemini_istek(GEMINI_MODEL, kullanici)
+        print(f"  '{GEMINI_MODEL}' kullanılamadı (HTTP {e.code}), güncel modeller aranıyor...")
+    adaylar = gemini_adaylar()
+    print("  Aday modeller:", adaylar[:6])
+    son = None
+    for m in adaylar[:4]:
+        try:
+            cevap = _gemini_istek(m, kullanici)
+            GEMINI_MODEL = m
+            print("  Seçilen model:", m)
+            return cevap
+        except Exception as e:
+            son = e
+            print(f"  {m} denenemedi: {e}")
+    raise RuntimeError(f"Hiçbir Gemini modeli çalışmadı: {son}")
 
 def _claude(kullanici):
     istek = {"model": MODEL, "max_tokens": 1800, "system": SISTEM,
@@ -142,7 +158,10 @@ def cevir(baslik, ozet):
     try:
         cevap = _gemini(kullanici) if GEMINI_KEY else _claude(kullanici)
     except Exception as e:
-        print("  çeviri hatası:", e, getattr(e, "read", lambda: b"")()[:300]); return None
+        global SON_HATA
+        govde = getattr(e, "read", lambda: b"")()[:200]
+        SON_HATA = f"{e} {govde}".strip()
+        print("  çeviri hatası:", SON_HATA); return None
     baslik_tr, _, govde = cevap.partition("\n")
     return baslik_tr.replace("BASLIK:", "").strip(), govde.strip()
 
@@ -192,7 +211,10 @@ def main():
     alt_yil = bugun.year - 2
     liste = [y for y in mevcut.values() if (y.get("yil") or 0) >= alt_yil]
     liste.sort(key=lambda y: (y.get("yil") or 0, y["pmid"]), reverse=True)
-    json.dump({"son_guncelleme": bugun.isoformat(), "toplam": len(liste), "yayinlar": liste},
+    bekleyen = sum(1 for y in liste if not y.get("ozet_tr"))
+    hata = SON_HATA or ("" if (GEMINI_KEY or CLAUDE_KEY) else "Çeviri anahtarı tanımlı değil (GEMINI_API_KEY veya ANTHROPIC_API_KEY secret'ı eksik)")
+    json.dump({"son_guncelleme": bugun.isoformat(), "toplam": len(liste), "ceviri_bekleyen": bekleyen,
+               "ceviri_son_hata": hata if bekleyen else "", "yayinlar": liste},
               open(YAYIN, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(f"Kaydedildi: {len(liste)} yayın, {cevrilen} yeni çeviri.")
 
