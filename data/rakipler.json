@@ -1,0 +1,13 @@
+{
+  "aciklama": "Bu dosyayı elle doldurun. Bilgileri yalnızca ürün ambalajı ve resmi site gibi halka açık kaynaklardan alın; kaynak ve tarihi yazın. dogrulandi: true yaptığınızda sitede 'Doğrulandı' görünür.",
+  "urunlerim": [
+    {"marka": "Culturelle", "kategori": "probiyotik", "etken": "LGG", "form": "", "doz": "", "hedef": "", "notlar": "", "etiket": "lgg"},
+    {"marka": "Möller's", "kategori": "omega3", "etken": "EPA / DHA", "form": "", "doz": "", "hedef": "", "notlar": "", "etiket": "omega3-rtg"}
+  ],
+  "rakipler": [
+    {"marka": "DOLDURUN", "kategori": "probiyotik", "etken": "L. reuteri DSM 17938", "form": "", "doz": "", "hedef": "", "kaynak": "", "tarih": "", "dogrulandi": false, "etiket": "reuteri"},
+    {"marka": "DOLDURUN", "kategori": "probiyotik", "etken": "S. boulardii CNCM I-745", "form": "", "doz": "", "hedef": "", "kaynak": "", "tarih": "", "dogrulandi": false, "etiket": "sboulardii"},
+    {"marka": "DOLDURUN", "kategori": "omega3", "etken": "EPA / DHA", "form": "Etil ester", "doz": "", "hedef": "", "kaynak": "", "tarih": "", "dogrulandi": false, "etiket": "omega3-ee"},
+    {"marka": "Sorvagen", "kategori": "Sitikolin", "etken": "EPA / DHA", "form": "Fosfolipid (krill)", "doz": "", "hedef": "", "kaynak": "", "tarih": "", "dogrulandi": false, "etiket": "omega3-fosfolipid"}
+  ]
+}
