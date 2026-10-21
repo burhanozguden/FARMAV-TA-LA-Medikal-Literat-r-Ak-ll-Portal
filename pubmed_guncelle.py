@@ -2,7 +2,9 @@
 """PubMed'den son 24 ayın yayınlarını çeker, data/yayinlar.json dosyasını günceller.
 Ortam değişkenleri (hepsi opsiyonel):
   NCBI_API_KEY, NCBI_EMAIL  -> PubMed hız limiti / nezaket
-  ANTHROPIC_API_KEY         -> Türkçe çeviri için (yoksa çeviri yapılmaz)
+  GEMINI_API_KEY            -> Türkçe çeviri için (Google Gemini)
+  ANTHROPIC_API_KEY         -> Türkçe çeviri için (Claude); ikisi de varsa Gemini kullanılır
+  GEMINI_MODEL              -> varsayılan gemini-2.5-flash (Google'ın güncel model adını kontrol edin)
   CLAUDE_MODEL              -> varsayılan claude-sonnet-4-6
   MAX_CEVIRI                -> bir çalışmada en fazla kaç özet çevrilsin (varsayılan 40)
 """
@@ -17,6 +19,8 @@ NCBI_KEY = os.getenv("NCBI_API_KEY", "")
 EMAIL = os.getenv("NCBI_EMAIL", "")
 CLAUDE_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 MODEL = os.getenv("CLAUDE_MODEL", "claude-sonnet-4-6")
+GEMINI_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 MAX_CEVIRI = int(os.getenv("MAX_CEVIRI", "40"))
 PENCERE_AY = 24
 RETMAX = 100
@@ -76,21 +80,36 @@ def cek(pmidler):
                            "yazarlar": ", ".join(yazarlar), "doi": doi, "tip": tip, "ozet_en": ozet}
     return sonuc
 
-def cevir(baslik, ozet):
-    if not CLAUDE_KEY:
-        return None
-    istek = {"model": MODEL, "max_tokens": 1800,
-             "system": ("Sen tıbbi bir çevirmensin. Verilen PubMed başlığını ve özetini Türkçeye sadık biçimde çevir. "
-                        "Yalnızca metinde yazan bilgiyi kullan; sayı, sonuç, yorum veya pazarlama ifadesi EKLEME, çıkarma. "
-                        "Kısaltmaları (LGG, RKÇ, CFU vb.) koru. Çıktı biçimi: ilk satır 'BASLIK: <Türkçe başlık>', "
-                        "sonra boş satır, sonra Türkçe özet (etiketli bölümler varsa etiketleri koru)."),
-             "messages": [{"role": "user", "content": f"Başlık: {baslik}\n\nÖzet:\n{ozet}"}]}
+SISTEM = ("Sen tıbbi bir çevirmensin. Verilen PubMed başlığını ve özetini Türkçeye sadık biçimde çevir. "
+          "Yalnızca metinde yazan bilgiyi kullan; sayı, sonuç, yorum veya pazarlama ifadesi EKLEME, çıkarma. "
+          "Kısaltmaları (LGG, RKÇ, CFU vb.) koru. Çıktı biçimi: ilk satır 'BASLIK: <Türkçe başlık>', "
+          "sonra boş satır, sonra Türkçe özet (etiketli bölümler varsa etiketleri koru).")
+
+def _gemini(kullanici):
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+    govde = {"systemInstruction": {"parts": [{"text": SISTEM}]},
+             "contents": [{"role": "user", "parts": [{"text": kullanici}]}],
+             "generationConfig": {"temperature": 0.1}}
+    req = urllib.request.Request(url, data=json.dumps(govde).encode(),
+                                 headers={"content-type": "application/json", "x-goog-api-key": GEMINI_KEY})
+    with urllib.request.urlopen(req, timeout=120) as r:
+        return json.loads(r.read())["candidates"][0]["content"]["parts"][0]["text"].strip()
+
+def _claude(kullanici):
+    istek = {"model": MODEL, "max_tokens": 1800, "system": SISTEM,
+             "messages": [{"role": "user", "content": kullanici}]}
     req = urllib.request.Request("https://api.anthropic.com/v1/messages", data=json.dumps(istek).encode(),
                                  headers={"content-type": "application/json", "x-api-key": CLAUDE_KEY,
                                           "anthropic-version": "2023-06-01"})
+    with urllib.request.urlopen(req, timeout=120) as r:
+        return json.loads(r.read())["content"][0]["text"].strip()
+
+def cevir(baslik, ozet):
+    if not (GEMINI_KEY or CLAUDE_KEY):
+        return None
+    kullanici = f"Başlık: {baslik}\n\nÖzet:\n{ozet}"
     try:
-        with urllib.request.urlopen(req, timeout=120) as r:
-            cevap = json.loads(r.read())["content"][0]["text"].strip()
+        cevap = _gemini(kullanici) if GEMINI_KEY else _claude(kullanici)
     except Exception as e:
         print("  çeviri hatası:", e); return None
     baslik_tr, _, govde = cevap.partition("\n")
@@ -125,13 +144,13 @@ def main():
 
     cevrilen = 0
     for y in sorted(mevcut.values(), key=lambda x: x.get("yil") or 0, reverse=True):
-        if y.get("ozet_tr") or cevrilen >= MAX_CEVIRI or not CLAUDE_KEY:
+        if y.get("ozet_tr") or cevrilen >= MAX_CEVIRI or not (GEMINI_KEY or CLAUDE_KEY):
             continue
         sonuc = cevir(y["baslik_en"], y["ozet_en"])
         if sonuc:
             y["baslik_tr"], y["ozet_tr"], y["ceviri"] = sonuc[0], sonuc[1], "yapay-zeka"
             cevrilen += 1
-        time.sleep(0.5)
+        time.sleep(5 if GEMINI_KEY else 0.5)  # Gemini ücretsiz katman dakika limiti için
 
     alt_yil = bugun.year - 2
     liste = [y for y in mevcut.values() if (y.get("yil") or 0) >= alt_yil]
