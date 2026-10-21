@@ -1,29 +1,103 @@
 {
-  "aciklama": "PubMed arama sorguları. Yeni suş/form eklemek için bu listeye bir satır ekleyin; bir sonraki aylık çalışmada otomatik çekilir. kategori: probiyotik | omega3 | form. grup: kendi | rakip.",
-  "sorgular": [
-    {"id": "lgg", "ad": "LGG (L. rhamnosus GG)", "kategori": "probiyotik", "grup": "kendi",
-     "sorgu": "\"Lacticaseibacillus rhamnosus GG\"[Title/Abstract] OR \"Lactobacillus rhamnosus GG\"[Title/Abstract] OR \"LGG\"[Title/Abstract]"},
-    {"id": "bb12", "ad": "BB-12 (B. animalis subsp. lactis)", "kategori": "probiyotik", "grup": "kendi",
-     "sorgu": "\"BB-12\"[Title/Abstract] OR \"Bifidobacterium animalis subsp. lactis BB-12\"[Title/Abstract]"},
-    {"id": "omega3-rtg", "ad": "Trigliserid formu Omega-3 (rTG)", "kategori": "omega3", "grup": "kendi",
-     "sorgu": "(\"omega-3\"[Title/Abstract] OR \"EPA\"[Title/Abstract] OR \"DHA\"[Title/Abstract]) AND (\"triglyceride form\"[Title/Abstract] OR \"re-esterified triglyceride\"[Title/Abstract] OR \"rTG\"[Title/Abstract])"},
-
-    {"id": "reuteri", "ad": "L. reuteri DSM 17938", "kategori": "probiyotik", "grup": "rakip",
-     "sorgu": "\"Limosilactobacillus reuteri DSM 17938\"[Title/Abstract] OR \"Lactobacillus reuteri DSM 17938\"[Title/Abstract]"},
-    {"id": "sboulardii", "ad": "S. boulardii CNCM I-745", "kategori": "probiyotik", "grup": "rakip",
-     "sorgu": "\"Saccharomyces boulardii\"[Title/Abstract] AND (\"CNCM I-745\"[Title/Abstract] OR \"I-745\"[Title/Abstract])"},
-    {"id": "ncfm", "ad": "L. acidophilus NCFM", "kategori": "probiyotik", "grup": "rakip",
-     "sorgu": "\"Lactobacillus acidophilus NCFM\"[Title/Abstract] OR \"NCFM\"[Title/Abstract]"},
-    {"id": "hn019", "ad": "B. lactis HN019", "kategori": "probiyotik", "grup": "rakip",
-     "sorgu": "\"HN019\"[Title/Abstract]"},
-    {"id": "plantarum299v", "ad": "L. plantarum 299v", "kategori": "probiyotik", "grup": "rakip",
-     "sorgu": "\"Lactiplantibacillus plantarum 299v\"[Title/Abstract] OR \"Lactobacillus plantarum 299v\"[Title/Abstract]"},
-
-    {"id": "omega3-ee", "ad": "Etil ester formu Omega-3", "kategori": "form", "grup": "rakip",
-     "sorgu": "(\"omega-3\"[Title/Abstract] OR \"EPA\"[Title/Abstract] OR \"DHA\"[Title/Abstract]) AND (\"ethyl ester\"[Title/Abstract])"},
-    {"id": "omega3-fosfolipid", "ad": "Fosfolipid (krill) formu Omega-3", "kategori": "form", "grup": "rakip",
-     "sorgu": "(\"krill oil\"[Title/Abstract] OR \"phospholipid\"[Title/Abstract]) AND (\"EPA\"[Title/Abstract] OR \"DHA\"[Title/Abstract])"},
-    {"id": "omega3-karsilastirma", "ad": "Form biyoyararlanım karşılaştırması", "kategori": "form", "grup": "rakip",
-     "sorgu": "(\"omega-3\"[Title/Abstract]) AND (\"bioavailability\"[Title/Abstract]) AND (\"triglyceride\"[Title/Abstract] OR \"ethyl ester\"[Title/Abstract] OR \"free fatty acid\"[Title/Abstract])"}
-  ]
+ "aciklama": "PubMed arama sorguları. Yeni suş/form eklemek için bu listeye bir satır ekleyin; bir sonraki aylık çalışmada otomatik çekilir. kategori: probiyotik | omega3 | form. grup: kendi | rakip.",
+ "sorgular": [
+  {
+   "id": "lgg",
+   "ad": "LGG (L. rhamnosus GG)",
+   "kategori": "probiyotik",
+   "grup": "kendi",
+   "sorgu": "\"Lacticaseibacillus rhamnosus GG\"[Title/Abstract] OR \"Lactobacillus rhamnosus GG\"[Title/Abstract] OR \"LGG\"[Title/Abstract]"
+  },
+  {
+   "id": "bb12",
+   "ad": "BB-12 (B. animalis subsp. lactis)",
+   "kategori": "probiyotik",
+   "grup": "kendi",
+   "sorgu": "\"BB-12\"[Title/Abstract] OR \"Bifidobacterium animalis subsp. lactis BB-12\"[Title/Abstract]"
+  },
+  {
+   "id": "omega3-rtg",
+   "ad": "Trigliserid formu Omega-3 (rTG)",
+   "kategori": "omega3",
+   "grup": "kendi",
+   "sorgu": "(\"omega-3\"[Title/Abstract] OR \"EPA\"[Title/Abstract] OR \"DHA\"[Title/Abstract]) AND (\"triglyceride form\"[Title/Abstract] OR \"re-esterified triglyceride\"[Title/Abstract] OR \"rTG\"[Title/Abstract])"
+  },
+  {
+   "id": "reuteri",
+   "ad": "L. reuteri DSM 17938",
+   "kategori": "probiyotik",
+   "grup": "rakip",
+   "sorgu": "\"Limosilactobacillus reuteri DSM 17938\"[Title/Abstract] OR \"Lactobacillus reuteri DSM 17938\"[Title/Abstract]"
+  },
+  {
+   "id": "sboulardii",
+   "ad": "S. boulardii CNCM I-745",
+   "kategori": "probiyotik",
+   "grup": "rakip",
+   "sorgu": "\"Saccharomyces boulardii\"[Title/Abstract] AND (\"CNCM I-745\"[Title/Abstract] OR \"I-745\"[Title/Abstract])"
+  },
+  {
+   "id": "ncfm",
+   "ad": "L. acidophilus NCFM",
+   "kategori": "probiyotik",
+   "grup": "rakip",
+   "sorgu": "\"Lactobacillus acidophilus NCFM\"[Title/Abstract] OR \"NCFM\"[Title/Abstract]"
+  },
+  {
+   "id": "hn019",
+   "ad": "B. lactis HN019",
+   "kategori": "probiyotik",
+   "grup": "rakip",
+   "sorgu": "\"HN019\"[Title/Abstract]"
+  },
+  {
+   "id": "plantarum299v",
+   "ad": "L. plantarum 299v",
+   "kategori": "probiyotik",
+   "grup": "rakip",
+   "sorgu": "\"Lactiplantibacillus plantarum 299v\"[Title/Abstract] OR \"Lactobacillus plantarum 299v\"[Title/Abstract]"
+  },
+  {
+   "id": "omega3-ee",
+   "ad": "Etil ester formu Omega-3",
+   "kategori": "form",
+   "grup": "rakip",
+   "sorgu": "(\"omega-3\"[Title/Abstract] OR \"EPA\"[Title/Abstract] OR \"DHA\"[Title/Abstract]) AND (\"ethyl ester\"[Title/Abstract])"
+  },
+  {
+   "id": "omega3-fosfolipid",
+   "ad": "Fosfolipid (krill) formu Omega-3",
+   "kategori": "form",
+   "grup": "rakip",
+   "sorgu": "(\"krill oil\"[Title/Abstract] OR \"phospholipid\"[Title/Abstract]) AND (\"EPA\"[Title/Abstract] OR \"DHA\"[Title/Abstract])"
+  },
+  {
+   "id": "omega3-karsilastirma",
+   "ad": "Form biyoyararlanım karşılaştırması",
+   "kategori": "form",
+   "grup": "rakip",
+   "sorgu": "(\"omega-3\"[Title/Abstract]) AND (\"bioavailability\"[Title/Abstract]) AND (\"triglyceride\"[Title/Abstract] OR \"ethyl ester\"[Title/Abstract] OR \"free fatty acid\"[Title/Abstract])"
+  },
+  {
+   "id": "codliver",
+   "ad": "Morina karaciğeri yağı (cod liver oil)",
+   "kategori": "omega3",
+   "grup": "kendi",
+   "sorgu": "\"cod liver oil\"[Title/Abstract]"
+  },
+  {
+   "id": "bclausii",
+   "ad": "Bacillus clausii",
+   "kategori": "probiyotik",
+   "grup": "rakip",
+   "sorgu": "\"Bacillus clausii\"[Title/Abstract]"
+  },
+  {
+   "id": "somon",
+   "ad": "Somon yağı / astaksantin",
+   "kategori": "omega3",
+   "grup": "rakip",
+   "sorgu": "(\"salmon oil\"[Title/Abstract]) AND (\"omega-3\"[Title/Abstract] OR \"EPA\"[Title/Abstract] OR \"DHA\"[Title/Abstract])"
+  }
+ ]
 }
