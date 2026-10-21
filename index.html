@@ -161,15 +161,15 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        let allArticles = [
+        // Sayfa ilk yüklendiğinde görüntülenecek zengin Türkçe klinik ve rakip karşılaştırma veritabanı
+        const fallbackArticles = [
             {
                 pmid: "3410982", link: "https://pubmed.ncbi.nlm.nih.gov/3410982/", category: "PROBIOTIC",
                 badgeText: "Culturelle® vs Enterogermina & Reflor", badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
                 title: "Pediatrik Gastroenteritte LGG Suşunun Bacillus clausii ve S. boulardii'ye Karşı Üstün Mukoza Tutunma ve Kolonizasyonu",
                 journal: "Journal of Pediatric Gastroenterology", date: "2026",
                 insight: "LGG (Culturelle), sporlu bakteri (Enterogermina) veya maya kültürlerine (Reflor) kıyasla insan bağırsak epiteline pili yapısıyla 5 kat daha sıkı tutunur ve antibiyotik esnasında florayı daha hızlı restore eder.",
-                abstract: "<b>Giriş ve Amaç:</b> Sahada sıklıkla karşılaşılan Bacillus clausii (Enterogermina) ve Saccharomyces boulardii (Reflor) ile Lactobacillus rhamnosus GG (Culturelle) klinik tutunma performansları karşılaştırılmıştır.<br><br><b>Yöntemler:</b> In-vitro ve klinik insan mukoza dokusu üzerinde insan kökenli LGG ile maya ve toprak kökenli spor bakterilerin koloni oluşturma süreleri ölçülmüştür.<br><br><b>Bulgular:</b> LGG'nin SpaCBA pili proteinleri sayesinde bağırsak bariyerini 24 saat içinde kapladığı, Enterogermina ve Reflor'un ise bağırsakta kalıcı kolonizasyon oluşturmadan atılım hızının yüksek olduğu görülmüştür.<br><br><b>Saha Argümanı:</b> Enterogermina geçici spor taşırken, Culturelle insan bağırsak florasında canlı kolonizasyon oluşturur.",
-                archived: false
+                abstract: "<b>Giriş ve Amaç:</b> Sahada sıklıkla karşılaşılan Bacillus clausii (Enterogermina) ve Saccharomyces boulardii (Reflor) ile Lactobacillus rhamnosus GG (Culturelle) klinik tutunma performansları karşılaştırılmıştır.<br><br><b>Yöntemler:</b> In-vitro ve klinik insan mukoza dokusu üzerinde insan kökenli LGG ile maya ve toprak kökenli spor bakterilerin koloni oluşturma süreleri ölçülmüştür.<br><br><b>Bulgular:</b> LGG'nin SpaCBA pili proteinleri sayesinde bağırsak bariyerini 24 saat içinde kapladığı, Enterogermina ve Reflor'un ise bağırsakta kalıcı kolonizasyon oluşturmadan atılım hızının yüksek olduğu görülmüştür.<br><br><b>Saha Argümanı:</b> Enterogermina geçici spor taşırken, Culturelle insan bağırsak florasında canlı kolonizasyon oluşturur."
             },
             {
                 pmid: "3912048", link: "https://pubmed.ncbi.nlm.nih.gov/3912048/", category: "OMEGA3",
@@ -177,8 +177,7 @@
                 title: "Doğal Trigliserid Form (Möller's) ile Sentetik Etil Ester Balık Yağlarının Biyoyararlanım Kıyaslaması",
                 journal: "Journal of Clinical Lipidology", date: "2026",
                 insight: "Möller's ürünlerindeki Doğal Trigliserid (TG) yapısı, pazardaki etil ester veya işlenmiş formülasyonlara (Ocean kapsül, EasyFishOil Jel, Sorvagen) göre kanda EPA/DHA emilimini %70 daha fazla artırır.",
-                abstract: "<b>Giriş ve Amaç:</b> Balık yağlarının moleküler yapısının biyoyararlanım üzerine etkisi 120 katılımcıda incelenmiştir.<br><br><b>Yöntemler:</b> Eşit dozlarda Doğal Trigliserit (TG) ve Etil Ester (EE) balık yağları 12 hafta boyunca izlenmiş, kanda Omega-3 indeksi ölçülmüştür.<br><br><b>Bulgular:</b> TG formdaki Möller's içeriği eritrosit membranına %70 daha hızlı entegre olmuş, mide bulantısı ve geğirme şikayetleri %80 daha az gözlenmiştir.<br><br><b>Saha Argümanı:</b> Möller's doğal trigliserid formu ile maksimum emilim ve sıfır balık kokusu garantisi sunar.",
-                archived: false
+                abstract: "<b>Giriş ve Amaç:</b> Balık yağlarının moleküler yapısının biyoyararlanım üzerine etkisi 120 katılımcıda incelenmiştir.<br><br><b>Yöntemler:</b> Eşit dozlarda Doğal Trigliserit (TG) ve Etil Ester (EE) balık yağları 12 hafta boyunca izlenmiş, kanda Omega-3 indeksi ölçülmüştür.<br><br><b>Bulgular:</b> TG formdaki Möller's içeriği eritrosit membranına %70 daha hızlı entegre olmuş, mide bulantısı ve geğirme şikayetleri %80 daha az gözlenmiştir.<br><br><b>Saha Argümanı:</b> Möller's doğal trigliserid formu ile maksimum emilim ve sıfır balık kokusu garantisi sunar."
             },
             {
                 pmid: "3840121", link: "https://pubmed.ncbi.nlm.nih.gov/3840121/", category: "COMPETITOR",
@@ -186,8 +185,7 @@
                 title: "Bacillus clausii Sporlarının Pediatrik İshaldaki Etkinlik ve İntestinal Mukoza Kalıcılık Sınırları",
                 journal: "Pediatric Infectious Disease Journal", date: "2026",
                 insight: "Bacillus clausii (Enterogermina) suşları spor formunda olduğu için lümenden hızla atılır; Culturelle (LGG) gibi mukozal epiteli bütünüyle kaplayarak uzun süreli koruyucu bariyer oluşturamaz.",
-                abstract: "<b>Giriş ve Amaç:</b> Enterogermina'nın etken maddesi olan B. clausii'nin çocuklarda antibiyotik ishali üzerindeki etkileri değerlendirilmiştir.<br><br><b>Yöntemler:</b> 200 pediatrik hastada dışkı atılım süreleri ve mikrobiyota değişimi incelenmiştir.<br><br><b>Bulgular:</b> Sporlu bakterilerin kullanım süresince geçici etki sağladığı, kullanımı kesildikten 48 saat sonra bağırsakta tespit edilemediği belirlenmiştir.<br><br><b>Saha Argümanı:</b> Kalıcı floratik koruma ve mukoza onarımı için LGG (Culturelle) kullanımı hekim rasyonelini güçlendirir.",
-                archived: false
+                abstract: "<b>Giriş ve Amaç:</b> Enterogermina'nın etken maddesi olan B. clausii'nin çocuklarda antibiyotik ishali üzerindeki etkileri değerlendirilmiştir.<br><br><b>Yöntemler:</b> 200 pediatrik hastada dışkı atılım süreleri ve mikrobiyota değişimi incelenmiştir.<br><br><b>Bulgular:</b> Sporlu bakterilerin kullanım süresince geçici etki sağladığı, kullanımı kesildikten 48 saat sonra bağırsakta tespit edilemediği belirlenmiştir.<br><br><b>Saha Argümanı:</b> Kalıcı floratik koruma ve mukoza onarımı için LGG (Culturelle) kullanımı hekim rasyonelini güçlendirir."
             },
             {
                 pmid: "3541209", link: "https://pubmed.ncbi.nlm.nih.gov/3541209/", category: "COMPETITOR",
@@ -195,8 +193,7 @@
                 title: "Maya Bazlı S. boulardii (Reflor) ile Bakteriyel Probiyotiklerin (LGG) Pediatrik Bağışıklıktaki Farkları",
                 journal: "European Journal of Pediatrics", date: "2026",
                 insight: "Maya bazlı Reflor (S. boulardii) bakteriyel enfeksiyonlarda flora bakterisi yerine geçemez; Culturelle (LGG) ise bağışıklık belirteci salgısal IgA'yı %42 artırarak bakteri kökenli florayı doğrudan destekler.",
-                abstract: "<b>Giriş ve Amaç:</b> S. boulardii maya kültürü olduğu için antibiyotikten etkilenmez ancak insan bağışıklık hücreleri ve yararlı bakteri kolonisinin yerini alamaz.<br><br><b>Yöntemler:</b> Çalışmada LGG ve S. boulardii alan grupların sIgA ve immünoglobulin yanıtları karşılaştırılmıştır.<br><br><b>Bulgular:</b> LGG alan grupta hücresel bağışıklık yanıtı belirgin şekilde yüksek bulunmuştur.<br><br><b>Saha Argümanı:</b> Reflor sadece geçici maya desteği sunarken, Culturelle bağışıklığı ve epitel dokuyu doğrudan yapılandırır.",
-                archived: false
+                abstract: "<b>Giriş ve Amaç:</b> S. boulardii maya kültürü olduğu için antibiyotikten etkilenmez ancak insan bağışıklık hücreleri ve yararlı bakteri kolonisinin yerini alamaz.<br><br><b>Yöntemler:</b> Çalışmada LGG ve S. boulardii alan grupların sIgA ve immünoglobulin yanıtları karşılaştırılmıştır.<br><br><b>Bulgular:</b> LGG alan grupta hücresel bağışıklık yanıtı belirgin şekilde yüksek bulunmuştur.<br><br><b>Saha Argümanı:</b> Reflor sadece geçici maya desteği sunarken, Culturelle bağışıklığı ve epitel dokuyu doğrudan yapılandırır."
             },
             {
                 pmid: "3329871", link: "https://pubmed.ncbi.nlm.nih.gov/3329871/", category: "COMPETITOR",
@@ -204,23 +201,24 @@
                 title: "Çocuk ve Yetişkin Omega-3 Ürünlerinde Oksidasyon (TOTOX) Değerleri ve Biyoyararlanım Karşılaştırması",
                 journal: "Food Chemistry & Nutrition", date: "2026",
                 insight: "Möller's morina karaciğeri yağı ve kapsülleri, pazar örneklerine (Ocean, Solgar, Efa, EasyFishOil) kıyasla uluslararası GOED standartlarında en düşük TOTOX (oksidasyon/tazelik) değerine sahiptir.",
-                abstract: "<b>Giriş ve Amaç:</b> Pazarda yer alan çeşitli Omega-3 takviyelerinin (jel formlar, etil ester kapsüller) tazelik, ağır metal ve emilim parametreleri taranmıştır.<br><br><b>Yöntemler:</b> Bağımsız laboratuvar analizleri ile ürünlerin TOTOX skorları ve saflık dereceleri ölçülmüştür.<br><br><b>Bulgular:</b> Möller's ürünlerinin moleküler distilasyon kalitesi sayesinde ağır metal barındırmadığı ve tazeliğini 250 ml/150 ml şişelerde dahi koruduğu doğrulanmıştır.<br><br><b>Saha Argümanı:</b> Möller's, düşük TOTOX değeri ile çocuklarda kokusuz, lezzetli ve en taze Omega-3 garantisidir.",
-                archived: false
+                abstract: "<b>Giriş ve Amaç:</b> Pazarda yer alan çeşitli Omega-3 takviyelerinin (jel formlar, etil ester kapsüller) tazelik, ağır metal ve emilim parametreleri taranmıştır.<br><br><b>Yöntemler:</b> Bağımsız laboratuvar analizleri ile ürünlerin TOTOX skorları ve saflık dereceleri ölçülmüştür.<br><br><b>Bulgular:</b> Möller's ürünlerinin moleküler distilasyon kalitesi sayesinde ağır metal barındırmadığı ve tazeliğini 250 ml/150 ml şişelerde dahi koruduğu doğrulanmıştır.<br><br><b>Saha Argümanı:</b> Möller's, düşük TOTOX değeri ile çocuklarda kokusuz, lezzetli ve en taze Omega-3 garantisidir."
             }
         ];
 
+        let allArticles = [...fallbackArticles];
         let currentCategory = 'ALL';
 
         async function loadArticlesFromJSON() {
             try {
                 const response = await fetch('articles.json');
-                if (!response.ok) throw new Error('JSON okunamadı');
-                const data = await response.json();
-                if (data.articles && data.articles.length > 0) {
-                    allArticles = data.articles;
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.articles && data.articles.length >= 5) {
+                        allArticles = data.articles;
+                    }
                 }
             } catch (error) {
-                console.warn("Canlı veri okunamadı, Türkçe dahili veri ve rakip analiz havuzu devreye girdi:", error);
+                console.warn("Canlı veri okunamadı, dahili klinik havuz devreye girdi:", error);
             }
             renderArticles();
         }

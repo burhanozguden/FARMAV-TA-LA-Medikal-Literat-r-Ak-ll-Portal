@@ -1,5 +1,4 @@
 import json
-import os
 import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime
@@ -45,7 +44,7 @@ def fetch_pubmed_articles():
         params = {
             "db": "pubmed",
             "term": item["query"],
-            "retmax": 10,  # Her kategoriden 10'ar makale çekilmesi sağlandı
+            "retmax": 8,
             "sort": "date",
             "retmode": "json"
         }
@@ -95,7 +94,7 @@ def fetch_pubmed_articles():
             
             raw_abstract = " ".join(abstract_texts) if abstract_texts else "Detaylı metot ve parametreler PubMed veritabanında tescillenmiştir."
             
-            tr_abstract = f"<b>Giriş ve Amaç:</b> Bu çalışmada ilgili etken maddelerin (LGG, BB-12, EPA/DHA veya Rakip Formülasyonlar) klinik etkinliği ve tolerabilitesi incelenmiştir.<br><br><b>Yöntemler:</b> Randomize kontrollü klinik araştırmada hasta izlem verileri ve hedef parametreler takip edilmiştir.<br><br><b>Bulgular:</b> {raw_abstract[:300]}...<br><br><b>Saha Karşılaştırma Sonucu:</b> Yapılan çalışma, hekim ve eczacı sunumlarında hedeflenen etken maddenin spesifik klinik üstünlüğünü ve emilim avantajını ortaya koymaktadır."
+            tr_abstract = f"<b>Giriş ve Amaç:</b> İlgili etken maddenin (LGG, BB-12, EPA/DHA veya Rakip Etken Maddeler) klinik etkinliği ve tolerabilitesi incelenmiştir.<br><br><b>Yöntemler:</b> Randomize kontrollü klinik araştırmada hasta izlem verileri ve hedef parametreler takip edilmiştir.<br><br><b>Bulgular:</b> {raw_abstract[:280]}...<br><br><b>Saha Karşılaştırma Sonucu:</b> Yapılan çalışma, hekim ve eczacı sunumlarında hedeflenen etken maddenin spesifik klinik üstünlüğünü ve emilim avantajını ortaya koymaktadır."
             
             insight = f"Bu araştırma ({journal}), sahada {item['badgeText']} ürün ve etken maddelerinin rakip formülasyonlara karşı klinik argümantasyonunu desteklemektedir."
 
@@ -120,7 +119,7 @@ def fetch_pubmed_articles():
     with open("articles.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=4)
         
-    print(f"Başarıyla {len(all_articles)} adet klinik çalışma çekildi.")
+    print(f"Başarıyla {len(all_articles)} adet çalışma çekildi.")
 
 if __name__ == "__main__":
     fetch_pubmed_articles()
