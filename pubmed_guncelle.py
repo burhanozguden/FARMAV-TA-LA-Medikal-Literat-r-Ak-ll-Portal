@@ -3,12 +3,14 @@
 Ortam değişkenleri (hepsi opsiyonel):
   NCBI_API_KEY, NCBI_EMAIL  -> PubMed hız limiti / nezaket
   GEMINI_API_KEY            -> Türkçe çeviri için (Google Gemini)
+  NVIDIA_API_KEY            -> Türkçe çeviri için (NVIDIA Build / NIM, 'nvapi-' ile başlar)
+  NVIDIA_MODEL              -> varsayılan meta/llama-3.3-70b-instruct (build.nvidia.com'dan model adını kontrol edin)
   ANTHROPIC_API_KEY         -> Türkçe çeviri için (Claude); ikisi de varsa Gemini kullanılır
   GEMINI_MODEL              -> varsayılan gemini-2.5-flash (Google'ın güncel model adını kontrol edin)
   CLAUDE_MODEL              -> varsayılan claude-sonnet-4-6
-  MAX_CEVIRI                -> bir çalışmada en fazla kaç özet çevrilsin (varsayılan 40)
+  MAX_CEVIRI                -> bir çalışmada en fazla kaç özet çevrilsin (varsayılan 100)
 """
-import json, os, time, datetime as dt, urllib.request, urllib.parse
+import json, os, re, time, datetime as dt, urllib.request, urllib.parse
 import xml.etree.ElementTree as ET
 
 BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
@@ -20,8 +22,13 @@ EMAIL = os.getenv("NCBI_EMAIL", "")
 CLAUDE_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 MODEL = os.getenv("CLAUDE_MODEL", "claude-sonnet-4-6")
 GEMINI_KEY = os.getenv("GEMINI_API_KEY", "")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
-MAX_CEVIRI = int(os.getenv("MAX_CEVIRI", "40"))
+NVIDIA_KEY = os.getenv("NVIDIA_API_KEY", "")
+NVIDIA_MODEL = os.getenv("NVIDIA_MODEL") or "meta/llama-3.3-70b-instruct"
+ANY_KEY = bool(GEMINI_KEY or NVIDIA_KEY or CLAUDE_KEY)
+GEMINI_MODEL = os.getenv("GEMINI_MODEL") or "gemini-2.5-flash"
+MAX_CEVIRI = int(os.getenv("MAX_CEVIRI") or "100")
+MAX_DAKIKA = int(os.getenv("MAX_DAKIKA") or "45")
+CEVIRI_ARA_SN = float(os.getenv("CEVIRI_ARA_SN") or "7")   # ücretsiz katman dakika limitleri için
 PENCERE_AY = 24
 RETMAX = 100
 
@@ -85,8 +92,29 @@ SISTEM = ("Sen tıbbi bir çevirmensin. Verilen PubMed başlığını ve özetin
           "Kısaltmaları (LGG, RKÇ, CFU vb.) koru. Çıktı biçimi: ilk satır 'BASLIK: <Türkçe başlık>', "
           "sonra boş satır, sonra Türkçe özet (etiketli bölümler varsa etiketleri koru).")
 
-def _gemini(kullanici):
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+SON_HATA = ""
+
+def gemini_adaylar():
+    """Hesabın erişebildiği metin üreten flash modellerini en uygundan başlayarak sıralar."""
+    import re
+    req = urllib.request.Request("https://generativelanguage.googleapis.com/v1beta/models?pageSize=200",
+                                 headers={"x-goog-api-key": GEMINI_KEY})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        modeller = json.loads(r.read()).get("models", [])
+    aday = []
+    for m in modeller:
+        ad = m.get("name", "").replace("models/", "")
+        if "generateContent" not in m.get("supportedGenerationMethods", []):
+            continue
+        if "flash" not in ad or any(x in ad for x in ("image", "tts", "live", "audio", "embed", "robotics", "vision")):
+            continue
+        v = re.search(r"(\d+(?:\.\d+)?)", ad)
+        aday.append((("preview" in ad or "exp" in ad), ("lite" in ad), -(float(v.group(1)) if v else 0), ad))
+    aday.sort()
+    return [x[-1] for x in aday]
+
+def _gemini_istek(model, kullanici):
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
     govde = {"systemInstruction": {"parts": [{"text": SISTEM}]},
              "contents": [{"role": "user", "parts": [{"text": kullanici}]}],
              "generationConfig": {"temperature": 0.1}}
@@ -94,6 +122,28 @@ def _gemini(kullanici):
                                  headers={"content-type": "application/json", "x-goog-api-key": GEMINI_KEY})
     with urllib.request.urlopen(req, timeout=120) as r:
         return json.loads(r.read())["candidates"][0]["content"]["parts"][0]["text"].strip()
+
+def _gemini(kullanici):
+    global GEMINI_MODEL
+    try:
+        return _gemini_istek(GEMINI_MODEL, kullanici)
+    except urllib.error.HTTPError as e:
+        if e.code not in (400, 404):
+            raise
+        print(f"  '{GEMINI_MODEL}' kullanılamadı (HTTP {e.code}), güncel modeller aranıyor...")
+    adaylar = gemini_adaylar()
+    print("  Aday modeller:", adaylar[:6])
+    son = None
+    for m in adaylar[:4]:
+        try:
+            cevap = _gemini_istek(m, kullanici)
+            GEMINI_MODEL = m
+            print("  Seçilen model:", m)
+            return cevap
+        except Exception as e:
+            son = e
+            print(f"  {m} denenemedi: {e}")
+    raise RuntimeError(f"Hiçbir Gemini modeli çalışmadı: {son}")
 
 def _claude(kullanici):
     istek = {"model": MODEL, "max_tokens": 1800, "system": SISTEM,
@@ -104,16 +154,93 @@ def _claude(kullanici):
     with urllib.request.urlopen(req, timeout=120) as r:
         return json.loads(r.read())["content"][0]["text"].strip()
 
-def cevir(baslik, ozet):
-    if not (GEMINI_KEY or CLAUDE_KEY):
-        return None
-    kullanici = f"Başlık: {baslik}\n\nÖzet:\n{ozet}"
+def model_listesi_yaz():
     try:
-        cevap = _gemini(kullanici) if GEMINI_KEY else _claude(kullanici)
+        req = urllib.request.Request("https://integrate.api.nvidia.com/v1/models",
+                                     headers={"Authorization": "Bearer " + NVIDIA_KEY})
+        with urllib.request.urlopen(req, timeout=60) as r:
+            idler = [m["id"] for m in json.loads(r.read()).get("data", [])]
+        sec = [i for i in idler if any(x in i.lower() for x in ("instruct", "chat", "llama", "qwen", "mistral", "gemma"))]
+        print("  NVIDIA'da kullanılabilir bazı modeller:", sec[:40])
     except Exception as e:
-        print("  çeviri hatası:", e); return None
-    baslik_tr, _, govde = cevap.partition("\n")
-    return baslik_tr.replace("BASLIK:", "").strip(), govde.strip()
+        print("  Model listesi alınamadı:", e)
+
+def _nvidia(kullanici):
+    govde = {"model": NVIDIA_MODEL, "temperature": 0.1, "max_tokens": 2000, "stream": False,
+             "messages": [{"role": "system", "content": SISTEM}, {"role": "user", "content": kullanici}]}
+    req = urllib.request.Request("https://integrate.api.nvidia.com/v1/chat/completions", data=json.dumps(govde).encode(),
+                                 headers={"content-type": "application/json", "accept": "application/json",
+                                          "Authorization": "Bearer " + NVIDIA_KEY})
+    try:
+        with urllib.request.urlopen(req, timeout=180) as r:
+            cevap = json.loads(r.read())["choices"][0]["message"]["content"]
+    except urllib.error.HTTPError as e:
+        if e.code in (400, 404):
+            print(f"  NVIDIA modeli '{NVIDIA_MODEL}' kullanılamadı (HTTP {e.code}).")
+            model_listesi_yaz()
+        raise
+    return re.sub(r"<think>.*?</think>", "", cevap, flags=re.S).strip()
+
+KALICI_OLU = set()   # anahtar/model gibi kalıcı hata veren sağlayıcılar (bu çalışma için bırakılır)
+
+def hata_turu(e):
+    """429 ve 5xx gibi geçici hatalarda bekleyip yeniden denenir; 400/401/403/404 kalıcı sayılır."""
+    if isinstance(e, urllib.error.HTTPError):
+        return "gecici" if e.code in (408, 409, 425, 429) or e.code >= 500 else "kalici"
+    return "gecici"   # zaman aşımı, bağlantı kopması, boş/bozuk yanıt
+
+def bekleme_suresi(e, deneme):
+    if isinstance(e, urllib.error.HTTPError) and e.headers:
+        ra = e.headers.get("Retry-After")
+        if ra and str(ra).isdigit():
+            return min(int(ra) + 1, 120)
+    return min(15 * 2 ** deneme, 120)
+
+def saglayicilar():
+    s = []
+    if GEMINI_KEY: s.append(("gemini", _gemini))
+    if NVIDIA_KEY: s.append(("nvidia", _nvidia))
+    if CLAUDE_KEY: s.append(("claude", _claude))
+    return [x for x in s if x[0] not in KALICI_OLU]
+
+def cevir(baslik, ozet):
+    global SON_HATA
+    kullanici = f"Başlık: {baslik}\n\nÖzet:\n{ozet}"
+    for ad, fn in saglayicilar():
+        for deneme in range(4):
+            try:
+                cevap = fn(kullanici)
+                baslik_tr, _, govde = cevap.partition("\n")
+                if not govde.strip():
+                    raise ValueError("Boş çeviri döndü")
+                return baslik_tr.replace("BASLIK:", "").strip(), govde.strip()
+            except Exception as e:
+                ayrinti = getattr(e, "read", lambda: b"")()[:200]
+                SON_HATA = f"[{ad}] {e} {ayrinti}".strip()
+                tur = hata_turu(e)
+                print(f"  çeviri hatası ({tur}, deneme {deneme + 1}/4): {SON_HATA}")
+                kota = isinstance(e, urllib.error.HTTPError) and e.code == 429 and b"quota" in ayrinti.lower()
+                if kota and deneme >= 1:
+                    print(f"  {ad}: kota dolmuş görünüyor, bu çalışma için bırakılıyor.")
+                    KALICI_OLU.add(ad)
+                    break
+                if tur == "kalici":
+                    KALICI_OLU.add(ad)
+                    break
+                if deneme < 3:
+                    time.sleep(bekleme_suresi(e, deneme))
+    return None
+
+def kaydet(mevcut, bugun):
+    alt_yil = bugun.year - 2
+    liste = [y for y in mevcut.values() if (y.get("yil") or 0) >= alt_yil]
+    liste.sort(key=lambda y: (y.get("yil") or 0, y["pmid"]), reverse=True)
+    bekleyen = sum(1 for y in liste if not y.get("ozet_tr"))
+    hata = SON_HATA or ("" if ANY_KEY else "Çeviri anahtarı tanımlı değil (GEMINI_API_KEY, NVIDIA_API_KEY veya ANTHROPIC_API_KEY secret'ı eksik)")
+    json.dump({"son_guncelleme": bugun.isoformat(), "toplam": len(liste), "ceviri_bekleyen": bekleyen,
+               "ceviri_son_hata": hata if bekleyen else "", "yayinlar": liste},
+              open(YAYIN, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    return len(liste), bekleyen
 
 def main():
     bugun = dt.date.today()
@@ -142,22 +269,35 @@ def main():
             y["kategori"] = kategoriler[pmid]
             y["grup"] = sorted(gruplar[pmid])
 
-    cevrilen = 0
-    for y in sorted(mevcut.values(), key=lambda x: x.get("yil") or 0, reverse=True):
-        if y.get("ozet_tr") or cevrilen >= MAX_CEVIRI or not (GEMINI_KEY or CLAUDE_KEY):
-            continue
-        sonuc = cevir(y["baslik_en"], y["ozet_en"])
-        if sonuc:
-            y["baslik_tr"], y["ozet_tr"], y["ceviri"] = sonuc[0], sonuc[1], "yapay-zeka"
-            cevrilen += 1
-        time.sleep(5 if GEMINI_KEY else 0.5)  # Gemini ücretsiz katman dakika limiti için
+    kaydet(mevcut, bugun)   # PubMed verisi çeviri öncesi de kaydedilir
 
-    alt_yil = bugun.year - 2
-    liste = [y for y in mevcut.values() if (y.get("yil") or 0) >= alt_yil]
-    liste.sort(key=lambda y: (y.get("yil") or 0, y["pmid"]), reverse=True)
-    json.dump({"son_guncelleme": bugun.isoformat(), "toplam": len(liste), "yayinlar": liste},
-              open(YAYIN, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
-    print(f"Kaydedildi: {len(liste)} yayın, {cevrilen} yeni çeviri.")
+    cevrilen, ardisik, baslangic = 0, 0, time.time()
+    # Önce bizim ürünlerle ilgili yayınlar, sonra yeniden eskiye
+    bekleyenler = sorted((y for y in mevcut.values() if not y.get("ozet_tr")),
+                         key=lambda y: ("kendi" not in y.get("grup", []), -(y.get("yil") or 0)))
+    if ANY_KEY:
+        print(f"{len(bekleyenler)} yayın çeviri bekliyor.")
+        for y in bekleyenler:
+            if cevrilen >= MAX_CEVIRI:
+                print(f"Çalışma başına çeviri sınırına ulaşıldı ({MAX_CEVIRI}); kalanlar sonraki çalışmada."); break
+            if (time.time() - baslangic) / 60 >= MAX_DAKIKA:
+                print("Süre sınırına ulaşıldı; kalanlar sonraki çalışmada."); break
+            if not saglayicilar():
+                print("Kullanılabilir çeviri sağlayıcısı kalmadı (kota doldu veya anahtar/model hatası); çeviri durduruldu."); break
+            sonuc = cevir(y["baslik_en"], y["ozet_en"])
+            if sonuc:
+                y["baslik_tr"], y["ozet_tr"], y["ceviri"] = sonuc[0], sonuc[1], "yapay-zeka"
+                cevrilen += 1; ardisik = 0
+                if cevrilen % 10 == 0:
+                    kaydet(mevcut, bugun); print(f"  ... {cevrilen} çeviri kaydedildi")
+            else:
+                ardisik += 1
+                if ardisik >= 8:
+                    print("Üst üste 8 yayın çevrilemedi; durduruldu. Sonraki çalışmada devam edilecek."); break
+            time.sleep(CEVIRI_ARA_SN)
+
+    toplam, bekleyen = kaydet(mevcut, bugun)
+    print(f"Kaydedildi: {toplam} yayın, {cevrilen} yeni çeviri, {bekleyen} çeviri bekliyor.")
 
 if __name__ == "__main__":
     main()
