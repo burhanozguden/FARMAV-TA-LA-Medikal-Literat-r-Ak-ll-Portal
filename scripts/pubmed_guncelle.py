@@ -8,7 +8,7 @@ Ortam değişkenleri (hepsi opsiyonel):
   ANTHROPIC_API_KEY         -> Türkçe çeviri için (Claude); ikisi de varsa Gemini kullanılır
   GEMINI_MODEL              -> varsayılan gemini-2.5-flash (Google'ın güncel model adını kontrol edin)
   CLAUDE_MODEL              -> varsayılan claude-sonnet-4-6
-  MAX_CEVIRI                -> bir çalışmada en fazla kaç özet çevrilsin (varsayılan 40)
+  MAX_CEVIRI                -> bir çalışmada en fazla kaç özet çevrilsin (varsayılan 100)
 """
 import json, os, re, time, datetime as dt, urllib.request, urllib.parse
 import xml.etree.ElementTree as ET
@@ -26,7 +26,9 @@ NVIDIA_KEY = os.getenv("NVIDIA_API_KEY", "")
 NVIDIA_MODEL = os.getenv("NVIDIA_MODEL") or "meta/llama-3.3-70b-instruct"
 ANY_KEY = bool(GEMINI_KEY or NVIDIA_KEY or CLAUDE_KEY)
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
-MAX_CEVIRI = int(os.getenv("MAX_CEVIRI", "40"))
+MAX_CEVIRI = int(os.getenv("MAX_CEVIRI") or "100")
+MAX_DAKIKA = int(os.getenv("MAX_DAKIKA") or "45")
+CEVIRI_ARA_SN = float(os.getenv("CEVIRI_ARA_SN") or "7")   # ücretsiz katman dakika limitleri için
 PENCERE_AY = 24
 RETMAX = 100
 
@@ -183,32 +185,61 @@ def _nvidia(kullanici):
         raise
     return re.sub(r"<think>.*?</think>", "", cevap, flags=re.S).strip()
 
-HATA_SAYAC = {}
+KALICI_OLU = set()   # anahtar/model gibi kalıcı hata veren sağlayıcılar (bu çalışma için bırakılır)
+
+def hata_turu(e):
+    """429 ve 5xx gibi geçici hatalarda bekleyip yeniden denenir; 400/401/403/404 kalıcı sayılır."""
+    if isinstance(e, urllib.error.HTTPError):
+        return "gecici" if e.code in (408, 409, 425, 429) or e.code >= 500 else "kalici"
+    return "gecici"   # zaman aşımı, bağlantı kopması, boş/bozuk yanıt
+
+def bekleme_suresi(e, deneme):
+    if isinstance(e, urllib.error.HTTPError) and e.headers:
+        ra = e.headers.get("Retry-After")
+        if ra and str(ra).isdigit():
+            return min(int(ra) + 1, 120)
+    return min(15 * 2 ** deneme, 120)
 
 def saglayicilar():
     s = []
     if GEMINI_KEY: s.append(("gemini", _gemini))
     if NVIDIA_KEY: s.append(("nvidia", _nvidia))
     if CLAUDE_KEY: s.append(("claude", _claude))
-    return [x for x in s if HATA_SAYAC.get(x[0], 0) < 2]   # üst üste 2 hata veren sağlayıcı bırakılır
+    return [x for x in s if x[0] not in KALICI_OLU]
 
 def cevir(baslik, ozet):
     global SON_HATA
     kullanici = f"Başlık: {baslik}\n\nÖzet:\n{ozet}"
     for ad, fn in saglayicilar():
-        try:
-            cevap = fn(kullanici)
-            HATA_SAYAC[ad] = 0
-            break
-        except Exception as e:
-            govde = getattr(e, "read", lambda: b"")()[:200]
-            SON_HATA = f"[{ad}] {e} {govde}".strip()
-            HATA_SAYAC[ad] = HATA_SAYAC.get(ad, 0) + 1
-            print("  çeviri hatası:", SON_HATA)
-    else:
-        return None
-    baslik_tr, _, govde = cevap.partition("\n")
-    return baslik_tr.replace("BASLIK:", "").strip(), govde.strip()
+        for deneme in range(4):
+            try:
+                cevap = fn(kullanici)
+                baslik_tr, _, govde = cevap.partition("\n")
+                if not govde.strip():
+                    raise ValueError("Boş çeviri döndü")
+                return baslik_tr.replace("BASLIK:", "").strip(), govde.strip()
+            except Exception as e:
+                ayrinti = getattr(e, "read", lambda: b"")()[:200]
+                SON_HATA = f"[{ad}] {e} {ayrinti}".strip()
+                tur = hata_turu(e)
+                print(f"  çeviri hatası ({tur}, deneme {deneme + 1}/4): {SON_HATA}")
+                if tur == "kalici":
+                    KALICI_OLU.add(ad)
+                    break
+                if deneme < 3:
+                    time.sleep(bekleme_suresi(e, deneme))
+    return None
+
+def kaydet(mevcut, bugun):
+    alt_yil = bugun.year - 2
+    liste = [y for y in mevcut.values() if (y.get("yil") or 0) >= alt_yil]
+    liste.sort(key=lambda y: (y.get("yil") or 0, y["pmid"]), reverse=True)
+    bekleyen = sum(1 for y in liste if not y.get("ozet_tr"))
+    hata = SON_HATA or ("" if ANY_KEY else "Çeviri anahtarı tanımlı değil (GEMINI_API_KEY, NVIDIA_API_KEY veya ANTHROPIC_API_KEY secret'ı eksik)")
+    json.dump({"son_guncelleme": bugun.isoformat(), "toplam": len(liste), "ceviri_bekleyen": bekleyen,
+               "ceviri_son_hata": hata if bekleyen else "", "yayinlar": liste},
+              open(YAYIN, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    return len(liste), bekleyen
 
 def main():
     bugun = dt.date.today()
@@ -237,31 +268,35 @@ def main():
             y["kategori"] = kategoriler[pmid]
             y["grup"] = sorted(gruplar[pmid])
 
-    cevrilen, ardisik_hata = 0, 0
-    for y in sorted(mevcut.values(), key=lambda x: x.get("yil") or 0, reverse=True):
-        if y.get("ozet_tr") or cevrilen >= MAX_CEVIRI or not ANY_KEY:
-            continue
-        sonuc = cevir(y["baslik_en"], y["ozet_en"])
-        if sonuc:
-            y["baslik_tr"], y["ozet_tr"], y["ceviri"] = sonuc[0], sonuc[1], "yapay-zeka"
-            cevrilen += 1
-            ardisik_hata = 0
-        else:
-            ardisik_hata += 1
-            if ardisik_hata >= 3:
-                print("Üst üste 3 çeviri hatası: çeviri adımı atlanıyor, yayınlar İngilizce özetle kaydedilecek.")
-                break
-        time.sleep(5 if GEMINI_KEY else 0.5)  # Gemini ücretsiz katman dakika limiti için
+    kaydet(mevcut, bugun)   # PubMed verisi çeviri öncesi de kaydedilir
 
-    alt_yil = bugun.year - 2
-    liste = [y for y in mevcut.values() if (y.get("yil") or 0) >= alt_yil]
-    liste.sort(key=lambda y: (y.get("yil") or 0, y["pmid"]), reverse=True)
-    bekleyen = sum(1 for y in liste if not y.get("ozet_tr"))
-    hata = SON_HATA or ("" if ANY_KEY else "Çeviri anahtarı tanımlı değil (GEMINI_API_KEY, NVIDIA_API_KEY veya ANTHROPIC_API_KEY secret'ı eksik)")
-    json.dump({"son_guncelleme": bugun.isoformat(), "toplam": len(liste), "ceviri_bekleyen": bekleyen,
-               "ceviri_son_hata": hata if bekleyen else "", "yayinlar": liste},
-              open(YAYIN, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
-    print(f"Kaydedildi: {len(liste)} yayın, {cevrilen} yeni çeviri.")
+    cevrilen, ardisik, baslangic = 0, 0, time.time()
+    # Önce bizim ürünlerle ilgili yayınlar, sonra yeniden eskiye
+    bekleyenler = sorted((y for y in mevcut.values() if not y.get("ozet_tr")),
+                         key=lambda y: ("kendi" not in y.get("grup", []), -(y.get("yil") or 0)))
+    if ANY_KEY:
+        print(f"{len(bekleyenler)} yayın çeviri bekliyor.")
+        for y in bekleyenler:
+            if cevrilen >= MAX_CEVIRI:
+                print(f"Çalışma başına çeviri sınırına ulaşıldı ({MAX_CEVIRI}); kalanlar sonraki çalışmada."); break
+            if (time.time() - baslangic) / 60 >= MAX_DAKIKA:
+                print("Süre sınırına ulaşıldı; kalanlar sonraki çalışmada."); break
+            if not saglayicilar():
+                print("Tüm sağlayıcılar kalıcı hata verdi (anahtar/model kontrol edin); çeviri durduruldu."); break
+            sonuc = cevir(y["baslik_en"], y["ozet_en"])
+            if sonuc:
+                y["baslik_tr"], y["ozet_tr"], y["ceviri"] = sonuc[0], sonuc[1], "yapay-zeka"
+                cevrilen += 1; ardisik = 0
+                if cevrilen % 10 == 0:
+                    kaydet(mevcut, bugun); print(f"  ... {cevrilen} çeviri kaydedildi")
+            else:
+                ardisik += 1
+                if ardisik >= 8:
+                    print("Üst üste 8 yayın çevrilemedi; durduruldu. Sonraki çalışmada devam edilecek."); break
+            time.sleep(CEVIRI_ARA_SN)
+
+    toplam, bekleyen = kaydet(mevcut, bugun)
+    print(f"Kaydedildi: {toplam} yayın, {cevrilen} yeni çeviri, {bekleyen} çeviri bekliyor.")
 
 if __name__ == "__main__":
     main()
