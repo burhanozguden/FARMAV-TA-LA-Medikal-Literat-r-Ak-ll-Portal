@@ -1,20 +1,24 @@
 name: PubMed aylık güncelleme
 on:
   schedule:
-    - cron: "0 5 1 * *"   # her ayın 1'i, 08:00 (Türkiye)
+    - cron: "0 5 * * 1"   # her pazartesi 08:00 (Türkiye); bekleyen çeviriler haftalık tamamlanır
   workflow_dispatch:       # Actions sekmesinden elle de çalıştırılabilir
 permissions:
   contents: write
 jobs:
   guncelle:
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: PubMed'den yayınları çek ve çevir
         env:
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+          NVIDIA_MODEL: ${{ vars.NVIDIA_MODEL }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
