@@ -5,12 +5,12 @@ Ortam değişkenleri (hepsi opsiyonel):
   GEMINI_API_KEY            -> Türkçe çeviri için (Google Gemini)
   NVIDIA_API_KEY            -> Türkçe çeviri için (NVIDIA Build / NIM, 'nvapi-' ile başlar)
   NVIDIA_MODEL              -> varsayılan meta/llama-3.3-70b-instruct (build.nvidia.com'dan model adını kontrol edin)
-  ANTHROPIC_API_KEY         -> Türkçe çeviri için (Claude); ikisi de varsa Gemini kullanılır
+  ANTHROPIC_API_KEY         -> Türkçe çeviri için (Claude); birden fazla anahtar varsa sırayla Gemini, NVIDIA, Claude denenir
   GEMINI_MODEL              -> varsayılan gemini-2.5-flash (Google'ın güncel model adını kontrol edin)
   CLAUDE_MODEL              -> varsayılan claude-haiku-5-5
   MAX_CEVIRI                -> bir çalışmada en fazla kaç özet çevrilsin (varsayılan 100)
 """
-import json, os, re, time, datetime as dt, urllib.request, urllib.parse
+import json, os, re, time, datetime as dt, urllib.request, urllib.parse, urllib.error
 import xml.etree.ElementTree as ET
 
 BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
