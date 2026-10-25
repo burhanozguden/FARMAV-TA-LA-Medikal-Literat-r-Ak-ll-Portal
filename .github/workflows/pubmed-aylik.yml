@@ -20,6 +20,7 @@ jobs:
           NVIDIA_MODEL: ${{ vars.NVIDIA_MODEL }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CLAUDE_MODEL: ${{ vars.CLAUDE_MODEL }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
           NCBI_EMAIL: ${{ secrets.NCBI_EMAIL }}
