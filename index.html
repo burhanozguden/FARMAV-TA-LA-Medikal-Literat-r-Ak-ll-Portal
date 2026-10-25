@@ -95,17 +95,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <button data-k="probiyotik" class="kat px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-1.5"><i class="fa-solid fa-bacteria text-emerald-600"></i> Probiyotik</button>
         <button data-k="omega3" class="kat px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-1.5"><i class="fa-solid fa-fish text-amber-600"></i> Omega-3</button>
         <button data-k="form" class="kat px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-1.5"><i class="fa-solid fa-scale-balanced text-blue-600"></i> Form Kıyaslamaları</button>
+        <button data-k="rakip" class="kat px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-1.5"><i class="fa-solid fa-people-group text-slate-500"></i> Rakipler</button>
       </div>
       <div class="flex items-center gap-2 text-xs text-slate-500 font-medium">
         <i class="fa-regular fa-clock text-slate-400"></i><span>Son güncelleme: <strong id="gunc" class="text-slate-700">—</strong></span>
       </div>
     </div>
     <div class="flex flex-wrap items-center gap-2 mb-6">
-      <div class="flex items-center gap-1 bg-white border border-slate-200 rounded-xl p-1" id="grupFiltre">
-        <button data-g="hepsi" class="grp px-3 py-1.5 rounded-lg text-xs font-semibold">Hepsi</button>
-        <button data-g="kendi" class="grp px-3 py-1.5 rounded-lg text-xs font-semibold">Bizim ürünler</button>
-        <button data-g="rakip" class="grp px-3 py-1.5 rounded-lg text-xs font-semibold">Rakipler</button>
-      </div>
       <select id="yil" aria-label="Yıl" class="text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 font-medium text-slate-600"><option value="">Tüm yıllar</option></select>
       <select id="tip" aria-label="Çalışma tipi" class="text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 font-medium text-slate-600"><option value="">Tüm çalışma tipleri</option></select>
       <span id="durum" class="text-xs text-slate-500 ml-auto" aria-live="polite"></span>
@@ -176,7 +172,7 @@ const KAT = {
   omega3:{ad:"Omega-3", cls:"bg-amber-50 text-amber-700 border-amber-200", ikon:"fa-fish", kenar:"border-l-amber-500"},
   form:{ad:"Form kıyaslaması", cls:"bg-blue-50 text-blue-700 border-blue-200", ikon:"fa-scale-balanced", kenar:"border-l-blue-500"}
 };
-const st = {yay:[], sorgu:[], rak:{urunlerim:[],rakipler:[]}, k:"tumu", g:"hepsi", q:"", yil:"", tip:"", etiket:"", sekme:"lit"};
+const st = {yay:[], sorgu:[], rak:{urunlerim:[],rakipler:[]}, k:"tumu", q:"", yil:"", tip:"", etiket:"", sekme:"lit"};
 const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const pmUrl = p => /^\d+$/.test(String(p)) ? "https://pubmed.ncbi.nlm.nih.gov/"+p+"/" : "#";
 const bos = v => v ? esc(v) : "—";
@@ -202,8 +198,11 @@ function filtreDoldur(){
 }
 
 function eslesir(y){
-  if(st.k!=="tumu" && y.kategori!==st.k) return false;
-  if(st.g!=="hepsi" && !(y.grup||[]).includes(st.g)) return false;
+  const kendi=(y.grup||[]).includes("kendi"), rakip=(y.grup||[]).includes("rakip");
+  if(st.k==="probiyotik" && !(y.kategori==="probiyotik" && kendi)) return false;
+  if(st.k==="omega3" && !(y.kategori==="omega3" && kendi)) return false;
+  if(st.k==="form" && y.kategori!=="form") return false;
+  if(st.k==="rakip" && !rakip) return false;
   if(st.yil && String(y.yil)!==st.yil) return false;
   if(st.tip && y.tip!==st.tip) return false;
   if(st.etiket && !(y.etiketler||[]).includes(st.etiket)) return false;
@@ -263,7 +262,7 @@ $("#mKapat").onclick=kapat;
 $("#modal").addEventListener("click",e=>{if(e.target.id==="modal")kapat()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")kapat()});
 
-function filtreyeGit(e){st.etiket=e;st.k="tumu";st.g="hepsi";guncelleDugmeler();sekme("lit");cizYayin();window.scrollTo({top:0,behavior:"smooth"})}
+function filtreyeGit(e){st.etiket=e;st.k="tumu";guncelleDugmeler();sekme("lit");cizYayin();window.scrollTo({top:0,behavior:"smooth"})}
 const yayinSayisi = e => st.yay.filter(y=>(y.etiketler||[]).includes(e)).length;
 
 function cizUrun(){
@@ -302,11 +301,9 @@ function sekme(ad){
 }
 function guncelleDugmeler(){
   document.querySelectorAll(".kat").forEach(b=>{const a=b.dataset.k===st.k; b.className="kat px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-1.5 "+(a?AKTIF:PASIF)});
-  document.querySelectorAll(".grp").forEach(b=>{const a=b.dataset.g===st.g; b.className="grp px-3 py-1.5 rounded-lg text-xs font-semibold "+(a?AKTIF:"text-slate-600 hover:bg-slate-100")});
 }
 document.querySelectorAll(".sekme").forEach(b=>b.onclick=()=>sekme(b.dataset.sekme));
 document.querySelectorAll(".kat").forEach(b=>b.onclick=()=>{st.k=b.dataset.k;guncelleDugmeler();cizYayin()});
-document.querySelectorAll(".grp").forEach(b=>b.onclick=()=>{st.g=b.dataset.g;guncelleDugmeler();cizYayin()});
 let zm; $("#q").addEventListener("input",e=>{clearTimeout(zm);zm=setTimeout(()=>{st.q=e.target.value.trim();cizYayin()},200)});
 $("#yil").onchange=e=>{st.yil=e.target.value;cizYayin()};
 $("#tip").onchange=e=>{st.tip=e.target.value;cizYayin()};
