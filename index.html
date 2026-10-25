@@ -55,6 +55,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <div class="flex items-center gap-2 text-xs">
         <span class="relative flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span></span>
         <span class="hidden sm:inline font-medium text-slate-500">PubMed Akışı</span>
+        <span id="kullaniciAd" class="hidden sm:inline text-slate-700 font-semibold ml-2"></span><button id="cikis" class="hidden ml-2 px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-100">Çıkış</button>
       </div>
     </div>
     <div class="flex md:hidden items-center justify-center gap-2 pb-3 border-t border-slate-100 pt-2">
@@ -64,6 +65,26 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   </div>
 </header>
 
+<section id="giris" class="flex-grow bg-gradient-to-b from-slate-900 via-[#0b1f3f] to-slate-900 text-white px-4 sm:px-6 py-16 relative overflow-hidden flex items-center">
+  <div class="absolute -top-24 -right-24 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="max-w-md w-full mx-auto relative z-10 text-center">
+    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-300 border border-red-500/30 mb-4"><i class="fa-solid fa-lock text-red-400"></i> Yetkili Kullanıcı Girişi</span>
+    <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight mb-3">Medikal Literatür & Klinik Portal</h1>
+    <p class="text-slate-300 text-xs sm:text-sm mb-8 font-light leading-relaxed">Farmavita İlaç saha ekibi için hazırlanan klinik yayın portalına hoş geldiniz. İçeriğe ulaşmak için giriş yapın.</p>
+    <form id="girisForm" class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-left space-y-4" autocomplete="on">
+      <div><label for="gKul" class="block text-xs font-semibold text-slate-200 mb-1.5">Kullanıcı adı</label>
+        <input id="gKul" name="username" type="text" autocomplete="username" autocapitalize="none" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Adınız"></div>
+      <div><label for="gSif" class="block text-xs font-semibold text-slate-200 mb-1.5">Şifre</label>
+        <input id="gSif" name="password" type="password" autocomplete="current-password" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Şifreniz"></div>
+      <p id="gHata" class="hidden text-xs text-red-300 font-medium" role="alert"></p>
+      <button id="gBtn" type="submit" class="w-full bg-[#e31b23] hover:bg-red-700 text-white text-sm font-bold py-3 rounded-xl transition">Giriş Yap</button>
+    </form>
+    <p class="text-[11px] text-slate-400 mt-4">Bu portal yalnızca yetkili kullanıcılar içindir.</p>
+  </div>
+</section>
+
+<div id="uygulama" class="hidden">
 <section class="bg-gradient-to-b from-slate-900 via-[#0b1f3f] to-slate-900 text-white py-10 px-4 sm:px-6 relative overflow-hidden">
   <div class="absolute -top-24 -right-24 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
   <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -121,6 +142,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <div class="overflow-x-auto bg-white rounded-2xl border border-slate-200/80 custom-shadow"><table id="tablo" class="w-full text-xs text-left" style="min-width:1000px"></table></div>
   </div>
 </main>
+</div>
 
 <footer class="bg-slate-900 border-t border-slate-800 text-slate-400 py-10 px-4 mt-12">
   <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
@@ -178,19 +200,71 @@ const pmUrl = p => /^\d+$/.test(String(p)) ? "https://pubmed.ncbi.nlm.nih.gov/"+
 const bos = v => v ? esc(v) : "—";
 const AKTIF = "bg-[#0b1f3f] text-white shadow-sm", PASIF = "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100";
 
-async function yukle(){
-  try{
-    const [y,s,r] = await Promise.all(["yayinlar","sorgular","rakipler"].map(f=>fetch("data/"+f+".json",{cache:"no-cache"}).then(x=>{if(!x.ok)throw new Error(f);return x.json()})));
-    st.yay=y.yayinlar||[]; st.sorgu=s.sorgular||[]; st.rak=r;
-    if(y.son_guncelleme){const [a,m,g]=y.son_guncelleme.split("-"); $("#gunc").textContent=g+"."+m+"."+a}
-    if(y.ceviri_bekleyen){
-      const u=$("#ceviriUyari"); u.classList.remove("hidden");
-      u.innerHTML='<i class="fa-solid fa-language mr-1"></i> '+y.ceviri_bekleyen+' yayının Türkçe özeti henüz hazır değil; İngilizce özet gösteriliyor.'+(y.ceviri_son_hata?' <span class="text-slate-400">Neden: '+esc(y.ceviri_son_hata)+'</span>':'');
-    }
-  }catch(e){ $("#liste").innerHTML='<div class="col-span-full text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300 text-sm text-slate-500">Veri dosyaları yüklenemedi ('+esc(e.message)+'). data klasöründeki dosyaları kontrol edin.</div>'; return; }
+function yukle(b){
+  const y=b.yayinlar||{};
+  st.yay=y.yayinlar||[]; st.sorgu=(b.sorgular||{}).sorgular||[]; st.rak=b.rakipler||{urunlerim:[],rakipler:[]};
+  if(y.son_guncelleme){const [a,m,g]=y.son_guncelleme.split("-"); $("#gunc").textContent=g+"."+m+"."+a}
+  if(y.ceviri_bekleyen){
+    const u=$("#ceviriUyari"); u.classList.remove("hidden");
+    u.innerHTML='<i class="fa-solid fa-language mr-1"></i> '+y.ceviri_bekleyen+' yayının Türkçe özeti henüz hazır değil; İngilizce özet gösteriliyor.'+(y.ceviri_son_hata?' <span class="text-slate-400">Neden: '+esc(y.ceviri_son_hata)+'</span>':'');
+  }
   filtreDoldur(); guncelleDugmeler(); cizYayin(); cizUrun(); cizRakip();
   const h=location.hash.replace("#",""); sekme(["urun","rak"].includes(h)?h:"lit");
 }
+
+/* ---------- Giriş (AES-GCM + PBKDF2, tarayıcıda çözülür) ---------- */
+const enc=new TextEncoder(), dec=new TextDecoder();
+const unb=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const hex=buf=>[...new Uint8Array(buf)].map(x=>x.toString(16).padStart(2,"0")).join("");
+const norm=s=>s.normalize("NFC").replace(/İ/g,"i").replace(/I/g,"ı").toLowerCase().replace(/[çğıöşüâîû]/g,c=>({"ç":"c","ğ":"g","ı":"i","ö":"o","ş":"s","ü":"u","â":"a","î":"i","û":"u"}[c])).replace(/[^a-z0-9]/g,"");
+async function idHash(k){return hex(await crypto.subtle.digest("SHA-256",enc.encode("fv|"+norm(k))))}
+
+async function girisYap(kul,sif){
+  const g=await fetch("data/giris.json",{cache:"no-cache"}).then(r=>{if(!r.ok)throw new Error("giris");return r.json()});
+  const kayit=g.kullanicilar[await idHash(kul)];
+  if(!kayit) throw new Error("kimlik");
+  const ham=await crypto.subtle.importKey("raw",enc.encode(norm(sif)),"PBKDF2",false,["deriveKey"]);
+  const kk=await crypto.subtle.deriveKey({name:"PBKDF2",salt:unb(kayit.s),iterations:g.iter,hash:"SHA-256"},ham,{name:"AES-GCM",length:256},false,["decrypt"]);
+  const w=unb(kayit.w);
+  let anahtarHam;
+  try{anahtarHam=await crypto.subtle.decrypt({name:"AES-GCM",iv:w.slice(0,12),additionalData:enc.encode("fv1")},kk,w.slice(12))}catch(e){throw new Error("kimlik")}
+  return verCoz(anahtarHam, await idHash(kul));
+}
+async function verCoz(anahtarHam, kimlikHash){
+  const veri=new Uint8Array(await fetch("data/veri.enc",{cache:"no-cache"}).then(r=>{if(!r.ok)throw new Error("veri");return r.arrayBuffer()}));
+  const k=await crypto.subtle.importKey("raw",anahtarHam,"AES-GCM",false,["decrypt"]);
+  const d=await crypto.subtle.decrypt({name:"AES-GCM",iv:veri.slice(0,12),additionalData:enc.encode("fv-veri")},k,veri.slice(12));
+  const b=JSON.parse(dec.decode(d));
+  try{sessionStorage.setItem("fv_k",btoa(String.fromCharCode(...new Uint8Array(anahtarHam))));sessionStorage.setItem("fv_i",kimlikHash)}catch(e){}
+  return b;
+}
+function uygulamayiAc(b,kimlikHash){
+  $("#giris").classList.add("hidden"); $("#uygulama").classList.remove("hidden");
+  const ad=((b.adlar||{})[kimlikHash]||"").split(" ")[0];
+  if(ad){$("#kullaniciAd").textContent=ad; $("#kullaniciAd").classList.remove("hidden")}
+  $("#cikis").classList.remove("hidden");
+  yukle(b);
+}
+$("#girisForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const btn=$("#gBtn"), hata=$("#gHata"); hata.classList.add("hidden");
+  btn.disabled=true; btn.textContent="Kontrol ediliyor...";
+  try{
+    const kul=$("#gKul").value.trim(), b=await girisYap(kul,$("#gSif").value);
+    $("#gSif").value=""; uygulamayiAc(b,await idHash(kul));
+  }catch(err){
+    hata.textContent = err.message==="kimlik" ? "Kullanıcı adı veya şifre hatalı." : "Giriş şu an yapılamadı. Lütfen daha sonra tekrar deneyin.";
+    hata.classList.remove("hidden");
+  }
+  btn.disabled=false; btn.textContent="Giriş Yap";
+});
+$("#cikis").addEventListener("click",()=>{try{sessionStorage.clear()}catch(e){} location.reload()});
+(async()=>{ // aynı sekmede yenileme sonrası oturumu sürdür
+  try{
+    const k=sessionStorage.getItem("fv_k"), i=sessionStorage.getItem("fv_i"); if(!k||!i) return;
+    const b=await verCoz(Uint8Array.from(atob(k),c=>c.charCodeAt(0)),i); uygulamayiAc(b,i);
+  }catch(e){ try{sessionStorage.clear()}catch(_){} }
+})();
 
 function filtreDoldur(){
   [...new Set(st.yay.map(y=>y.yil).filter(Boolean))].sort((a,b)=>b-a).forEach(v=>$("#yil").insertAdjacentHTML("beforeend",'<option value="'+esc(v)+'">'+esc(v)+'</option>'));
@@ -307,7 +381,7 @@ document.querySelectorAll(".kat").forEach(b=>b.onclick=()=>{st.k=b.dataset.k;gun
 let zm; $("#q").addEventListener("input",e=>{clearTimeout(zm);zm=setTimeout(()=>{st.q=e.target.value.trim();cizYayin()},200)});
 $("#yil").onchange=e=>{st.yil=e.target.value;cizYayin()};
 $("#tip").onchange=e=>{st.tip=e.target.value;cizYayin()};
-sekme("lit"); guncelleDugmeler(); yukle();
+sekme("lit"); guncelleDugmeler();
 </script>
 </body>
 </html>
