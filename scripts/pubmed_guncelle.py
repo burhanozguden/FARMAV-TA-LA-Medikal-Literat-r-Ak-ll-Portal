@@ -5,12 +5,12 @@ Ortam değişkenleri (hepsi opsiyonel):
   GEMINI_API_KEY            -> Türkçe çeviri için (Google Gemini)
   NVIDIA_API_KEY            -> Türkçe çeviri için (NVIDIA Build / NIM, 'nvapi-' ile başlar)
   NVIDIA_MODEL              -> varsayılan meta/llama-3.3-70b-instruct (build.nvidia.com'dan model adını kontrol edin)
-  ANTHROPIC_API_KEY         -> Türkçe çeviri için (Claude); ikisi de varsa Gemini kullanılır
+  ANTHROPIC_API_KEY         -> Türkçe çeviri için (Claude); birden fazla anahtar varsa sırayla Gemini, NVIDIA, Claude denenir
   GEMINI_MODEL              -> varsayılan gemini-2.5-flash (Google'ın güncel model adını kontrol edin)
-  CLAUDE_MODEL              -> varsayılan claude-sonnet-4-6
+  CLAUDE_MODEL              -> varsayılan claude-haiku-5-5
   MAX_CEVIRI                -> bir çalışmada en fazla kaç özet çevrilsin (varsayılan 100)
 """
-import json, os, re, time, datetime as dt, urllib.request, urllib.parse
+import json, os, re, time, datetime as dt, urllib.request, urllib.parse, urllib.error
 import xml.etree.ElementTree as ET
 
 BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
@@ -20,12 +20,12 @@ SORGU = os.path.join(KOK, "data", "sorgular.json")
 NCBI_KEY = os.getenv("NCBI_API_KEY", "")
 EMAIL = os.getenv("NCBI_EMAIL", "")
 CLAUDE_KEY = os.getenv("ANTHROPIC_API_KEY", "")
-MODEL = os.getenv("CLAUDE_MODEL", "claude-sonnet-4-6")
+MODEL = os.getenv("CLAUDE_MODEL") or "claude-haiku-5-5"
 GEMINI_KEY = os.getenv("GEMINI_API_KEY", "")
 NVIDIA_KEY = os.getenv("NVIDIA_API_KEY", "")
 NVIDIA_MODEL = os.getenv("NVIDIA_MODEL") or "meta/llama-3.3-70b-instruct"
 ANY_KEY = bool(GEMINI_KEY or NVIDIA_KEY or CLAUDE_KEY)
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL") or "gemini-2.5-flash"
 MAX_CEVIRI = int(os.getenv("MAX_CEVIRI") or "100")
 MAX_DAKIKA = int(os.getenv("MAX_DAKIKA") or "45")
 CEVIRI_ARA_SN = float(os.getenv("CEVIRI_ARA_SN") or "7")   # ücretsiz katman dakika limitleri için
@@ -128,10 +128,6 @@ def _gemini(kullanici):
     try:
         return _gemini_istek(GEMINI_MODEL, kullanici)
     except urllib.error.HTTPError as e:
-        if e.code == 429:
-            print("  Hız limiti (429): 40 sn bekleniyor...")
-            time.sleep(40)
-            return _gemini_istek(GEMINI_MODEL, kullanici)
         if e.code not in (400, 404):
             raise
         print(f"  '{GEMINI_MODEL}' kullanılamadı (HTTP {e.code}), güncel modeller aranıyor...")
@@ -150,13 +146,14 @@ def _gemini(kullanici):
     raise RuntimeError(f"Hiçbir Gemini modeli çalışmadı: {son}")
 
 def _claude(kullanici):
-    istek = {"model": MODEL, "max_tokens": 1800, "system": SISTEM,
+    istek = {"model": MODEL, "max_tokens": 4000, "system": SISTEM,
              "messages": [{"role": "user", "content": kullanici}]}
     req = urllib.request.Request("https://api.anthropic.com/v1/messages", data=json.dumps(istek).encode(),
                                  headers={"content-type": "application/json", "x-api-key": CLAUDE_KEY,
                                           "anthropic-version": "2023-06-01"})
     with urllib.request.urlopen(req, timeout=120) as r:
-        return json.loads(r.read())["content"][0]["text"].strip()
+        bloklar = json.loads(r.read()).get("content", [])
+    return "".join(b.get("text", "") for b in bloklar if b.get("type") == "text").strip()
 
 def model_listesi_yaz():
     try:
@@ -223,6 +220,11 @@ def cevir(baslik, ozet):
                 SON_HATA = f"[{ad}] {e} {ayrinti}".strip()
                 tur = hata_turu(e)
                 print(f"  çeviri hatası ({tur}, deneme {deneme + 1}/4): {SON_HATA}")
+                kota = isinstance(e, urllib.error.HTTPError) and e.code == 429 and b"quota" in ayrinti.lower()
+                if kota and deneme >= 1:
+                    print(f"  {ad}: kota dolmuş görünüyor, bu çalışma için bırakılıyor.")
+                    KALICI_OLU.add(ad)
+                    break
                 if tur == "kalici":
                     KALICI_OLU.add(ad)
                     break
@@ -282,7 +284,7 @@ def main():
             if (time.time() - baslangic) / 60 >= MAX_DAKIKA:
                 print("Süre sınırına ulaşıldı; kalanlar sonraki çalışmada."); break
             if not saglayicilar():
-                print("Tüm sağlayıcılar kalıcı hata verdi (anahtar/model kontrol edin); çeviri durduruldu."); break
+                print("Kullanılabilir çeviri sağlayıcısı kalmadı (kota doldu veya anahtar/model hatası); çeviri durduruldu."); break
             sonuc = cevir(y["baslik_en"], y["ozet_en"])
             if sonuc:
                 y["baslik_tr"], y["ozet_tr"], y["ceviri"] = sonuc[0], sonuc[1], "yapay-zeka"
