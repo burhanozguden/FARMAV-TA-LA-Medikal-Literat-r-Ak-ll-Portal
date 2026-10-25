@@ -1,8 +1,8 @@
 {
- "son_guncelleme": "2026-10-22",
- "toplam": 512,
- "ceviri_bekleyen": 509,
- "ceviri_son_hata": "[gemini] HTTP Error 429: Too Many Requests b'{\\n  \"error\": {\\n    \"code\": 429,\\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a'",
+ "son_guncelleme": "2026-10-25",
+ "toplam": 522,
+ "ceviri_bekleyen": 519,
+ "ceviri_son_hata": "[claude] HTTP Error 400: Bad Request b'{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"model: String should have at least 1 character\"},\"request_id\":\"req_011CgPASBzxtLhn4eqbb4sbT\"}'",
  "yayinlar": [
   {
    "pmid": "42759161",
@@ -38,6 +38,216 @@
    "baslik_tr": "Beyin Manyetik Rezonans Görüntüsü İçin Semantik Farkındalıklı Yarı Denetimli Sistematik Segmentasyon",
    "saha_notu": "",
    "ceviri": "yapay-zeka",
+   "etiketler": [
+    "lgg"
+   ],
+   "kategori": "probiyotik",
+   "grup": [
+    "kendi"
+   ]
+  },
+  {
+   "pmid": "42925603",
+   "baslik_en": "Persimmon peel polyphenols modulate the flavonoid biosynthesis pathway to exert prebiotic effects: implications for high-value utilization.",
+   "dergi": "Food chemistry",
+   "yil": 2026,
+   "yazarlar": "Zhou X, Zhang C, Tian B, ve ark.",
+   "doi": "10.1016/j.foodchem.2026.151663",
+   "tip": "",
+   "ozet_en": "Persimmon (Diospyros kaki 'Fuping Jianshi') peel is a by-product of persimmon processing, which is rich in polyphenols. In this study, the ultrasound-assisted ethanol extraction and purification of persimmon peel polyphenols (PPP) were optimized, and the PPP with yielding a final total phenolic content (TPC) of 287.52 ± 4.10 mg GAE/g of 287.52 ± 4.10 mg GAE/g was obtained. Using UPLC-MS/MS, 796 compounds were identified from PPP, which were primarily phenolic acids. PPP significantly promoted the growth of Lactobacillus acidophilus NCFM and exhibited prebiotic activity. In vitro colonic fermentation showed that PPP promoted Firmicutes and Bacteroidetes, inhibited Proteobacteria and Escherichia-Shigella, and significantly increased Short-Chain Fatty Acids (SCFAs) production. Multi-omics analysis elucidated that the biotransformation of PPP is closely associated with a reciprocal feedback loop with gut microbiota, potentially modulated by the specific enrichment of flavonoid biosynthetic pathways. These results indicated that PPP possesses strong antioxidant and gut regulatory properties, supporting its value as a functional food ingredient or nutritional component, and promoting the valorization of persimmon peel.",
+   "ozet_tr": "",
+   "baslik_tr": "",
+   "saha_notu": "",
+   "ceviri": "bekliyor",
+   "etiketler": [
+    "ncfm"
+   ],
+   "kategori": "probiyotik",
+   "grup": [
+    "rakip"
+   ]
+  },
+  {
+   "pmid": "42923412",
+   "baslik_en": "Antioxidant, antimicrobial, and anti-obesity activity of lactic acid bacteria- bioconversioned black raspberry (Rubus Coreanus Miquel) extract.",
+   "dergi": "Journal of food science and technology",
+   "yil": 2026,
+   "yazarlar": "Lee D, Ahn H, Choi E, ve ark.",
+   "doi": "10.1007/s13197-025-06474-x",
+   "tip": "",
+   "ozet_en": "UNLABELLED: This study investigated the antioxidant, antimicrobial, and anti-obesity activity of black raspberry (Rubus coreanus Miquel) extract (BRE) following bioconversion by lactic acid bacteria (LAB). Fermentation of BRE was conducted using Lactobacillus rhamnosus GG, L. plantarum, and Pediococcus acidilactici HW01. After bioconversion by LAB, the total phenolic, flavonoids, and anthocyanin contents were increased by 19%, 8%, and 29%, respectively. The antioxidant activities measured by DPPH and ABTS radical scavenging activities were increased to 20% and 22%, respectively. The antibacterial activities against pathogenic bacteria were also enhanced compared to the control. To verify the anti-obesity activity, the expression of mRNA levels for PPARγ, C/EBPα, aP2, and LPL were measured using RT-PCR in 3T3-L1 cells and along to confirm the inhibition of lipids accumulation by the Oil red O staining test. The bioconversion of BRE by L. plantarum showed the highest antibacterial and anti-obesity activities. A total of 31 volatile compounds, including 3 acids, 12 alcohols, 4 aldehydes, 2 esters, 3 ketones, and 7 terpenes were analysed by HS-SPME-GC/MS. An increase of 30% was observed in the total volatile contents following bioconversion by L. plantarum.\nSUPPLEMENTARY INFORMATION: The online version contains supplementary material available at https://doi.org/10.1007/s13197-025-06474-x.",
+   "ozet_tr": "",
+   "baslik_tr": "",
+   "saha_notu": "",
+   "ceviri": "bekliyor",
+   "etiketler": [
+    "lgg"
+   ],
+   "kategori": "probiyotik",
+   "grup": [
+    "kendi"
+   ]
+  },
+  {
+   "pmid": "42921365",
+   "baslik_en": "Bacillus clausii-associated bacteremia following probiotic use: A report of two cases and a review of the literature.",
+   "dergi": "IDCases",
+   "yil": 2026,
+   "yazarlar": "Sanchez SJB, Carbono MQ, De La Hoz JJE, ve ark.",
+   "doi": "10.1016/j.idcr.2026.e02792",
+   "tip": "",
+   "ozet_en": "Bacillus clausii bacteremia is a rare but clinically significant complication associated with probiotic use in hospitalized patients. We report two cases in which a clear temporal relationship was observed between probiotic administration and subsequent isolation of B. clausii from blood cultures. In both patients, identification was performed using matrix-assisted laser desorption/ionization time-of-flight mass spectrometry (MALDI-TOF MS), identifying B. clausii, consistent with the microorganism contained in the administered probiotic. Comprehensive clinical evaluation did not identify an alternative source specifically accounting for the isolation of B. clausii. Although B. clausii bacteremia was microbiologically documented in both cases, its contribution to clinical deterioration and death in the second patient could not be established because of severe concomitant infections and other competing conditions. Both patients had significant comorbidities, recent exposure to broad-spectrum antibiotics, and clinical conditions potentially associated with impaired gastrointestinal barrier integrity, factors that may facilitate bacterial translocation and support the biological plausibility of probiotic-associated bacteremia. Although strain-specific evidence suggests that some probiotics, including B. clausii, may reduce antibiotic-associated diarrhea, these potential benefits should be weighed against the risk of invasive infection in vulnerable patients. These cases highlight the importance of individualized risk-benefit assessment when prescribing probiotics in vulnerable hospitalized patients.",
+   "ozet_tr": "",
+   "baslik_tr": "",
+   "saha_notu": "",
+   "ceviri": "bekliyor",
+   "etiketler": [
+    "bclausii"
+   ],
+   "kategori": "probiyotik",
+   "grup": [
+    "rakip"
+   ]
+  },
+  {
+   "pmid": "42919129",
+   "baslik_en": "An exploratory 12-week pilot study of gut microbiota and body-weight patterns during sodium nitrite exposure and Lactobacillus plantarum 299v supplementation in Wistar rats.",
+   "dergi": "BMC microbiology",
+   "yil": 2026,
+   "yazarlar": "Duman E, Keser A, Balcı TN, ve ark.",
+   "doi": "10.1186/s12866-026-05814-x",
+   "tip": "",
+   "ozet_en": "BACKGROUND: Sodium nitrite (E250) is a widely used additive in processed meat products and has been reported to disrupt the gut microbiota and exert carcinogenic effects via N-nitroso compounds. This exploratory pilot study examined body-weight and longitudinal gut-microbiota patterns during sodium nitrite exposure and Lactobacillus plantarum 299v supplementation in adolescent Wistar rats.\nMETHODS: Sixty-four adolescent Wistar rats were allocated to Control, sodium nitrite (SN), Lactobacillus plantarum 299v (LP), or combined SN + LP groups for 12 weeks. Body weight was assessed in the full cohort. The exploratory microbiota component comprised 48 serial fecal samples from eight selected rats, with one male and one female from each treatment group. V3-V4 16S rRNA amplicons were sequenced on an Illumina iSeq 100 using a 2 × 150-bp paired-end configuration. Read 1 (R1) sequences were processed using the single-end DADA2 workflow, and microbiota profiles were analyzed descriptively.\nRESULTS: Body-weight trajectories varied across groups and sexes in the full cohort. The descriptive relative-abundance profiles varied across sampling times. The sodium nitrite profile showed higher relative Proteobacteria abundance at several post-baseline time points, while longitudinal ordination trajectories overlapped substantially.\nCONCLUSIONS: The exploratory findings describe patterns across sampling times but do not establish group-level treatment effects or probiotic attenuation of nitrite-associated changes. Confirmation in adequately powered studies with independent cage-level replication is required.\nCLINICAL TRIAL NUMBER: Not applicable.",
+   "ozet_tr": "",
+   "baslik_tr": "",
+   "saha_notu": "",
+   "ceviri": "bekliyor",
+   "etiketler": [
+    "plantarum299v"
+   ],
+   "kategori": "probiyotik",
+   "grup": [
+    "rakip"
+   ]
+  },
+  {
+   "pmid": "42915843",
+   "baslik_en": "Ancestral Sequence Reconstruction Synergized with Deep Learning Significantly Enhances the Thermophilicity and Thermostability of the Highly Active Alkaline Protease AprE.",
+   "dergi": "Journal of agricultural and food chemistry",
+   "yil": 2026,
+   "yazarlar": "Cai Y, Bian Y, Chen Y, ve ark.",
+   "doi": "10.1021/acs.jafc.6c05012",
+   "tip": "",
+   "ozet_en": "Although alkaline proteases have broad industrial applications, their practical use is hindered by insufficient thermostability and limited strategies to elevate optimal catalytic temperature (Topt) while retaining catalytic activity. To enhance Topt and thermostability of Bacillus clausii AprE without sacrificing catalytic performance, this work combined ancestral sequence reconstruction (ASR) with deep-learning prediction. Ancestral amino acid states were inferred to identify candidate substitution sites for grafting onto the wild-type (WT) backbone, and an ESM-1v-based support vector regression model was built to predict Topt. Systematic screening identified AP291, which exhibited a 4 °C higher Topt and 3.46-fold longer half-life (t1/2) at 60 °C, while maintaining favorable catalytic efficiency (kcat/Km) compared with WT AprE. Molecular dynamics simulations revealed that AP291 exhibits reduced local structural fluctuations and enhanced conformational stability, clarifying the underlying stability-enhancing mechanism. This work presents a synergistic ASR-deep learning strategy for enzyme engineering, and AP291 is promising for industrial biocatalysis.",
+   "ozet_tr": "",
+   "baslik_tr": "",
+   "saha_notu": "",
+   "ceviri": "bekliyor",
+   "etiketler": [
+    "bclausii"
+   ],
+   "kategori": "probiyotik",
+   "grup": [
+    "rakip"
+   ]
+  },
+  {
+   "pmid": "42914861",
+   "baslik_en": "Immobilized enzyme-catalyzed preparation and characterization of artificial Antarctic krill oil analogs from egg yolk lecithin.",
+   "dergi": "Food chemistry",
+   "yil": 2026,
+   "yazarlar": "Liu H, Yang L, Ping L, ve ark.",
+   "doi": "10.1016/j.foodchem.2026.151686",
+   "tip": "",
+   "ozet_en": "Antarctic krill oil (AKO) serves as a vital natural source of phospholipid-bound EPA/DHA, but its large-scale industrial application is limited by unstable supply chains, poor oxidative stability, and potential food safety risks. This work established an enzymatic strategy for the synthesis of artificial AKO analogs (AAKOs). A dual-functionalized hollow mesoporous silica carrier (HMSP-N3/C8) was engineered to immobilize phospholipase B (PLB). Synergistic hydrogen bonding and hydrophobic interactions significantly enhanced the catalyst's stability and reusability. The transesterification reaction between EPA/DHA-rich oils and egg yolk lecithin was optimized under solvent-free conditions, achieving high incorporation efficiency. Comprehensive characterization revealed that the prepared AAKOs possessed physicochemical features and oxidative stability comparable to natural AKO. This work provides a sustainable, controllable, and cost-effective platform for the enzymatic production of AKO analogs, offering a promising solution to overcome the current limitations associated with the utilization of natural AKO.",
+   "ozet_tr": "",
+   "baslik_tr": "",
+   "saha_notu": "",
+   "ceviri": "bekliyor",
+   "etiketler": [
+    "omega3-fosfolipid"
+   ],
+   "kategori": "form",
+   "grup": [
+    "rakip"
+   ]
+  },
+  {
+   "pmid": "42914439",
+   "baslik_en": "Egg-derived high internal phase emulsions enhance the viability and retention of probiotics during gastrointestinal digestion.",
+   "dergi": "Food research international (Ottawa, Ont.)",
+   "yil": 2026,
+   "yazarlar": "Shan Y, Lv X, Sun Y, ve ark.",
+   "doi": "10.1016/j.foodres.2026.120749",
+   "tip": "",
+   "ozet_en": "Although high internal phase emulsions (HIPEs) have shown potential for probiotic encapsulation, most reported systems mainly provide structural protection and lack multifunctional regulation of gastrointestinal stresses. This study aimed to develop a multifunctional egg-derived HIPEs platform co-stabilized by egg yolk granules (EYGs) and salted egg whites (SEWs), integrating probiotic encapsulation, localized acid-buffering capacity provided by eggshell powder (ESP), and nutritional support to enhance the gastrointestinal delivery efficiency of probiotics. The optimal formulation for Lacticaseibacillus rhamnosus GG (LGG)-loaded HIPEs was identified by particle size and zeta potential measurements together with plate count, corresponding to the system containing 3% galactooligosaccharides (GOS) and 2% LGG. Under this formulation, LGG/GOS@HIPEs exhibited the superior storage stability and probiotic viability after 30 d at 4 °C. The in vitro simulated digestion results demonstrated a marked difference in probiotic survival among the tested groups. Following SGF treatment, LGG/GOS/ESP@HIPEs and LGG/GOS@HIPEs showed lower reductions (0.73 and 0.86 log CFU/mL) than free LGG (2.92 log CFU/mL). Crucially, LGG/GOS/ESP@HIPEs still maintained a viable count of 1.52 ± 0.20 × 106 CFU/mL after gastrointestinal digestion, corresponding to six orders of magnitude increase in survival relative to free probiotics, which were almost completely inactivated. To further evaluate gastrointestinal retention, ICG-labeled probiotics were tracked by In Vivo Imaging System. The system reduced gastrointestinal loss and enhanced intestinal retention of LGG in mice, with nearly 2-fold higher gastrointestinal fluorescence intensity than free probiotics at 15 h. These findings provide a food-grade HIPEs-based strategy for the enhancement of oral probiotic delivery efficiency.",
+   "ozet_tr": "",
+   "baslik_tr": "",
+   "saha_notu": "",
+   "ceviri": "bekliyor",
+   "etiketler": [
+    "lgg"
+   ],
+   "kategori": "probiyotik",
+   "grup": [
+    "kendi"
+   ]
+  },
+  {
+   "pmid": "42914374",
+   "baslik_en": "Chemical, biochemical, and spectral characterization of optimized fermented pulses compared to conventional cooking.",
+   "dergi": "Food research international (Ottawa, Ont.)",
+   "yil": 2026,
+   "yazarlar": "Valdés-Alvarado AJ, Gonzalez de Mejia E, Singh J, ve ark.",
+   "doi": "10.1016/j.foodres.2026.120720",
+   "tip": "",
+   "ozet_en": "The objective was to compare the effects of optimized Lactiplantibacillus plantarum 299v fermentation conditions and traditional cooking on the chemical composition and functional profiles of red lentil (RL), green split pea (GSP), black-eyed pea (BEP), black bean (BB), and pinto bean (PB). An integrated approach evaluated proximate composition, dietary fiber, protein profiles, antioxidant capacity (DPPH), enzyme inhibition (DPP-IV and α-glucosidase), FT-IR/NIR, and metabolomics analyses. Both cooking and fermentation significantly increased DPP-IV inhibition (p < 0.05), with fermentation showing the strongest effect, particularly BEP, RL, and GSP. Fermentation resulted in a higher α-glucosidase inhibition (p < 0.05) compared to cooking. Antioxidant capacity improved only in fermented BB (p < 0.05). Although soluble protein concentration decreased after processing, fermented BB retained the highest levels (p < 0.05). Untargeted metabolomics revealed distinct metabolite changes in response to cooking and fermentation of the pulses. Cooking mainly affected fatty acids, amino acids, and phenolic compounds whereas fermentation increased bioactive metabolites. Fermentation also promoted microbial derived dipeptides and additional fatty acid derivatives compared with raw and cooked samples. Lactic acid fermentation modulated pulse chemistry and enhanced their biological functional properties. While these findings show clear biochemical and functional enhancements, confirming their physiological relevance will be required in vivo and human feeding studies.",
+   "ozet_tr": "",
+   "baslik_tr": "",
+   "saha_notu": "",
+   "ceviri": "bekliyor",
+   "etiketler": [
+    "plantarum299v"
+   ],
+   "kategori": "probiyotik",
+   "grup": [
+    "rakip"
+   ]
+  },
+  {
+   "pmid": "42909557",
+   "baslik_en": "Oral versus intranasal probiotics for nasal microbiome modulation: a comparative review of route-dependent mechanisms and clinical implications.",
+   "dergi": "Folia microbiologica",
+   "yil": 2026,
+   "yazarlar": "Saedi Dezzaki Z, Hematian M, Khaleghi Panah A, ve ark.",
+   "doi": "10.1007/s12223-026-01614-y",
+   "tip": "Derleme",
+   "ozet_en": "Probiotic modulation of the nasal microbiome can be achieved through oral administration, which relies on the gut-nose axis and systemic immunomodulation, or direct intranasal instillation, which provides immediate local action. Despite growing evidence, no systematic comparison of these routes has been published. This narrative review synthesizes clinical and mechanistic evidence comparing oral versus intranasal probiotic strategies to inform route selection based on disease pathophysiology and strain-specific efficacy. We evaluated randomized controlled trials, systematic reviews, meta-analyses, and mechanistic studies investigating probiotic interventions delivered via either route for upper respiratory conditions including allergic rhinitis, chronic rhinosinusitis, and pediatric respiratory infections. Orally administered probiotics may exert nasal effects through two mechanisms: (i) systemic immunomodulation via gut-derived short-chain fatty acids and tryptophan metabolites, supported by clinical data for Weizmannia coagulans BC99 and by a randomized controlled trial in children with perennial allergic rhinitis for Bifidobacterium longum subsp. infantis CCFM111; and (ii) direct oropharyngeal-to-nasopharyngeal trafficking, exemplified by a slow-release chewable Lacticaseibacillus rhamnosus GG formulation that trafficked to the nasopharynx in 41% of users after 8 weeks, with a decrease in nasal IL-13 observed in both probiotic and placebo groups, and improved symptom control in the probiotic group. The B. longum and Lactobacillus plantarum combination NVP-1703 reduced type-2 cytokine ratios in children. Intranasal probiotics, including Bacillus spore sprays and Streptococcus salivarius 24SMB/S. oralis 89a, have shown pathogen displacement and clinical benefit in individual trials involving pediatric acute rhinosinusitis and otitis media, adenoid hypertrophy, and granulomatosis with polyangiitis-associated chronic rhinosinusitis, although within-group improvements in the latter were not consistently confirmed in between-group comparisons. However, a multi-strain Lactobacillus nasal spray failed in a crossover trial in seasonal allergic rhinitis, and a lactic acid bacterial spray of honeybee origin showed no benefit in chronic rhinosinusitis without nasal polyps, underscoring the importance of strain-disease matching. Route selection may tentatively be guided by disease pathophysiology: systemic type-2-driven conditions may favor oral immunomodulation, while acute localized dysbiosis may favor intranasal delivery. Priority research includes direct comparative trials, microbiome-based stratification, and sustained-release formulations. Until then, clinical decision-making must rely on mechanistic plausibility and strain-specific data.",
+   "ozet_tr": "",
+   "baslik_tr": "",
+   "saha_notu": "",
+   "ceviri": "bekliyor",
+   "etiketler": [
+    "lgg"
+   ],
+   "kategori": "probiyotik",
+   "grup": [
+    "kendi"
+   ]
+  },
+  {
+   "pmid": "42908559",
+   "baslik_en": "Cohort-level proportions of low-grade glioma (WHO grades I-II) in mixed glioma cohorts: a single-arm meta-analysis for epidemiological benchmarking and clinical trial design.",
+   "dergi": "Frontiers in oncology",
+   "yil": 2026,
+   "yazarlar": "Zhang S, Zheng Y, Wang Y, ve ark.",
+   "doi": "10.3389/fonc.2026.1888445",
+   "tip": "Sistematik derleme",
+   "ozet_en": "BACKGROUND: Mixed-grade glioma surgical cohorts exhibit highly variable low-grade glioma (LGG) proportions across studies. This meta-analysis quantifies pooled LGG proportions to provide cohort-level epidemiological benchmarks for researchers, with applications in clinical trial design, health economics, and institutional benchmarking.\nMETHODS: A single-arm meta-analysis of 191 cohort studies (25,847 patients) with Grade II numerators and denominators from Embase, MEDLINE, PubMed, and Scopus (PRISMA 2020) used Freeman-Tukey random-effects synthesis with Cochrane risk-of-bias assessments; subgroup analyses examined study design, geography, era, molecular specificity, and interventions; sensitivity analyses tested robustness.\nRESULTS: The pooled LGG proportion was 57% (95% CI: 52%-61%; I²=99%; n=191). Mixed LGG/high-grade gliomas (HGG) cohorts showed 41% (32%-50%; 45 studies, 6,847 patients) versus 82% (77%-88%) in pure WHO Grade II cohorts (25 studies). Surgery-only cohorts demonstrated 46% (33%-59%) versus 86% (74%-98%) with targeted therapies, and 93% (90%-96%) in randomized controlled trials. Sensitivity analyses confirmed stability (50%-62%).\nCONCLUSION: In mixed-grade glioma cohorts, an LGG proportion approaching 60% may serve as a cohort-level epidemiological reference for understanding the historical grade composition of mixed surgical series. This meta-analysis primary value lies in applications such as clinical trial design, health economics and epidemiological modeling, and institutional benchmarking.\nSYSTEMATIC REVIEW REGISTRATION: https://www.crd.york.ac.uk/prospero/, identifier CRD420261323907.",
+   "ozet_tr": "",
+   "baslik_tr": "",
+   "saha_notu": "",
+   "ceviri": "bekliyor",
    "etiketler": [
     "lgg"
    ],
