@@ -176,7 +176,7 @@ def _nvidia(kullanici):
         with urllib.request.urlopen(req, timeout=180) as r:
             cevap = json.loads(r.read())["choices"][0]["message"]["content"]
     except urllib.error.HTTPError as e:
-        if e.code in (400, 404):
+        if e.code in (400, 404, 410):
             print(f"  NVIDIA modeli '{NVIDIA_MODEL}' kullanılamadı (HTTP {e.code}).")
             model_listesi_yaz()
         raise
@@ -214,6 +214,7 @@ def cevir(baslik, ozet):
                 baslik_tr, _, govde = cevap.partition("\n")
                 if not govde.strip():
                     raise ValueError("Boş çeviri döndü")
+                SON_HATA = ""   # başarılı çeviri sonrası eski hata mesajını temizle
                 return baslik_tr.replace("BASLIK:", "").strip(), govde.strip()
             except Exception as e:
                 ayrinti = getattr(e, "read", lambda: b"")()[:200]
