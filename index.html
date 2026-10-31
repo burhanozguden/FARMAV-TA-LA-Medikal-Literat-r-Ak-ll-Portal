@@ -55,7 +55,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <div class="flex items-center gap-2 text-xs">
         <span class="relative flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span></span>
         <span class="hidden sm:inline font-medium text-slate-500">PubMed Akışı</span>
-        <span id="kullaniciAd" class="hidden sm:inline text-slate-700 font-semibold ml-2"></span><button id="cikis" class="hidden ml-2 px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-100">Çıkış</button>
+        <span id="kullaniciAd" class="hidden sm:inline text-slate-700 font-semibold ml-2"></span><button id="profilBtn" class="hidden ml-2 px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-100"><i class="fa-regular fa-address-card mr-1"></i>Ekip & Profil</button><button id="cikis" class="hidden ml-2 px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-100">Çıkış</button>
       </div>
     </div>
     <div class="flex md:hidden items-center justify-center gap-2 pb-3 border-t border-slate-100 pt-2">
@@ -86,6 +86,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 </section>
 
 <div id="uygulama" class="hidden">
+<div id="sifreUyari" class="hidden bg-amber-50 border-b border-amber-200 text-amber-900 text-xs px-4 py-2 text-center"><i class="fa-solid fa-key mr-1"></i> İlk şifrenizi kullanıyorsunuz. Güvenlik için <button id="sifreUyariBtn" class="font-bold underline">şifrenizi değiştirin</button>.</div>
 <section class="bg-gradient-to-b from-slate-900 via-[#0b1f3f] to-slate-900 text-white py-10 px-4 sm:px-6 relative overflow-hidden">
   <div class="absolute -top-24 -right-24 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
   <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -108,6 +109,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <button data-sekme="lit" class="sekme px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap"><i class="fa-solid fa-book-medical mr-1.5"></i>Literatür</button>
     <button data-sekme="urun" class="sekme px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap"><i class="fa-solid fa-capsules mr-1.5"></i>Ürünlerimiz</button>
     <button data-sekme="rak" class="sekme px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap"><i class="fa-solid fa-scale-balanced mr-1.5"></i>Rakip Analizi</button>
+    <button data-sekme="fav" class="sekme px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap"><i class="fa-solid fa-star mr-1.5 text-amber-500"></i>Favorilerim <span id="favSayi" class="ml-1 text-[10px] opacity-70">0</span></button>
+    <button data-sekme="yor" class="sekme px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap"><i class="fa-regular fa-comments mr-1.5"></i>Yorumlar</button>
   </div>
 
   <div id="lit">
@@ -126,6 +129,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <div class="flex flex-wrap items-center gap-2 mb-6">
       <select id="yil" aria-label="Yıl" class="text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 font-medium text-slate-600"><option value="">Tüm yıllar</option></select>
       <select id="tip" aria-label="Çalışma tipi" class="text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 font-medium text-slate-600"><option value="">Tüm çalışma tipleri</option></select>
+      <select id="dal" aria-label="Yan dal" class="text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 font-medium text-slate-600"><option value="">Tüm yan dallar</option></select>
       <select id="sirala" aria-label="Sırala" class="hidden text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 font-medium text-slate-600"><option value="yeni">Yeniden eskiye</option><option value="okunan">En çok okunan</option></select>
       <button id="favBtn" aria-pressed="false" class="text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 font-semibold text-slate-600"></button>
       <span id="servisNot" class="hidden text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1"></span>
@@ -144,6 +148,21 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <h2 class="text-lg font-bold text-slate-900 mb-1">Rakip Ürünler</h2>
     <p class="text-xs text-slate-500 mb-4">Bilgiler ambalaj ve resmi sitelerden elle girilir. "Doğrulanmadı" etiketli satırlar saha görüşmesinde kullanılmadan önce kontrol edilmelidir.</p>
     <div class="overflow-x-auto bg-white rounded-2xl border border-slate-200/80 custom-shadow"><table id="tablo" class="w-full text-xs text-left" style="min-width:1000px"></table></div>
+  </div>
+
+  <div id="fav" class="hidden">
+    <h2 class="text-lg font-bold text-slate-900 mb-1">Favorilerim</h2>
+    <p class="text-xs text-slate-500 mb-4">Yıldızladığınız makaleler. Bir makaleye tıklayınca özeti ve yorumları açılır.</p>
+    <div id="favListe" class="space-y-3"></div>
+  </div>
+
+  <div id="yor" class="hidden">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+      <h2 class="text-lg font-bold text-slate-900">Ekip Yorumları</h2>
+      <label class="text-xs text-slate-600 font-medium flex items-center gap-1.5"><input id="yorBenim" type="checkbox"> Yalnızca benim yorumlarım</label>
+    </div>
+    <p class="text-xs text-slate-500 mb-4">Ekibin en son 100 yorumu. Bir yoruma tıklayınca ilgili makale açılır.</p>
+    <div id="yorListe" class="space-y-3"></div>
   </div>
 </main>
 </div>
@@ -187,11 +206,57 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <p id="mOzet" class="pre text-slate-600 leading-normal"></p>
         <p id="mNot" class="text-[11px] text-slate-400 mt-2"></p>
       </div>
+      <div id="mDal" class="hidden flex-wrap items-center gap-1.5"></div>
       <details id="mEnDetay" class="hidden"><summary class="cursor-pointer font-semibold text-slate-700">Orijinal İngilizce özet</summary><p id="mEn" class="pre mt-2 text-slate-500"></p></details>
+      <div id="mYorum" class="hidden border-t border-slate-200 pt-4">
+        <h4 class="font-bold text-slate-800 mb-2 text-xs flex items-center gap-1.5"><i class="fa-regular fa-comments text-slate-500"></i> Ekip Yorumları</h4>
+        <div id="mYorumListe" class="space-y-2 mb-3"></div>
+        <textarea id="mYorumMetin" rows="2" maxlength="500" placeholder="Bu makale hakkında ekip arkadaşlarınıza not bırakın..." class="w-full text-xs border border-slate-200 rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-slate-300"></textarea>
+        <div class="flex items-center justify-between gap-3 mt-1.5">
+          <p class="text-[11px] text-slate-400 leading-snug">Yorumlar tüm ekibe görünür. Hekim/hasta bilgisi ve onaylı olmayan endikasyon iddiaları yazmayın.</p>
+          <button id="mYorumGonder" class="shrink-0 text-xs font-bold bg-[#0b1f3f] hover:bg-slate-800 text-white px-3.5 py-1.5 rounded-lg">Gönder</button>
+        </div>
+        <p id="mYorumHata" class="hidden text-[11px] text-red-600 mt-1"></p>
+      </div>
     </div>
     <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-between items-center gap-2">
       <div class="flex items-center gap-4"><button id="mFav" class="text-xs font-semibold text-slate-600 hover:text-amber-600 flex items-center gap-1.5"></button><button id="mKopya" class="text-xs font-semibold text-slate-600 hover:text-[#0b1f3f] flex items-center gap-1.5"><i class="fa-regular fa-copy"></i> Görüşme özeti kopyala</button></div>
       <a id="mLink" href="#" target="_blank" rel="noopener noreferrer" class="bg-[#0b1f3f] hover:bg-slate-800 text-white text-xs px-4 py-2 rounded-xl font-medium transition flex items-center gap-1.5"><span>PubMed'de İncele</span><i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a>
+    </div>
+  </div>
+</div>
+
+<div id="profilModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="pBaslik">
+  <div class="bg-white rounded-2xl max-w-xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+    <div class="p-5 bg-slate-50 border-b border-slate-200 flex justify-between items-center gap-4">
+      <h3 id="pBaslik" class="text-base font-bold text-slate-900">Ekip & Profil</h3>
+      <button id="pKapat" aria-label="Kapat" class="text-slate-400 hover:text-slate-600 p-2 rounded-lg hover:bg-slate-200/60"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <div class="flex gap-1 px-5 pt-3 text-xs font-semibold" id="pSekmeler">
+      <button data-ps="rehber" class="ps px-3.5 py-2 rounded-lg">Ekip rehberi</button>
+      <button data-ps="profil" class="ps px-3.5 py-2 rounded-lg">Profilim</button>
+      <button data-ps="sifre" class="ps px-3.5 py-2 rounded-lg">Şifre</button>
+    </div>
+    <div class="p-5 overflow-y-auto text-xs text-slate-600">
+      <div id="ps-rehber">
+        <input id="pAra" type="search" placeholder="İsim veya bölge ara..." class="w-full text-xs border border-slate-200 rounded-xl px-3 py-2 mb-3 focus:outline-none focus:ring-2 focus:ring-slate-300">
+        <div id="pListe" class="space-y-2"></div>
+      </div>
+      <form id="ps-profil" class="hidden space-y-3">
+        <p class="text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded-lg p-2.5 leading-snug">Bu bilgiler giriş yapan <strong>tüm ekip arkadaşlarınıza</strong> görünür. Yalnızca paylaşmak istediklerinizi yazın.</p>
+        <label class="block"><span class="font-semibold text-slate-700">Ad Soyad</span><input id="pAd" disabled class="mt-1 w-full border border-slate-200 bg-slate-50 rounded-xl px-3 py-2"></label>
+        <label class="block"><span class="font-semibold text-slate-700">Unvan / Bölge</span><input id="pUnvan" maxlength="60" placeholder="Örn. Saha Temsilcisi, İstanbul Anadolu" class="mt-1 w-full border border-slate-200 rounded-xl px-3 py-2"></label>
+        <label class="block"><span class="font-semibold text-slate-700">Telefon</span><input id="pTel" maxlength="20" inputmode="tel" placeholder="05xx xxx xx xx" class="mt-1 w-full border border-slate-200 rounded-xl px-3 py-2"></label>
+        <label class="block"><span class="font-semibold text-slate-700">E-posta</span><input id="pEp" maxlength="80" type="email" placeholder="ad.soyad@sirket.com" class="mt-1 w-full border border-slate-200 rounded-xl px-3 py-2"></label>
+        <div class="flex items-center gap-3"><button type="submit" class="bg-[#0b1f3f] hover:bg-slate-800 text-white font-bold px-4 py-2 rounded-xl">Kaydet</button><span id="pMesaj" class="text-[11px]"></span></div>
+      </form>
+      <form id="ps-sifre" class="hidden space-y-3">
+        <p class="text-[11px] bg-slate-50 border border-slate-200 rounded-lg p-2.5 leading-snug">Büyük/küçük harf ve özel karakterler dikkate alınmaz; <strong>en az 10 harf veya rakam</strong> kullanın. Şifrenizi kimseyle paylaşmayın.</p>
+        <label class="block"><span class="font-semibold text-slate-700">Mevcut şifre</span><input id="sEski" type="password" autocomplete="current-password" class="mt-1 w-full border border-slate-200 rounded-xl px-3 py-2"></label>
+        <label class="block"><span class="font-semibold text-slate-700">Yeni şifre</span><input id="sYeni" type="password" autocomplete="new-password" class="mt-1 w-full border border-slate-200 rounded-xl px-3 py-2"></label>
+        <label class="block"><span class="font-semibold text-slate-700">Yeni şifre (tekrar)</span><input id="sYeni2" type="password" autocomplete="new-password" class="mt-1 w-full border border-slate-200 rounded-xl px-3 py-2"></label>
+        <div class="flex items-center gap-3"><button id="sBtn" type="submit" class="bg-[#e31b23] hover:bg-red-700 text-white font-bold px-4 py-2 rounded-xl">Şifreyi değiştir</button><span id="sMesaj" class="text-[11px]"></span></div>
+      </form>
     </div>
   </div>
 </div>
@@ -204,7 +269,7 @@ const KAT = {
   omega3:{ad:"Omega-3", cls:"bg-amber-50 text-amber-700 border-amber-200", ikon:"fa-fish", kenar:"border-l-amber-500"},
   form:{ad:"Form kıyaslaması", cls:"bg-blue-50 text-blue-700 border-blue-200", ikon:"fa-scale-balanced", kenar:"border-l-blue-500"}
 };
-const st = {yay:[], sorgu:[], rak:{urunlerim:[],rakipler:[]}, k:"tumu", q:"", yil:"", tip:"", etiket:"", sekme:"lit", fav:new Set(), sayac:{}, favSadece:false, sirala:"yeni", servis:null, servisHata:"", kimlik:""};
+const st = {yay:[], sorgu:[], rak:{urunlerim:[],rakipler:[]}, k:"tumu", q:"", yil:"", tip:"", etiket:"", dal:"", sekme:"lit", fav:new Set(), sayac:{}, yorumSay:{}, adlar:{}, acikPmid:"", favSadece:false, sirala:"yeni", servis:null, servisHata:"", kimlik:""};
 const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const pmUrl = p => /^\d+$/.test(String(p)) ? "https://pubmed.ncbi.nlm.nih.gov/"+p+"/" : "#";
 const bos = v => v ? esc(v) : "—";
@@ -219,7 +284,7 @@ function yukle(b){
     u.innerHTML='<i class="fa-solid fa-language mr-1"></i> '+y.ceviri_bekleyen+' yayının Türkçe özeti henüz hazır değil; İngilizce özet gösteriliyor.'+(y.ceviri_son_hata?' <span class="text-slate-400">Neden: '+esc(y.ceviri_son_hata)+'</span>':'');
   }
   filtreDoldur(); guncelleDugmeler(); cizYayin(); cizUrun(); cizRakip();
-  const h=location.hash.replace("#",""); sekme(["urun","rak"].includes(h)?h:"lit");
+  const h=location.hash.replace("#",""); sekme(["urun","rak","fav","yor"].includes(h)?h:"lit");
 }
 
 /* ---------- Favoriler & okunma sayacı ---------- */
@@ -245,7 +310,7 @@ function servisNotuGuncelle(){
 }
 async function servisSenkron(){
   const j=await api("durum"); if(!j) return;
-  st.fav=new Set((j.fav||[]).map(String)); st.sayac=j.sayac||{}; favKaydet(); favBtnGuncelle(); cizYayin();
+  st.fav=new Set((j.fav||[]).map(String)); st.sayac=j.sayac||{}; st.yorumSay=j.yorumSay||{}; favKaydet(); favBtnGuncelle(); cizYayin();
 }
 function baslikBul(pmid){const y=st.yay.find(x=>String(x.pmid)===String(pmid));return y?String(y.baslik_tr||y.baslik_en||"").slice(0,200):""}
 let nabizZamanlayici=null;
@@ -261,7 +326,7 @@ function oturumuBaslat(){
 function favToggle(pmid){
   pmid=String(pmid); const var_mi=st.fav.has(pmid);
   var_mi?st.fav.delete(pmid):st.fav.add(pmid);
-  favKaydet(); favBtnGuncelle(); api("fav",{p:pmid,on:!var_mi,t:baslikBul(pmid)});
+  favKaydet(); favBtnGuncelle(); if(st.sekme==="fav") cizFav(); api("fav",{p:pmid,on:!var_mi,t:baslikBul(pmid)});
 }
 function oku(pmid){
   pmid=String(pmid); if(okunduOturum.has(pmid)) return; okunduOturum.add(pmid);
@@ -270,11 +335,13 @@ function oku(pmid){
 function favBtnGuncelle(){
   const b=$("#favBtn"); b.setAttribute("aria-pressed",st.favSadece);
   b.className="text-xs rounded-xl px-3 py-2 font-semibold border "+(st.favSadece?"bg-[#0b1f3f] text-white border-[#0b1f3f]":"bg-white text-slate-600 border-slate-200");
-  b.innerHTML='<i class="fa-'+(st.favSadece?'solid':'regular')+' fa-star text-amber-500"></i> Favorilerim ('+st.fav.size+')';
+  $("#favSayi").textContent=st.fav.size; b.innerHTML='<i class="fa-'+(st.favSadece?'solid':'regular')+' fa-star text-amber-500"></i> Favorilerim ('+st.fav.size+')';
 }
 $("#favBtn").onclick=()=>{st.favSadece=!st.favSadece;favBtnGuncelle();cizYayin()};
+$("#dal").onchange=e=>{st.dal=e.target.value;cizYayin()};
 $("#sirala").onchange=e=>{st.sirala=e.target.value;cizYayin()};
 
+/*YORUM-PROFIL*/
 /* ---------- Giriş (AES-GCM + PBKDF2, tarayıcıda çözülür) ---------- */
 const enc=new TextEncoder(), dec=new TextDecoder();
 const unb=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
@@ -282,16 +349,42 @@ const hex=buf=>[...new Uint8Array(buf)].map(x=>x.toString(16).padStart(2,"0")).j
 const norm=s=>s.normalize("NFC").replace(/İ/g,"i").replace(/I/g,"ı").toLowerCase().replace(/[çğıöşüâîû]/g,c=>({"ç":"c","ğ":"g","ı":"i","ö":"o","ş":"s","ü":"u","â":"a","î":"i","û":"u"}[c])).replace(/[^a-z0-9]/g,"");
 async function idHash(k){return hex(await crypto.subtle.digest("SHA-256",enc.encode("fv|"+norm(k))))}
 
-async function girisYap(kul,sif){
+/*KRIPTO-BASLA*/
+const b64=u8=>btoa(String.fromCharCode(...new Uint8Array(u8)));
+async function kutuSor(g,id){ // undefined: bilinmiyor (servis yok/erişilemedi), null: kutu yok, nesne: kutu
+  if(!g.servis_url) return undefined;
+  const ac=new AbortController(), z=setTimeout(()=>ac.abort(),7000);
+  try{
+    const r=await fetch(g.servis_url+(g.servis_url.includes("?")?"&":"?")+"b="+id,{signal:ac.signal});
+    const j=await r.json(); if(j&&!j.hata) return j.kutu?JSON.parse(j.kutu):null;
+  }catch(e){} finally{clearTimeout(z)}
+  return undefined;
+}
+async function kayitGetir(id){
   const g=await fetch("data/giris.json",{cache:"no-cache"}).then(r=>{if(!r.ok)throw new Error("giris");return r.json()});
-  const kayit=g.kullanicilar[await idHash(kul)];
-  if(!kayit) throw new Error("kimlik");
+  let kayit=g.kullanicilar[id]; if(!kayit) throw new Error("kimlik");
+  const kutu=await kutuSor(g,id);
+  return {kayit:kutu||kayit, iter:g.iter, kutuVar:kutu===undefined?undefined:!!kutu};
+}
+async function sifreAnahtari(sif,tuz,iter,kullanim){
   const ham=await crypto.subtle.importKey("raw",enc.encode(norm(sif)),"PBKDF2",false,["deriveKey"]);
-  const kk=await crypto.subtle.deriveKey({name:"PBKDF2",salt:unb(kayit.s),iterations:g.iter,hash:"SHA-256"},ham,{name:"AES-GCM",length:256},false,["decrypt"]);
-  const w=unb(kayit.w);
-  let anahtarHam;
-  try{anahtarHam=await crypto.subtle.decrypt({name:"AES-GCM",iv:w.slice(0,12),additionalData:enc.encode("fv1")},kk,w.slice(12))}catch(e){throw new Error("kimlik")}
-  return verCoz(anahtarHam, await idHash(kul));
+  return crypto.subtle.deriveKey({name:"PBKDF2",salt:tuz,iterations:iter,hash:"SHA-256"},ham,{name:"AES-GCM",length:256},false,kullanim);
+}
+async function kayitAc(kayit,iter,sif){ // veri anahtarını (ham bayt) verir; şifre yanlışsa "kimlik" hatası
+  const kk=await sifreAnahtari(sif,unb(kayit.s),iter,["decrypt"]), w=unb(kayit.w);
+  try{return await crypto.subtle.decrypt({name:"AES-GCM",iv:w.slice(0,12),additionalData:enc.encode("fv1")},kk,w.slice(12))}catch(e){throw new Error("kimlik")}
+}
+async function kutuUret(anahtarHam,yeniSif,iter){ // yeni şifreyle sarılmış veri anahtarı: {s,w}
+  const tuz=crypto.getRandomValues(new Uint8Array(16)), nonce=crypto.getRandomValues(new Uint8Array(12));
+  const kk=await sifreAnahtari(yeniSif,tuz,iter,["encrypt"]);
+  const ct=new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM",iv:nonce,additionalData:enc.encode("fv1")},kk,anahtarHam));
+  const w=new Uint8Array(12+ct.length); w.set(nonce); w.set(ct,12);
+  return {s:b64(tuz),w:b64(w)};
+}
+/*KRIPTO-BIT*/
+async function girisYap(kul,sif){
+  const id=await idHash(kul), r=await kayitGetir(id);
+  return verCoz(await kayitAc(r.kayit,r.iter,sif), id);
 }
 async function verCoz(anahtarHam, kimlikHash){
   const veri=new Uint8Array(await fetch("data/veri.enc",{cache:"no-cache"}).then(r=>{if(!r.ok)throw new Error("veri");return r.arrayBuffer()}));
@@ -304,13 +397,13 @@ async function verCoz(anahtarHam, kimlikHash){
 function uygulamayiAc(b,kimlikHash){
   st.kimlik=kimlikHash; st.servis=(b.servis&&b.servis.url)?b.servis:null; st.fav=favYerel();
   $("#giris").classList.add("hidden"); $("#uygulama").classList.remove("hidden");
-  st.ad=((b.adlar||{})[kimlikHash]||"");
+  st.ad=((b.adlar||{})[kimlikHash]||""); st.adlar=b.adlar||{};
   const ad=st.ad.split(" ")[0];
   if(ad){$("#kullaniciAd").textContent=ad; $("#kullaniciAd").classList.remove("hidden")}
-  $("#cikis").classList.remove("hidden");
+  $("#cikis").classList.remove("hidden"); $("#profilBtn").classList.toggle("hidden",!st.servis);
   yukle(b); favBtnGuncelle();
   $("#sirala").classList.toggle("hidden",!st.servis);
-  servisNotuGuncelle(); servisSenkron(); if(st.servis) oturumuBaslat();
+  servisNotuGuncelle(); servisSenkron(); if(st.servis){ oturumuBaslat(); kayitGetir(kimlikHash).then(r=>{ if(r.kutuVar===false) $("#sifreUyari").classList.remove("hidden") }).catch(()=>{}); }
 }
 $("#girisForm").addEventListener("submit",async e=>{
   e.preventDefault();
@@ -326,6 +419,121 @@ $("#girisForm").addEventListener("submit",async e=>{
   btn.disabled=false; btn.textContent="Giriş Yap";
 });
 $("#cikis").addEventListener("click",()=>{try{sessionStorage.clear()}catch(e){} location.reload()});
+
+/* ---------- Yorumlar ---------- */
+const tarihYaz=iso=>{const d=new Date(iso); return isNaN(d)?"":d.toLocaleString("tr-TR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"})};
+async function yorumYukle(pm){
+  const kutu=$("#mYorum"); if(!st.servis){kutu.classList.add("hidden");return}
+  kutu.classList.remove("hidden"); $("#mYorumHata").classList.add("hidden");
+  const lst=$("#mYorumListe"); lst.innerHTML='<p class="text-slate-400">Yorumlar yükleniyor...</p>';
+  const j=await api("yorumlar",{p:pm}); if(st.acikPmid!==pm) return;
+  if(!j){lst.innerHTML='<p class="text-slate-400">Yorumlar şu an yüklenemedi.</p>';return}
+  const L=j.liste||[]; st.yorumSay[pm]=L.length;
+  lst.innerHTML=L.length?L.map(c=>'<div class="bg-slate-50 border border-slate-200 rounded-xl p-2.5"><div class="flex items-center justify-between gap-2 mb-0.5"><span class="font-bold text-slate-700">'+esc(c.ad)+' <span class="font-normal text-slate-400">· '+esc(tarihYaz(c.t))+'</span></span>'+(c.ben?'<button data-ys="'+esc(c.id)+'" class="text-[11px] text-red-600 font-semibold">Sil</button>':'')+'</div><p class="pre text-slate-700">'+esc(c.m)+'</p></div>').join(""):'<p class="text-slate-400">Henüz yorum yok. İlk notu siz bırakın.</p>';
+  lst.querySelectorAll("[data-ys]").forEach(b=>b.onclick=async()=>{ if(!confirm("Yorumunuz silinsin mi?")) return; b.disabled=true; await api("yorum_sil",{i:b.dataset.ys}); yorumYukle(pm); cizYayin(); if(st.sekme==="yor") yorumSekmeYukle()});
+}
+$("#mYorumGonder").onclick=async()=>{
+  const pm=st.acikPmid, ta=$("#mYorumMetin"), m=ta.value.trim(), hata=$("#mYorumHata"), btn=$("#mYorumGonder");
+  if(!pm||!m) return; hata.classList.add("hidden"); btn.disabled=true;
+  const j=await api("yorum_ekle",{p:pm,m}); btn.disabled=false;
+  if(!j){hata.textContent="Yorum gönderilemedi. Bağlantınızı kontrol edip tekrar deneyin.";hata.classList.remove("hidden");return}
+  ta.value=""; await yorumYukle(pm); cizYayin(); if(st.sekme==="yor") yorumSekmeYukle();
+};
+
+/* ---------- Ekip rehberi, profil ve şifre ---------- */
+function profilSekme(ad){
+  document.querySelectorAll(".ps").forEach(b=>b.className="ps px-3.5 py-2 rounded-lg "+(b.dataset.ps===ad?"bg-[#0b1f3f] text-white":"bg-slate-100 text-slate-600"));
+  ["rehber","profil","sifre"].forEach(x=>$("#ps-"+x).classList.toggle("hidden",x!==ad));
+}
+document.querySelectorAll(".ps").forEach(b=>b.onclick=()=>profilSekme(b.dataset.ps));
+function rehberCiz(){
+  const ara=norm($("#pAra").value||"");
+  const kisiler=Object.keys(st.adlar).map(u=>Object.assign({u,ad:st.adlar[u]},st.profiller[u]||{})).sort((a,b)=>a.ad.localeCompare(b.ad,"tr"));
+  const L=kisiler.filter(k=>!ara||norm(k.ad+" "+(k.unvan||"")).includes(ara));
+  $("#pListe").innerHTML=L.length?L.map(k=>'<div class="border border-slate-200 rounded-xl p-3 flex items-start justify-between gap-3"><div><div class="font-bold text-slate-800">'+esc(k.ad)+(k.u===st.kimlik?' <span class="text-[10px] text-slate-400 font-normal">(siz)</span>':'')+'</div><div class="text-slate-500">'+esc(k.unvan||"")+'</div></div><div class="text-right space-y-0.5">'+
+    (k.tel?'<div><a class="text-sky-700 font-semibold" href="tel:'+esc(String(k.tel).replace(/[^0-9+]/g,""))+'"><i class="fa-solid fa-phone mr-1"></i>'+esc(k.tel)+'</a></div>':'')+
+    (k.ep?'<div><a class="text-sky-700 font-semibold" href="mailto:'+esc(k.ep)+'"><i class="fa-regular fa-envelope mr-1"></i>'+esc(k.ep)+'</a></div>':'')+
+    (!k.tel&&!k.ep?'<div class="text-slate-400">Henüz profil bilgisi eklenmedi</div>':'')+'</div></div>').join(""):'<p class="text-slate-400">Eşleşen kişi yok.</p>';
+}
+$("#pAra").oninput=rehberCiz;
+async function profilAc(sekme){
+  st.profiller=st.profiller||{};
+  const m=$("#profilModal"); m.classList.remove("hidden"); m.classList.add("flex");
+  profilSekme(sekme||"rehber");
+  $("#pListe").innerHTML='<p class="text-slate-400">Yükleniyor...</p>';
+  const j=await api("profiller");
+  st.profiller={}; (j&&j.liste||[]).forEach(p=>st.profiller[p.u]=p);
+  const ben=st.profiller[st.kimlik]||{};
+  $("#pAd").value=st.ad; $("#pUnvan").value=ben.unvan||""; $("#pTel").value=ben.tel||""; $("#pEp").value=ben.ep||"";
+  rehberCiz();
+}
+function profilKapat(){const m=$("#profilModal"); m.classList.add("hidden"); m.classList.remove("flex")}
+$("#profilBtn").onclick=()=>profilAc("rehber");
+$("#sifreUyariBtn").onclick=()=>profilAc("sifre");
+$("#pKapat").onclick=profilKapat;
+$("#profilModal").addEventListener("click",e=>{if(e.target.id==="profilModal")profilKapat()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")profilKapat()});
+const mesaj=(id,t,ok)=>{const e=$(id); e.textContent=t; e.className="text-[11px] "+(ok?"text-emerald-600":"text-red-600")};
+$("#ps-profil").addEventListener("submit",async e=>{
+  e.preventDefault(); mesaj("#pMesaj","Kaydediliyor...",true);
+  const j=await api("profil_kaydet",{unvan:$("#pUnvan").value,tel:$("#pTel").value,ep:$("#pEp").value.trim()});
+  if(!j){mesaj("#pMesaj",st.servisHata.includes("eposta")?"E-posta adresi geçersiz.":"Kaydedilemedi, tekrar deneyin.",false);return}
+  st.profiller[st.kimlik]={u:st.kimlik,ad:st.ad,unvan:$("#pUnvan").value.trim(),tel:$("#pTel").value.trim(),ep:$("#pEp").value.trim()};
+  rehberCiz(); mesaj("#pMesaj","Kaydedildi.",true);
+});
+$("#ps-sifre").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const eski=$("#sEski").value, yeni=$("#sYeni").value, yeni2=$("#sYeni2").value, btn=$("#sBtn");
+  if(norm(yeni).length<10) return mesaj("#sMesaj","Yeni şifre en az 10 harf veya rakam içermeli.",false);
+  if(norm(yeni)!==norm(yeni2)) return mesaj("#sMesaj","Yeni şifreler aynı değil.",false);
+  if(norm(yeni)===norm(eski)) return mesaj("#sMesaj","Yeni şifre mevcut şifrenizden farklı olmalı.",false);
+  btn.disabled=true; mesaj("#sMesaj","Değiştiriliyor...",true);
+  try{
+    const r=await kayitGetir(st.kimlik);
+    if(r.kutuVar===undefined) throw new Error("etkin");
+    const ham=await kayitAc(r.kayit,r.iter,eski);
+    const kutu=await kutuUret(ham,yeni,r.iter);
+    const j=await api("sifre_kaydet",{kutu:JSON.stringify(kutu)});
+    if(!j) throw new Error("servis");
+    ["#sEski","#sYeni","#sYeni2"].forEach(s=>$(s).value="");
+    $("#sifreUyari").classList.add("hidden");
+    mesaj("#sMesaj","Şifreniz değişti. Bir sonraki girişte yeni şifrenizi kullanın.",true);
+  }catch(err){
+    mesaj("#sMesaj",err.message==="kimlik"?"Mevcut şifre hatalı.":err.message==="etkin"?"Şifre değiştirme henüz etkin değil; yönetici güncellemesi tamamlanınca tekrar deneyin.":"Şifre şu an değiştirilemedi, tekrar deneyin.",false);
+  }
+  btn.disabled=false;
+});
+
+/* ---------- Favorilerim ve Yorumlar sekmeleri ---------- */
+function cizFav(){
+  const kutu=$("#favListe"), L=[...st.fav].map(p=>({p,y:st.yay.find(x=>String(x.pmid)===p)}));
+  L.sort((a,b)=>((b.y&&b.y.yil)||0)-((a.y&&a.y.yil)||0));
+  if(!L.length){kutu.innerHTML='<div class="text-center py-12 bg-white rounded-2xl border border-dashed border-slate-300 text-xs text-slate-400"><i class="fa-regular fa-star text-3xl text-slate-300 mb-2"></i><p>Henüz favori makaleniz yok. Literatür sekmesinde bir makalenin yıldızına basın.</p></div>';return}
+  kutu.innerHTML=L.map(({p,y})=>y?
+    '<div class="bg-white rounded-2xl p-4 border border-slate-200/80 custom-shadow flex items-start justify-between gap-3"><button data-fa="'+esc(p)+'" class="text-left"><div class="text-sm font-bold text-slate-900 leading-snug hover:text-[#0b1f3f]">'+esc(y.baslik_tr||y.baslik_en)+'</div><div class="text-[11px] text-slate-500 mt-1">'+esc(y.dergi||"")+' • '+esc(y.yil||"")+' • PMID '+esc(p)+'</div><div class="flex flex-wrap gap-1 mt-1.5">'+dallarOf(y).map(id=>dalRozet(id,true)).join("")+'</div></button><button data-fk="'+esc(p)+'" aria-label="Favoriden çıkar" class="shrink-0 text-amber-500 hover:text-amber-600 p-1"><i class="fa-solid fa-star"></i></button></div>':
+    '<div class="bg-white rounded-2xl p-4 border border-slate-200/80 flex items-center justify-between gap-3 text-xs text-slate-500"><span>PMID '+esc(p)+' güncel listede yok. <a class="text-[#e31b23] font-semibold" target="_blank" rel="noopener noreferrer" href="'+pmUrl(p)+'">PubMed\'de aç</a></span><button data-fk="'+esc(p)+'" aria-label="Favoriden çıkar" class="text-amber-500 p-1"><i class="fa-solid fa-star"></i></button></div>').join("");
+  kutu.querySelectorAll("[data-fa]").forEach(b=>b.onclick=()=>ac(st.yay.find(x=>String(x.pmid)===b.dataset.fa)));
+  kutu.querySelectorAll("[data-fk]").forEach(b=>b.onclick=()=>favToggle(b.dataset.fk));
+}
+let sonYorumlar=[];
+async function yorumSekmeYukle(){
+  const kutu=$("#yorListe");
+  if(!st.servis){kutu.innerHTML='<p class="text-xs text-slate-400">Yorumlar için servis bağlantısı gerekli.</p>';return}
+  kutu.innerHTML='<p class="text-xs text-slate-400">Yükleniyor...</p>';
+  const j=await api("yorumlar_son");
+  if(!j){kutu.innerHTML='<p class="text-xs text-slate-400">Yorumlar şu an yüklenemedi.</p>';return}
+  sonYorumlar=j.liste||[]; cizYorumSekme();
+}
+function cizYorumSekme(){
+  const kutu=$("#yorListe"), L=sonYorumlar.filter(c=>!$("#yorBenim").checked||c.ben);
+  if(!L.length){kutu.innerHTML='<div class="text-center py-12 bg-white rounded-2xl border border-dashed border-slate-300 text-xs text-slate-400"><i class="fa-regular fa-comments text-3xl text-slate-300 mb-2"></i><p>'+($("#yorBenim").checked?"Henüz yorum yapmadınız.":"Henüz yorum yok.")+'</p></div>';return}
+  kutu.innerHTML=L.map(c=>{const y=st.yay.find(x=>String(x.pmid)===c.p);
+    return '<div class="bg-white rounded-2xl p-4 border border-slate-200/80 custom-shadow"><button data-ya="'+esc(c.p)+'" class="text-left text-xs font-bold text-[#0b1f3f] hover:underline leading-snug">'+esc(y?(y.baslik_tr||y.baslik_en):"PMID "+c.p)+'</button><p class="pre text-xs text-slate-700 mt-1.5">'+esc(c.m)+'</p><div class="flex items-center justify-between mt-2 text-[11px] text-slate-400"><span>'+esc(c.ad)+' · '+esc(tarihYaz(c.t))+'</span>'+(c.ben?'<button data-ys2="'+esc(c.id)+'" class="text-red-600 font-semibold">Sil</button>':'')+'</div></div>'}).join("");
+  kutu.querySelectorAll("[data-ya]").forEach(b=>b.onclick=()=>{const y=st.yay.find(x=>String(x.pmid)===b.dataset.ya); if(y) ac(y); else window.open(pmUrl(b.dataset.ya),"_blank","noopener")});
+  kutu.querySelectorAll("[data-ys2]").forEach(b=>b.onclick=async()=>{ if(!confirm("Yorumunuz silinsin mi?")) return; b.disabled=true; await api("yorum_sil",{i:b.dataset.ys2}); yorumSekmeYukle()});
+}
+$("#yorBenim").onchange=cizYorumSekme;
+
 (async()=>{ // aynı sekmede yenileme sonrası oturumu sürdür
   try{
     const k=sessionStorage.getItem("fv_k"), i=sessionStorage.getItem("fv_i"); if(!k||!i) return;
@@ -333,7 +541,38 @@ $("#cikis").addEventListener("click",()=>{try{sessionStorage.clear()}catch(e){} 
   }catch(e){ try{sessionStorage.clear()}catch(_){} }
 })();
 
+/* ---------- Yan dallar (anahtar kelime eşleştirmesi; y.dallar varsa o kullanılır) ---------- */
+const DALLAR=[
+ {id:"kardiyo",ad:"Çocuk Kardiyolojisi",
+  g:/cardi|heart|myocard|arrhythm|atheroscl|hypertens|blood pressure|vascular|endotheli|kalp|kardiyo|tansiyon/,
+  z:/cholesterol|lipoprotein|triglycerid|inflammat|oxidative|obes/g},
+ {id:"noro",ad:"Çocuk Nörolojisi",
+  g:/neuro|brain|cognit|autis|adhd|attention.deficit|epilep|seizure|migraine|depress|anxiety|psychiatr|cerebr|visual acuity|retina|beyin|bilişsel|otizm|nöbet|nörolo|mood/,
+  z:/\bdha\b|developmen|behavio|sleep|gut-brain|learning/g},
+ {id:"endokrin",ad:"Çocuk Endokrinolojisi",
+  g:/diabet|insulin|glyc[ae]mi|obes|overweight|metabolic syndrome|thyroid|growth hormone|puberty|endocrin|adipos|hypertriglycerid|dyslipid|nafld|masld|fatty liver|cholesterol|(serum|plasma|fasting|blood) triglycerid|diyabet|obezite|tiroid|insülin|kolesterol|trigliserid/,
+  z:/body mass|\bbmi\b|lipid|weight|triglycerid|metabolic|waist|vitamin d/g},
+ {id:"gastro",ad:"Çocuk Gastroenterolojisi",
+  g:/gastro|intestin|bowel|colitis|crohn|diarrh|constipat|colic|enterocolitis|helicobacter|pylori|celiac|coeliac|reflux|\bstool|\bgut\b|\bibs\b|irritable|abdominal pain|dysbiosis|microbiota|microbiome|bağırsak|ishal|kolik|kabız/,
+  z:/probiotic|lactobacill|bifidobacter|prebiotic|infant formula/g},
+ {id:"nefro",ad:"Çocuk Nefrolojisi",
+  g:/kidney|renal|nephro|nephritis|dialysis|proteinuria|albuminuria|glomerul|urinary tract|\buti\b|böbrek|diyaliz|idrar|nefro/,
+  z:/creatinine|hypertens|uric|urolog/g},
+ {id:"immun",ad:"Çocuk İmmünolojisi ve Alerji Hastalıkları",
+  g:/allerg|atopic|eczema|dermatitis|asthma|wheez|rhinitis|anaphyl|autoimmun|immunolog|immunoglobulin|\bige\b|vaccin|immun|alerji|astım|egzama|bağışıklık/,
+  z:/infection|inflammat|cytokine|respiratory|antibiotic|enfeksiyon|ateş|sepsis/g}
+];
+const dalAdi=id=>(DALLAR.find(d=>d.id===id)||{ad:id}).ad;
+function dallarOf(y){
+  if(y._dal) return y._dal;
+  if(Array.isArray(y.dallar)) return y._dal=y.dallar.filter(id=>DALLAR.some(d=>d.id===id));
+  const m=[y.baslik_en,y.ozet_en,y.baslik_tr,y.ozet_tr].join(" ").toLowerCase();
+  return y._dal=DALLAR.filter(d=>d.g.test(m)||new Set(m.match(d.z)||[]).size>=2).map(d=>d.id);
+}
+function dalRozet(id,kucuk){return '<span class="'+(kucuk?'text-[10px]':'text-[11px]')+' font-semibold px-2 py-0.5 rounded-md border bg-sky-50 text-sky-800 border-sky-200">'+esc(dalAdi(id))+'</span>'}
+
 function filtreDoldur(){
+  DALLAR.forEach(d=>{const n=st.yay.filter(y=>dallarOf(y).includes(d.id)).length; $("#dal").insertAdjacentHTML("beforeend",'<option value="'+d.id+'">'+esc(d.ad)+' ('+n+')</option>')});
   [...new Set(st.yay.map(y=>y.yil).filter(Boolean))].sort((a,b)=>b-a).forEach(v=>$("#yil").insertAdjacentHTML("beforeend",'<option value="'+esc(v)+'">'+esc(v)+'</option>'));
   [...new Set(st.yay.map(y=>y.tip).filter(Boolean))].forEach(v=>$("#tip").insertAdjacentHTML("beforeend",'<option value="'+esc(v)+'">'+esc(v)+'</option>'));
 }
@@ -347,6 +586,7 @@ function eslesir(y){
   if(st.yil && String(y.yil)!==st.yil) return false;
   if(st.tip && y.tip!==st.tip) return false;
   if(st.etiket && !(y.etiketler||[]).includes(st.etiket)) return false;
+  if(st.dal && !dallarOf(y).includes(st.dal)) return false;
   if(st.favSadece && !st.fav.has(String(y.pmid))) return false;
   if(st.q){
     const h=[y.baslik_tr,y.baslik_en,y.dergi,y.pmid,y.yazarlar,y.saha_notu,(y.etiketler||[]).map(etiketAdi).join(" ")].join(" ").toLocaleLowerCase("tr");
@@ -372,9 +612,10 @@ function cizYayin(){
       '<span class="text-[11px] font-bold px-2.5 py-1 rounded-lg border '+k.cls+'">'+esc(k.ad)+'</span>'+
       (rakip?'<span class="text-[11px] font-bold px-2.5 py-1 rounded-lg border bg-slate-50 text-slate-600 border-slate-200">Rakip</span>':'')+
       (y.tip?'<span class="text-[11px] font-bold px-2.5 py-1 rounded-lg border bg-blue-50 text-blue-700 border-blue-200">'+esc(y.tip)+'</span>':'')+
+      dallarOf(y).map(id=>dalRozet(id,true)).join('')+
     '</div><div class="flex items-center gap-2"><span class="text-[11px] font-medium text-slate-400 whitespace-nowrap"><i class="fa-regular fa-calendar-alt mr-1"></i>'+esc(y.yil)+'</span><button data-fav="'+esc(y.pmid)+'" aria-label="Favorilere ekle / çıkar" aria-pressed="'+st.fav.has(String(y.pmid))+'" class="p-1 rounded-md hover:bg-amber-50"><i class="fa-'+(st.fav.has(String(y.pmid))?'solid text-amber-500':'regular text-slate-300')+' fa-star text-base"></i></button></div></div>'+
     '<h3 class="text-base font-bold text-slate-900 group-hover:text-[#0b1f3f] transition leading-snug mb-2">'+esc(y.baslik_tr||y.baslik_en)+'</h3>'+
-    '<p class="text-xs text-slate-500 font-medium mb-4 flex items-center gap-1.5"><i class="fa-solid fa-book-open text-slate-400"></i> '+esc(y.dergi)+' • PMID '+esc(y.pmid)+(st.servis&&st.sayac[y.pmid]?' • <i class="fa-regular fa-eye"></i> '+esc(st.sayac[y.pmid])+' okunma':'')+'</p>'+
+    '<p class="text-xs text-slate-500 font-medium mb-4 flex items-center gap-1.5"><i class="fa-solid fa-book-open text-slate-400"></i> '+esc(y.dergi)+' • PMID '+esc(y.pmid)+(st.servis&&st.sayac[y.pmid]?' • <i class="fa-regular fa-eye"></i> '+esc(st.sayac[y.pmid])+' okunma':'')+(st.servis&&st.yorumSay[y.pmid]?' • <i class="fa-regular fa-comment"></i> '+esc(st.yorumSay[y.pmid]):'')+'</p>'+
     (y.saha_notu?'<div class="bg-gradient-to-r from-amber-50 to-orange-50/50 border-l-4 border-amber-500 p-3.5 rounded-r-xl text-xs text-slate-700 mb-5"><strong class="text-amber-900 font-bold block mb-1"><i class="fa-solid fa-lightbulb text-amber-600"></i> Saha & Klinik Hap Bilgi:</strong>'+esc(y.saha_notu)+'</div>':'')+
     (y.cumle?'<p class="text-[11px] text-sky-700 font-semibold mb-3"><i class="fa-solid fa-comment-medical"></i> Görüşme cümlesi hazır</p>':'')+
     (y.ozet_tr?'':'<p class="text-[11px] text-slate-400 mb-4"><i class="fa-solid fa-language"></i> Türkçe özet hazırlanıyor, İngilizce özet gösterilir.</p>')+
@@ -408,6 +649,8 @@ function ac(y){
   const mfCiz=()=>{mf.innerHTML=st.fav.has(pm)?'<i class="fa-solid fa-star text-amber-500"></i> Favorilerde':'<i class="fa-regular fa-star"></i> Favorilere ekle'};
   mfCiz(); mf.onclick=()=>{favToggle(pm);mfCiz();cizYayin()};
   oku(pm);
+  st.acikPmid=pm; const dd=dallarOf(y), md=$("#mDal"); md.innerHTML=dd.length?'<span class="text-[11px] font-semibold text-slate-500">Yan dallar:</span>'+dd.map(id=>dalRozet(id)).join(""):""; md.classList.toggle("hidden",!dd.length); md.classList.toggle("flex",!!dd.length);
+  yorumYukle(pm);
   const m=$("#modal"); m.classList.remove("hidden"); m.classList.add("flex"); $("#mKapat").focus();
 }
 function kapat(){const m=$("#modal"); m.classList.add("hidden"); m.classList.remove("flex")}
@@ -447,7 +690,8 @@ function cizRakip(){
 
 function sekme(ad){
   st.sekme=ad;
-  ["lit","urun","rak"].forEach(s=>$("#"+s).classList.toggle("hidden",s!==ad));
+  ["lit","urun","rak","fav","yor"].forEach(s=>$("#"+s).classList.toggle("hidden",s!==ad));
+  if(ad==="fav") cizFav(); if(ad==="yor") yorumSekmeYukle();
   $("#araKutusu").classList.toggle("hidden",ad!=="lit");
   document.querySelectorAll(".sekme").forEach(b=>{const a=b.dataset.sekme===ad; b.className="sekme px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap "+(a?AKTIF:PASIF); b.setAttribute("aria-selected",a)});
   history.replaceState(null,"",ad==="lit"?location.pathname:"#"+ad);
