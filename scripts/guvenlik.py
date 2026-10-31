@@ -10,10 +10,11 @@ Ortam değişkenleri:
   YONETICI_SIFRE   (zorunlu) Yönetici şifresi; veri anahtarını açmak için. Uzun ve rastgele seçin.
   KULLANICILAR     (zorunlu: kapat) Her satır: "Ad Soyad" veya "Ad Soyad;şifre".
                    Kullanıcı adı = soyad hariç adlar, şifre = soyad (belirtilmezse).
-  SERVIS_URL, SERVIS_ANAHTAR (opsiyonel) Favori/okunma servisi (şifreli pakete konur).
+  SERVIS_URL, SERVIS_ANAHTAR (opsiyonel) Favori/okunma servisi (şifreli pakete konur). Ayrıca kullanıcıların
+                   siteden değiştirdiği şifreler (şifre kutuları) servisten alınıp data/giris.json'a işlenir.
   RAKIPLER_JSON    (opsiyonel) Doluysa rakipler verisi dosya yerine bundan alınır.
 """
-import os, sys, json, base64, hashlib, re, unicodedata, secrets
+import os, sys, json, base64, hashlib, re, unicodedata, secrets, urllib.request, urllib.parse
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 KOK = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -72,6 +73,32 @@ def kullanicilari_oku():
     if not liste: sys.exit("HATA: KULLANICILAR secret'ı boş.")
     return liste
 
+def kutu_gecerli(k):
+    try:
+        return (isinstance(k, dict) and len(unb64(k["s"])) == 16 and len(unb64(k["w"])) == 60)
+    except Exception:
+        return False
+
+def kutulari_al():
+    """Kullanıcıların siteden değiştirdiği şifre kutuları: {kimlik: {s,w}}. Servise ulaşılamazsa None."""
+    url, anahtar = os.environ.get("SERVIS_URL", "").strip(), os.environ.get("SERVIS_ANAHTAR", "").strip()
+    if not url or not anahtar: return None
+    try:
+        q = urllib.parse.quote(json.dumps({"k": anahtar, "u": "0" * 64, "a": "kutular"}))
+        with urllib.request.urlopen(url + ("&" if "?" in url else "?") + "q=" + q, timeout=60) as r:
+            j = json.loads(r.read().decode("utf-8"))
+        if "liste" not in j: raise ValueError(j.get("hata", "beklenmeyen yanıt"))
+        sonuc = {}
+        for satir in j["liste"]:
+            try: k = json.loads(satir["kutu"])
+            except Exception: continue
+            if re.fullmatch(r"[0-9a-f]{64}", str(satir.get("u", ""))) and kutu_gecerli(k):
+                sonuc[satir["u"]] = {"s": k["s"], "w": k["w"]}
+        return sonuc
+    except Exception as e:
+        print(f"UYARI: şifre kutuları servisten alınamadı ({e}); mevcut kullanıcı kayıtları korunuyor.")
+        return None
+
 def sifrele(anahtar, nesne):
     nonce = secrets.token_bytes(12)
     return nonce + AESGCM(anahtar).encrypt(nonce, json.dumps(nesne, ensure_ascii=False).encode(), b"fv-veri")
@@ -104,9 +131,24 @@ def kapat():
         print("UYARI: SERVIS_URL / SERVIS_ANAHTAR secret'ları tanımlı değil; servis pakete EKLENMEDİ (favoriler yalnızca cihazda kalır).")
     open(VERI, "wb").write(sifrele(anahtar, bundle))
     giris = {"v": 1, "iter": ITER, "kullanicilar": {idhash("_yonetici"): sar(anahtar, ysifre)}}
+    if os.environ.get("SERVIS_URL"): giris["servis_url"] = os.environ["SERVIS_URL"].strip()
+    kutular = kutulari_al()
+    eski = {}
+    if os.path.exists(GIRIS):
+        try: eski = json.load(open(GIRIS, encoding="utf-8")).get("kullanicilar", {})
+        except Exception: eski = {}
+    kutulu = korunan = 0
     for kid, ad, sifre in kullanicilar:
-        giris["kullanicilar"][idhash(kid)] = sar(anahtar, sifre)
-        if len(norm(sifre)) < 8: print(f"  uyarı: '{kid}' şifresi kısa (kolay tahmin edilir)")
+        h = idhash(kid)
+        if kutular is not None and h in kutular:      # kullanıcı şifresini siteden değiştirmiş
+            giris["kullanicilar"][h] = kutular[h]; kutulu += 1
+        elif kutular is None and os.environ.get("SERVIS_URL") and h in eski and kutu_gecerli(eski[h]):
+            giris["kullanicilar"][h] = eski[h]; korunan += 1   # servis yok: mevcut kaydı bozma
+        else:
+            giris["kullanicilar"][h] = sar(anahtar, sifre)
+            if len(norm(sifre)) < 8: print(f"  uyarı: '{kid}' şifresi kısa (kolay tahmin edilir)")
+    if kutulu: print(f"{kutulu} kullanıcının siteden değiştirdiği şifre işlendi.")
+    if korunan: print(f"{korunan} kullanıcının mevcut kaydı korundu.")
     json.dump(giris, open(GIRIS, "w", encoding="utf-8"), indent=1)
     for f in (YAY, RAK):
         if os.path.exists(f): os.remove(f)
