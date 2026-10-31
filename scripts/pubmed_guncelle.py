@@ -8,6 +8,7 @@ Ortam değişkenleri (hepsi opsiyonel):
   ANTHROPIC_API_KEY         -> Türkçe çeviri için (Claude); birden fazla anahtar varsa sırayla Gemini, NVIDIA, Claude denenir
   GEMINI_MODEL              -> varsayılan gemini-2.5-flash (Google'ın güncel model adını kontrol edin)
   CLAUDE_MODEL              -> varsayılan claude-haiku-5-5
+  CUMLE_KAPSAM              -> 'kendi' (varsayılan) veya 'hepsi': görüşme cümlesi hangi yayınlar için üretilsin
   MAX_CEVIRI                -> bir çalışmada en fazla kaç özet çevrilsin (varsayılan 100)
 """
 import json, os, re, time, datetime as dt, urllib.request, urllib.parse, urllib.error
@@ -28,7 +29,7 @@ ANY_KEY = bool(GEMINI_KEY or NVIDIA_KEY or CLAUDE_KEY)
 GEMINI_MODEL = os.getenv("GEMINI_MODEL") or "gemini-2.5-flash"
 MAX_CEVIRI = int(os.getenv("MAX_CEVIRI") or "100")
 MAX_DAKIKA = int(os.getenv("MAX_DAKIKA") or "45")
-CEVIRI_ARA_SN = float(os.getenv("CEVIRI_ARA_SN") or "7")   # ücretsiz katman dakika limitleri için
+CEVIRI_ARA_SN = float(os.getenv("CEVIRI_ARA_SN") or ("7" if (GEMINI_KEY or NVIDIA_KEY) else "1"))   # ücretsiz katman dakika limitleri için
 PENCERE_AY = 24
 RETMAX = 100
 
@@ -113,9 +114,9 @@ def gemini_adaylar():
     aday.sort()
     return [x[-1] for x in aday]
 
-def _gemini_istek(model, kullanici):
+def _gemini_istek(model, kullanici, sistem=None):
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
-    govde = {"systemInstruction": {"parts": [{"text": SISTEM}]},
+    govde = {"systemInstruction": {"parts": [{"text": sistem or SISTEM}]},
              "contents": [{"role": "user", "parts": [{"text": kullanici}]}],
              "generationConfig": {"temperature": 0.1}}
     req = urllib.request.Request(url, data=json.dumps(govde).encode(),
@@ -123,10 +124,10 @@ def _gemini_istek(model, kullanici):
     with urllib.request.urlopen(req, timeout=120) as r:
         return json.loads(r.read())["candidates"][0]["content"]["parts"][0]["text"].strip()
 
-def _gemini(kullanici):
+def _gemini(kullanici, sistem=None):
     global GEMINI_MODEL
     try:
-        return _gemini_istek(GEMINI_MODEL, kullanici)
+        return _gemini_istek(GEMINI_MODEL, kullanici, sistem)
     except urllib.error.HTTPError as e:
         if e.code not in (400, 404):
             raise
@@ -136,7 +137,7 @@ def _gemini(kullanici):
     son = None
     for m in adaylar[:4]:
         try:
-            cevap = _gemini_istek(m, kullanici)
+            cevap = _gemini_istek(m, kullanici, sistem)
             GEMINI_MODEL = m
             print("  Seçilen model:", m)
             return cevap
@@ -145,8 +146,8 @@ def _gemini(kullanici):
             print(f"  {m} denenemedi: {e}")
     raise RuntimeError(f"Hiçbir Gemini modeli çalışmadı: {son}")
 
-def _claude(kullanici):
-    istek = {"model": MODEL, "max_tokens": 4000, "system": SISTEM,
+def _claude(kullanici, sistem=None):
+    istek = {"model": MODEL, "max_tokens": 4000, "system": sistem or SISTEM,
              "messages": [{"role": "user", "content": kullanici}]}
     req = urllib.request.Request("https://api.anthropic.com/v1/messages", data=json.dumps(istek).encode(),
                                  headers={"content-type": "application/json", "x-api-key": CLAUDE_KEY,
@@ -166,9 +167,9 @@ def model_listesi_yaz():
     except Exception as e:
         print("  Model listesi alınamadı:", e)
 
-def _nvidia(kullanici):
+def _nvidia(kullanici, sistem=None):
     govde = {"model": NVIDIA_MODEL, "temperature": 0.1, "max_tokens": 2000, "stream": False,
-             "messages": [{"role": "system", "content": SISTEM}, {"role": "user", "content": kullanici}]}
+             "messages": [{"role": "system", "content": sistem or SISTEM}, {"role": "user", "content": kullanici}]}
     req = urllib.request.Request("https://integrate.api.nvidia.com/v1/chat/completions", data=json.dumps(govde).encode(),
                                  headers={"content-type": "application/json", "accept": "application/json",
                                           "Authorization": "Bearer " + NVIDIA_KEY})
@@ -204,23 +205,20 @@ def saglayicilar():
     if CLAUDE_KEY: s.append(("claude", _claude))
     return [x for x in s if x[0] not in KALICI_OLU]
 
-def cevir(baslik, ozet):
+def _dene(kullanici, sistem, isle):
+    """Sağlayıcıları sırayla dener; geçici hatalarda bekleyip tekrarlar. isle(cevap) sonucu döndürür veya hata fırlatır."""
     global SON_HATA
-    kullanici = f"Başlık: {baslik}\n\nÖzet:\n{ozet}"
     for ad, fn in saglayicilar():
         for deneme in range(4):
             try:
-                cevap = fn(kullanici)
-                baslik_tr, _, govde = cevap.partition("\n")
-                if not govde.strip():
-                    raise ValueError("Boş çeviri döndü")
-                SON_HATA = ""   # başarılı çeviri sonrası eski hata mesajını temizle
-                return baslik_tr.replace("BASLIK:", "").strip(), govde.strip()
+                sonuc = isle(fn(kullanici, sistem))
+                SON_HATA = ""   # başarılı işlem sonrası eski hata mesajını temizle
+                return sonuc
             except Exception as e:
                 ayrinti = getattr(e, "read", lambda: b"")()[:200]
                 SON_HATA = f"[{ad}] {e} {ayrinti}".strip()
                 tur = hata_turu(e)
-                print(f"  çeviri hatası ({tur}, deneme {deneme + 1}/4): {SON_HATA}")
+                print(f"  işlem hatası ({tur}, deneme {deneme + 1}/4): {SON_HATA}")
                 kota = isinstance(e, urllib.error.HTTPError) and e.code == 429 and b"quota" in ayrinti.lower()
                 if kota and deneme >= 1:
                     print(f"  {ad}: kota dolmuş görünüyor, bu çalışma için bırakılıyor.")
@@ -232,6 +230,33 @@ def cevir(baslik, ozet):
                 if deneme < 3:
                     time.sleep(bekleme_suresi(e, deneme))
     return None
+
+def cevir(baslik, ozet):
+    def isle(cevap):
+        baslik_tr, _, govde = cevap.partition("\n")
+        if not govde.strip():
+            raise ValueError("Boş çeviri döndü")
+        return baslik_tr.replace("BASLIK:", "").strip(), govde.strip()
+    return _dene(f"Başlık: {baslik}\n\nÖzet:\n{ozet}", None, isle)
+
+SISTEM_CUMLE = ("Sen bir ilaç firmasının tıbbi bilgi ekibinde çalışan deneyimli bir editörsün. Verilen PubMed özetinden, "
+    "saha temsilcisinin hekime aktarabileceği 1-2 cümlelik, akıcı, resmi bir Türkçe bilgilendirme cümlesi yaz. "
+    "Kurallar: (1) Yalnızca özette yazan bilgiyi kullan; sayı, popülasyon, doz, süre veya sonuç UYDURMA. "
+    "(2) Mümkünse çalışma tipini, yılı, katılımcı sayısını/popülasyonu, uygulama (doz/süre) bilgisini ve ana bulguyu ver; özette olmayanı atla. "
+    "(3) 'kanıtlanmıştır', 'tedavi eder', 'önler', 'en iyi', 'üstündür' gibi kesin veya karşılaştırmalı iddialar KULLANMA; "
+    "bulguyu 'bildirilmiştir', 'gözlenmiştir', 'saptanmıştır' gibi ifadelerle aktar. (4) Bulgu istatistiksel olarak anlamlı değilse veya özet sonuç vermiyorsa bunu açıkça belirt. "
+    "(5) Rakip ürün veya marka adı anma. (6) Cümlenin sonunda parantez içinde kaynak ver: (yazar/dergi yıl, PMID). "
+    "Yalnızca cümleleri yaz, başlık veya açıklama ekleme.")
+
+def cumle_uret(y):
+    kullanici = (f"Başlık: {y.get('baslik_en','')}\nDergi: {y.get('dergi','')} {y.get('yil','')}\n"
+                 f"Çalışma tipi: {y.get('tip','')}\nPMID: {y.get('pmid','')}\n\nÖzet:\n{y.get('ozet_en','')}")
+    def isle(cevap):
+        c = cevap.strip().strip('"').strip()
+        if len(c) < 40:
+            raise ValueError("Çok kısa cümle")
+        return c
+    return _dene(kullanici, SISTEM_CUMLE, isle)
 
 def kaydet(mevcut, bugun):
     alt_yil = bugun.year - 2
@@ -297,6 +322,25 @@ def main():
                 if ardisik >= 8:
                     print("Üst üste 8 yayın çevrilemedi; durduruldu. Sonraki çalışmada devam edilecek."); break
             time.sleep(CEVIRI_ARA_SN)
+
+    # Görüşme cümleleri (varsayılan: yalnızca bizim ürünlerle ilgili yayınlar; CUMLE_KAPSAM=hepsi ile genişler)
+    if ANY_KEY and saglayicilar():
+        kapsam = (os.getenv("CUMLE_KAPSAM") or "kendi").lower()
+        hedef = [y for y in mevcut.values() if not y.get("cumle") and y.get("ozet_en")
+                 and (kapsam == "hepsi" or "kendi" in y.get("grup", []))]
+        hedef.sort(key=lambda y: (-(y.get("yil") or 0)))
+        print(f"{len(hedef)} yayın için görüşme cümlesi bekliyor.")
+        uretilen = 0
+        for y in hedef:
+            if uretilen >= MAX_CEVIRI or (time.time() - baslangic) / 60 >= MAX_DAKIKA or not saglayicilar():
+                break
+            c = cumle_uret(y)
+            if c:
+                y["cumle"] = c; uretilen += 1
+                if uretilen % 10 == 0:
+                    kaydet(mevcut, bugun); print(f"  ... {uretilen} cümle kaydedildi")
+            time.sleep(CEVIRI_ARA_SN)
+        print(f"{uretilen} yeni görüşme cümlesi üretildi.")
 
     toplam, bekleyen = kaydet(mevcut, bugun)
     print(f"Kaydedildi: {toplam} yayın, {cevrilen} yeni çeviri, {bekleyen} çeviri bekliyor.")

@@ -10,6 +10,7 @@ Ortam değişkenleri:
   YONETICI_SIFRE   (zorunlu) Yönetici şifresi; veri anahtarını açmak için. Uzun ve rastgele seçin.
   KULLANICILAR     (zorunlu: kapat) Her satır: "Ad Soyad" veya "Ad Soyad;şifre".
                    Kullanıcı adı = soyad hariç adlar, şifre = soyad (belirtilmezse).
+  SERVIS_URL, SERVIS_ANAHTAR (opsiyonel) Favori/okunma servisi (şifreli pakete konur).
   RAKIPLER_JSON    (opsiyonel) Doluysa rakipler verisi dosya yerine bundan alınır.
 """
 import os, sys, json, base64, hashlib, re, unicodedata, secrets
@@ -96,6 +97,8 @@ def kapat():
     bundle = {"yayinlar": json.load(open(YAY, encoding="utf-8")), "rakipler": rak,
               "sorgular": json.load(open(SOR, encoding="utf-8")),
               "adlar": {idhash(k): ad for k, ad, _ in kullanicilar}}
+    if os.environ.get("SERVIS_URL") and os.environ.get("SERVIS_ANAHTAR"):
+        bundle["servis"] = {"url": os.environ["SERVIS_URL"].strip(), "anahtar": os.environ["SERVIS_ANAHTAR"].strip()}
     open(VERI, "wb").write(sifrele(anahtar, bundle))
     giris = {"v": 1, "iter": ITER, "kullanicilar": {idhash("_yonetici"): sar(anahtar, ysifre)}}
     for kid, ad, sifre in kullanicilar:
