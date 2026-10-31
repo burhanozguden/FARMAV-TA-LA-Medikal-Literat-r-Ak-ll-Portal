@@ -78,6 +78,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <div><label for="gSif" class="block text-xs font-semibold text-slate-200 mb-1.5">Şifre</label>
         <input id="gSif" name="password" type="password" autocomplete="current-password" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Şifreniz"></div>
       <p id="gHata" class="hidden text-xs text-red-300 font-medium" role="alert"></p>
+      <p class="text-[11px] text-slate-400 leading-snug">Ekip içi kullanım için giriş zamanı, süre ve incelenen makaleler kayıt altına alınır.</p>
       <button id="gBtn" type="submit" class="w-full bg-[#e31b23] hover:bg-red-700 text-white text-sm font-bold py-3 rounded-xl transition">Giriş Yap</button>
     </form>
     <p class="text-[11px] text-slate-400 mt-4">Bu portal yalnızca yetkili kullanıcılar içindir.</p>
@@ -228,7 +229,7 @@ function favKaydet(){try{localStorage.setItem("fv_fav_"+st.kimlik,JSON.stringify
 async function api(a,veri){
   if(!st.servis){servisNotuGuncelle();return null}
   try{
-    const q=encodeURIComponent(JSON.stringify(Object.assign({k:st.servis.anahtar,u:st.kimlik,a:a},veri||{})));
+    const q=encodeURIComponent(JSON.stringify(Object.assign({k:st.servis.anahtar,u:st.kimlik,a:a,ad:st.ad||""},veri||{})));
        const r=await fetch(st.servis.url+(st.servis.url.indexOf("?")<0?"?":"&")+"q="+q);
     const j=await r.json();
     if(j&&!j.hata){st.servisHata="";servisNotuGuncelle();return j}
@@ -246,14 +247,25 @@ async function servisSenkron(){
   const j=await api("durum"); if(!j) return;
   st.fav=new Set((j.fav||[]).map(String)); st.sayac=j.sayac||{}; favKaydet(); favBtnGuncelle(); cizYayin();
 }
+function baslikBul(pmid){const y=st.yay.find(x=>String(x.pmid)===String(pmid));return y?String(y.baslik_tr||y.baslik_en||"").slice(0,200):""}
+let nabizZamanlayici=null;
+function nabiz(){
+  if(document.visibilityState!=="visible"||$("#uygulama").classList.contains("hidden")) return;
+  api("nabiz",{o:st.oid});
+}
+function oturumuBaslat(){
+  st.oid=Array.from(crypto.getRandomValues(new Uint8Array(9))).map(b=>b.toString(36).padStart(2,"0")).join("").slice(0,18);
+  nabiz(); clearInterval(nabizZamanlayici); nabizZamanlayici=setInterval(nabiz,60000);
+  document.addEventListener("visibilitychange",nabiz);
+}
 function favToggle(pmid){
   pmid=String(pmid); const var_mi=st.fav.has(pmid);
   var_mi?st.fav.delete(pmid):st.fav.add(pmid);
-  favKaydet(); favBtnGuncelle(); api("fav",{p:pmid,on:!var_mi});
+  favKaydet(); favBtnGuncelle(); api("fav",{p:pmid,on:!var_mi,t:baslikBul(pmid)});
 }
 function oku(pmid){
   pmid=String(pmid); if(okunduOturum.has(pmid)) return; okunduOturum.add(pmid);
-  st.sayac[pmid]=(+st.sayac[pmid]||0)+1; api("oku",{p:pmid});
+  st.sayac[pmid]=(+st.sayac[pmid]||0)+1; api("oku",{p:pmid,t:baslikBul(pmid)});
 }
 function favBtnGuncelle(){
   const b=$("#favBtn"); b.setAttribute("aria-pressed",st.favSadece);
@@ -292,12 +304,13 @@ async function verCoz(anahtarHam, kimlikHash){
 function uygulamayiAc(b,kimlikHash){
   st.kimlik=kimlikHash; st.servis=(b.servis&&b.servis.url)?b.servis:null; st.fav=favYerel();
   $("#giris").classList.add("hidden"); $("#uygulama").classList.remove("hidden");
-  const ad=((b.adlar||{})[kimlikHash]||"").split(" ")[0];
+  st.ad=((b.adlar||{})[kimlikHash]||"");
+  const ad=st.ad.split(" ")[0];
   if(ad){$("#kullaniciAd").textContent=ad; $("#kullaniciAd").classList.remove("hidden")}
   $("#cikis").classList.remove("hidden");
   yukle(b); favBtnGuncelle();
   $("#sirala").classList.toggle("hidden",!st.servis);
-  servisNotuGuncelle(); servisSenkron();
+  servisNotuGuncelle(); servisSenkron(); if(st.servis) oturumuBaslat();
 }
 $("#girisForm").addEventListener("submit",async e=>{
   e.preventDefault();
