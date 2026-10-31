@@ -127,6 +127,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <select id="tip" aria-label="Çalışma tipi" class="text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 font-medium text-slate-600"><option value="">Tüm çalışma tipleri</option></select>
       <select id="sirala" aria-label="Sırala" class="hidden text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 font-medium text-slate-600"><option value="yeni">Yeniden eskiye</option><option value="okunan">En çok okunan</option></select>
       <button id="favBtn" aria-pressed="false" class="text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 font-semibold text-slate-600"></button>
+      <span id="servisNot" class="hidden text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1"></span>
       <span id="durum" class="text-xs text-slate-500 ml-auto" aria-live="polite"></span>
     </div>
     <div id="ceviriUyari" class="hidden mb-6 text-xs bg-slate-100 border border-slate-200 rounded-xl p-3 text-slate-600"></div>
@@ -202,7 +203,7 @@ const KAT = {
   omega3:{ad:"Omega-3", cls:"bg-amber-50 text-amber-700 border-amber-200", ikon:"fa-fish", kenar:"border-l-amber-500"},
   form:{ad:"Form kıyaslaması", cls:"bg-blue-50 text-blue-700 border-blue-200", ikon:"fa-scale-balanced", kenar:"border-l-blue-500"}
 };
-const st = {yay:[], sorgu:[], rak:{urunlerim:[],rakipler:[]}, k:"tumu", q:"", yil:"", tip:"", etiket:"", sekme:"lit", fav:new Set(), sayac:{}, favSadece:false, sirala:"yeni", servis:null, kimlik:""};
+const st = {yay:[], sorgu:[], rak:{urunlerim:[],rakipler:[]}, k:"tumu", q:"", yil:"", tip:"", etiket:"", sekme:"lit", fav:new Set(), sayac:{}, favSadece:false, sirala:"yeni", servis:null, servisHata:"", kimlik:""};
 const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const pmUrl = p => /^\d+$/.test(String(p)) ? "https://pubmed.ncbi.nlm.nih.gov/"+p+"/" : "#";
 const bos = v => v ? esc(v) : "—";
@@ -225,11 +226,20 @@ const okunduOturum=new Set();
 function favYerel(){try{return new Set(JSON.parse(localStorage.getItem("fv_fav_"+st.kimlik)||"[]").map(String))}catch(e){return new Set()}}
 function favKaydet(){try{localStorage.setItem("fv_fav_"+st.kimlik,JSON.stringify([...st.fav]))}catch(e){}}
 async function api(a,veri){
-  if(!st.servis) return null;
+  if(!st.servis){servisNotuGuncelle();return null}
   try{
     const r=await fetch(st.servis.url,{method:"POST",body:JSON.stringify(Object.assign({k:st.servis.anahtar,u:st.kimlik,a:a},veri||{}))});
-    const j=await r.json(); return (j&&!j.hata)?j:null;
-  }catch(e){return null}
+    const j=await r.json();
+    if(j&&!j.hata){st.servisHata="";servisNotuGuncelle();return j}
+    st.servisHata="servis yanıtı: "+(j&&j.hata?j.hata+(j.ayrinti?" - "+j.ayrinti:""):"boş yanıt");
+  }catch(e){st.servisHata="bağlantı kurulamadı ("+(e&&e.message||e)+")"}
+  console.warn("[servis]",st.servisHata); servisNotuGuncelle(); return null;
+}
+function servisNotuGuncelle(){
+  const n=$("#servisNot"); let t="";
+  if(!st.servis) t="Servis bağlı değil: favoriler yalnızca bu cihazda tutuluyor.";
+  else if(st.servisHata) t="Servise ulaşılamadı, favoriler bu cihazda tutuluyor ("+st.servisHata+").";
+  n.textContent=t; n.classList.toggle("hidden",!t);
 }
 async function servisSenkron(){
   const j=await api("durum"); if(!j) return;
@@ -286,7 +296,7 @@ function uygulamayiAc(b,kimlikHash){
   $("#cikis").classList.remove("hidden");
   yukle(b); favBtnGuncelle();
   $("#sirala").classList.toggle("hidden",!st.servis);
-  servisSenkron();
+  servisNotuGuncelle(); servisSenkron();
 }
 $("#girisForm").addEventListener("submit",async e=>{
   e.preventDefault();
