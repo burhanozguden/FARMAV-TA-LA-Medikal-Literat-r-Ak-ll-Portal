@@ -75,6 +75,11 @@ def cek(pmidler):
             if not ozet:
                 continue
             yil = m.findtext(".//JournalIssue/PubDate/Year") or (m.findtext(".//JournalIssue/PubDate/MedlineDate") or "")[:4]
+            # Dergi sayısı gelecekteyse (ör. 2027 Ocak sayısı) makalenin gerçek çıkış (elektronik) yılını kullan
+            bu_yil = dt.date.today().year
+            if yil.isdigit() and int(yil) > bu_yil:
+                ey = next((x.findtext("Year") for x in m.findall(".//ArticleDate") if (x.findtext("Year") or "").isdigit()), None)
+                yil = ey if ey and int(ey) <= bu_yil else str(bu_yil)
             yazarlar = []
             for au in m.findall(".//AuthorList/Author")[:3]:
                 ad = (au.findtext("LastName") or "") + " " + (au.findtext("Initials") or "")
@@ -290,6 +295,9 @@ def main():
         kayit.update(ozet_tr="", baslik_tr="", saha_notu="", ceviri="bekliyor")
         mevcut[pmid] = kayit
 
+    for y in mevcut.values():   # önceki çalışmalardan kalan gelecek tarihli yılları düzelt
+        if (y.get("yil") or 0) > bugun.year:
+            y["yil"] = bugun.year
     for pmid, y in mevcut.items():
         if pmid in etiketler:
             y["etiketler"] = sorted(set(y.get("etiketler", [])) | etiketler[pmid])

@@ -99,6 +99,9 @@ def kapat():
               "adlar": {idhash(k): ad for k, ad, _ in kullanicilar}}
     if os.environ.get("SERVIS_URL") and os.environ.get("SERVIS_ANAHTAR"):
         bundle["servis"] = {"url": os.environ["SERVIS_URL"].strip(), "anahtar": os.environ["SERVIS_ANAHTAR"].strip()}
+        print("Servis bilgisi pakete eklendi.")
+    else:
+        print("UYARI: SERVIS_URL / SERVIS_ANAHTAR secret'ları tanımlı değil; servis pakete EKLENMEDİ (favoriler yalnızca cihazda kalır).")
     open(VERI, "wb").write(sifrele(anahtar, bundle))
     giris = {"v": 1, "iter": ITER, "kullanicilar": {idhash("_yonetici"): sar(anahtar, ysifre)}}
     for kid, ad, sifre in kullanicilar:
