@@ -3,8 +3,8 @@
  "iter": 600000,
  "kullanicilar": {
   "357294568ce63bf85bbbc90bfafa57b4b107afcd1daf8bf20403c498f79a4afe": {
-   "s": "upyXbLSB9UhCxKOj3tko5A==",
-   "w": "MRb7GOOdaYH4dGCOFMGUbs0TuKyhpsYkHx/5Yy64DNWYNKBOIcx1JnhudohS1B85ULS3Uupz3ej7NNdP"
+   "s": "a70zEP2wRffWA9SjILlfjQ==",
+   "w": "OBN40W1dMVhdJKYN/+ykpoNNRqDZ1orPYb04ndy3q0AGiEShuUUnfc53AJzmgXMevfGQPmYU+zC6VAgh"
   },
   "481e27a9c2079ae7a486d5144dfb7a00d130829ecf3affd3aafa520b1e224ba0": {
    "s": "SgLcX/Q9fgzDhlJ9S1dhPg==",
@@ -106,5 +106,6 @@
    "s": "4PxJL8awF6Os/eksAAqiPw==",
    "w": "uHxZZhz9qLMJyUDTH1o78pngMsNyfECeCtmSk+46gOolxq8Ukv+tjEH+wvfqkXYLP97Jj/M1rJ6vEVMT"
   }
- }
+ },
+ "servis_url": "https://script.google.com/macros/s/AKfycbw01HxJGbSWN_HIkNWEX1vV-6GI1xDQN62aG_Nd4mwktZ8XrMOcQCOn0hfygcYV_NVa/exec"
 }
