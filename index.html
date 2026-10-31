@@ -125,6 +125,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
     <div class="flex flex-wrap items-center gap-2 mb-6">
       <select id="yil" aria-label="Yıl" class="text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 font-medium text-slate-600"><option value="">Tüm yıllar</option></select>
       <select id="tip" aria-label="Çalışma tipi" class="text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 font-medium text-slate-600"><option value="">Tüm çalışma tipleri</option></select>
+      <select id="sirala" aria-label="Sırala" class="hidden text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 font-medium text-slate-600"><option value="yeni">Yeniden eskiye</option><option value="okunan">En çok okunan</option></select>
+      <button id="favBtn" aria-pressed="false" class="text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 font-semibold text-slate-600"></button>
       <span id="durum" class="text-xs text-slate-500 ml-auto" aria-live="polite"></span>
     </div>
     <div id="ceviriUyari" class="hidden mb-6 text-xs bg-slate-100 border border-slate-200 rounded-xl p-3 text-slate-600"></div>
@@ -172,6 +174,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <h4 class="font-bold text-amber-900 text-xs mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb text-amber-600"></i> Saha & Klinik Hap Bilgi</h4>
         <p id="mSahaMetin" class="text-amber-950 font-medium"></p>
       </div>
+      <div id="mCumle" class="hidden bg-sky-50 border-l-4 border-sky-500 p-4 rounded-r-xl">
+        <h4 class="font-bold text-sky-900 text-xs mb-1 flex items-center gap-1.5"><i class="fa-solid fa-comment-medical text-sky-600"></i> Görüşmede Kullanılabilecek Cümle</h4>
+        <p id="mCumleMetin" class="text-sky-950 font-medium"></p>
+        <div class="flex items-center justify-between gap-3 mt-2"><p class="text-[11px] text-sky-800/70">Özete dayanır, yapay zeka ile hazırlanmıştır; kullanmadan önce kaynağı kontrol edin.</p>
+        <button id="mCumleKopya" class="shrink-0 text-xs font-semibold text-sky-800 hover:text-sky-950 flex items-center gap-1.5"><i class="fa-regular fa-copy"></i> Cümleyi kopyala</button></div>
+      </div>
       <div>
         <h4 class="font-bold text-slate-800 mb-1 text-xs" id="mOzetBaslik">Özet</h4>
         <p id="mOzet" class="pre text-slate-600 leading-normal"></p>
@@ -180,7 +188,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <details id="mEnDetay" class="hidden"><summary class="cursor-pointer font-semibold text-slate-700">Orijinal İngilizce özet</summary><p id="mEn" class="pre mt-2 text-slate-500"></p></details>
     </div>
     <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-between items-center gap-2">
-      <button id="mKopya" class="text-xs font-semibold text-slate-600 hover:text-[#0b1f3f] flex items-center gap-1.5"><i class="fa-regular fa-copy"></i> Görüşme özeti kopyala</button>
+      <div class="flex items-center gap-4"><button id="mFav" class="text-xs font-semibold text-slate-600 hover:text-amber-600 flex items-center gap-1.5"></button><button id="mKopya" class="text-xs font-semibold text-slate-600 hover:text-[#0b1f3f] flex items-center gap-1.5"><i class="fa-regular fa-copy"></i> Görüşme özeti kopyala</button></div>
       <a id="mLink" href="#" target="_blank" rel="noopener noreferrer" class="bg-[#0b1f3f] hover:bg-slate-800 text-white text-xs px-4 py-2 rounded-xl font-medium transition flex items-center gap-1.5"><span>PubMed'de İncele</span><i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a>
     </div>
   </div>
@@ -194,7 +202,7 @@ const KAT = {
   omega3:{ad:"Omega-3", cls:"bg-amber-50 text-amber-700 border-amber-200", ikon:"fa-fish", kenar:"border-l-amber-500"},
   form:{ad:"Form kıyaslaması", cls:"bg-blue-50 text-blue-700 border-blue-200", ikon:"fa-scale-balanced", kenar:"border-l-blue-500"}
 };
-const st = {yay:[], sorgu:[], rak:{urunlerim:[],rakipler:[]}, k:"tumu", q:"", yil:"", tip:"", etiket:"", sekme:"lit"};
+const st = {yay:[], sorgu:[], rak:{urunlerim:[],rakipler:[]}, k:"tumu", q:"", yil:"", tip:"", etiket:"", sekme:"lit", fav:new Set(), sayac:{}, favSadece:false, sirala:"yeni", servis:null, kimlik:""};
 const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const pmUrl = p => /^\d+$/.test(String(p)) ? "https://pubmed.ncbi.nlm.nih.gov/"+p+"/" : "#";
 const bos = v => v ? esc(v) : "—";
@@ -211,6 +219,38 @@ function yukle(b){
   filtreDoldur(); guncelleDugmeler(); cizYayin(); cizUrun(); cizRakip();
   const h=location.hash.replace("#",""); sekme(["urun","rak"].includes(h)?h:"lit");
 }
+
+/* ---------- Favoriler & okunma sayacı ---------- */
+const okunduOturum=new Set();
+function favYerel(){try{return new Set(JSON.parse(localStorage.getItem("fv_fav_"+st.kimlik)||"[]").map(String))}catch(e){return new Set()}}
+function favKaydet(){try{localStorage.setItem("fv_fav_"+st.kimlik,JSON.stringify([...st.fav]))}catch(e){}}
+async function api(a,veri){
+  if(!st.servis) return null;
+  try{
+    const r=await fetch(st.servis.url,{method:"POST",body:JSON.stringify(Object.assign({k:st.servis.anahtar,u:st.kimlik,a:a},veri||{}))});
+    const j=await r.json(); return (j&&!j.hata)?j:null;
+  }catch(e){return null}
+}
+async function servisSenkron(){
+  const j=await api("durum"); if(!j) return;
+  st.fav=new Set((j.fav||[]).map(String)); st.sayac=j.sayac||{}; favKaydet(); favBtnGuncelle(); cizYayin();
+}
+function favToggle(pmid){
+  pmid=String(pmid); const var_mi=st.fav.has(pmid);
+  var_mi?st.fav.delete(pmid):st.fav.add(pmid);
+  favKaydet(); favBtnGuncelle(); api("fav",{p:pmid,on:!var_mi});
+}
+function oku(pmid){
+  pmid=String(pmid); if(okunduOturum.has(pmid)) return; okunduOturum.add(pmid);
+  st.sayac[pmid]=(+st.sayac[pmid]||0)+1; api("oku",{p:pmid});
+}
+function favBtnGuncelle(){
+  const b=$("#favBtn"); b.setAttribute("aria-pressed",st.favSadece);
+  b.className="text-xs rounded-xl px-3 py-2 font-semibold border "+(st.favSadece?"bg-[#0b1f3f] text-white border-[#0b1f3f]":"bg-white text-slate-600 border-slate-200");
+  b.innerHTML='<i class="fa-'+(st.favSadece?'solid':'regular')+' fa-star text-amber-500"></i> Favorilerim ('+st.fav.size+')';
+}
+$("#favBtn").onclick=()=>{st.favSadece=!st.favSadece;favBtnGuncelle();cizYayin()};
+$("#sirala").onchange=e=>{st.sirala=e.target.value;cizYayin()};
 
 /* ---------- Giriş (AES-GCM + PBKDF2, tarayıcıda çözülür) ---------- */
 const enc=new TextEncoder(), dec=new TextDecoder();
@@ -239,11 +279,14 @@ async function verCoz(anahtarHam, kimlikHash){
   return b;
 }
 function uygulamayiAc(b,kimlikHash){
+  st.kimlik=kimlikHash; st.servis=(b.servis&&b.servis.url)?b.servis:null; st.fav=favYerel();
   $("#giris").classList.add("hidden"); $("#uygulama").classList.remove("hidden");
   const ad=((b.adlar||{})[kimlikHash]||"").split(" ")[0];
   if(ad){$("#kullaniciAd").textContent=ad; $("#kullaniciAd").classList.remove("hidden")}
   $("#cikis").classList.remove("hidden");
-  yukle(b);
+  yukle(b); favBtnGuncelle();
+  $("#sirala").classList.toggle("hidden",!st.servis);
+  servisSenkron();
 }
 $("#girisForm").addEventListener("submit",async e=>{
   e.preventDefault();
@@ -280,6 +323,7 @@ function eslesir(y){
   if(st.yil && String(y.yil)!==st.yil) return false;
   if(st.tip && y.tip!==st.tip) return false;
   if(st.etiket && !(y.etiketler||[]).includes(st.etiket)) return false;
+  if(st.favSadece && !st.fav.has(String(y.pmid))) return false;
   if(st.q){
     const h=[y.baslik_tr,y.baslik_en,y.dergi,y.pmid,y.yazarlar,y.saha_notu,(y.etiketler||[]).map(etiketAdi).join(" ")].join(" ").toLocaleLowerCase("tr");
     return st.q.toLocaleLowerCase("tr").split(/\s+/).every(w=>h.includes(w));
@@ -289,7 +333,8 @@ function eslesir(y){
 const etiketAdi = id => (st.sorgu.find(x=>x.id===id)||{ad:id}).ad;
 
 function cizYayin(){
-  const liste=st.yay.filter(eslesir), kutu=$("#liste");
+  const bulunan=st.yay.filter(eslesir), kutu=$("#liste");
+  const liste=st.sirala==="okunan"?[...bulunan].sort((a,b)=>(+st.sayac[b.pmid]||0)-(+st.sayac[a.pmid]||0)||(b.yil||0)-(a.yil||0)):bulunan;
   $("#durum").innerHTML = st.yay.length ? liste.length+" yayın"+(st.etiket?' · <button id="etTemizle" class="text-[#e31b23] font-semibold">'+esc(etiketAdi(st.etiket))+' filtresini kaldır ✕</button>':"") : "";
   const t=$("#etTemizle"); if(t) t.onclick=()=>{st.etiket="";cizYayin()};
   if(!liste.length){
@@ -303,16 +348,19 @@ function cizYayin(){
       '<span class="text-[11px] font-bold px-2.5 py-1 rounded-lg border '+k.cls+'">'+esc(k.ad)+'</span>'+
       (rakip?'<span class="text-[11px] font-bold px-2.5 py-1 rounded-lg border bg-slate-50 text-slate-600 border-slate-200">Rakip</span>':'')+
       (y.tip?'<span class="text-[11px] font-bold px-2.5 py-1 rounded-lg border bg-blue-50 text-blue-700 border-blue-200">'+esc(y.tip)+'</span>':'')+
-    '</div><span class="text-[11px] font-medium text-slate-400 whitespace-nowrap"><i class="fa-regular fa-calendar-alt mr-1"></i>'+esc(y.yil)+'</span></div>'+
+    '</div><div class="flex items-center gap-2"><span class="text-[11px] font-medium text-slate-400 whitespace-nowrap"><i class="fa-regular fa-calendar-alt mr-1"></i>'+esc(y.yil)+'</span><button data-fav="'+esc(y.pmid)+'" aria-label="Favorilere ekle / çıkar" aria-pressed="'+st.fav.has(String(y.pmid))+'" class="p-1 rounded-md hover:bg-amber-50"><i class="fa-'+(st.fav.has(String(y.pmid))?'solid text-amber-500':'regular text-slate-300')+' fa-star text-base"></i></button></div></div>'+
     '<h3 class="text-base font-bold text-slate-900 group-hover:text-[#0b1f3f] transition leading-snug mb-2">'+esc(y.baslik_tr||y.baslik_en)+'</h3>'+
-    '<p class="text-xs text-slate-500 font-medium mb-4 flex items-center gap-1.5"><i class="fa-solid fa-book-open text-slate-400"></i> '+esc(y.dergi)+' • PMID '+esc(y.pmid)+'</p>'+
+    '<p class="text-xs text-slate-500 font-medium mb-4 flex items-center gap-1.5"><i class="fa-solid fa-book-open text-slate-400"></i> '+esc(y.dergi)+' • PMID '+esc(y.pmid)+(st.servis&&st.sayac[y.pmid]?' • <i class="fa-regular fa-eye"></i> '+esc(st.sayac[y.pmid])+' okunma':'')+'</p>'+
     (y.saha_notu?'<div class="bg-gradient-to-r from-amber-50 to-orange-50/50 border-l-4 border-amber-500 p-3.5 rounded-r-xl text-xs text-slate-700 mb-5"><strong class="text-amber-900 font-bold block mb-1"><i class="fa-solid fa-lightbulb text-amber-600"></i> Saha & Klinik Hap Bilgi:</strong>'+esc(y.saha_notu)+'</div>':'')+
+    (y.cumle?'<p class="text-[11px] text-sky-700 font-semibold mb-3"><i class="fa-solid fa-comment-medical"></i> Görüşme cümlesi hazır</p>':'')+
     (y.ozet_tr?'':'<p class="text-[11px] text-slate-400 mb-4"><i class="fa-solid fa-language"></i> Türkçe özet hazırlanıyor, İngilizce özet gösterilir.</p>')+
     '</div><div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">'+
     '<button data-ac="'+i+'" class="text-xs font-semibold text-slate-600 hover:text-[#0b1f3f] transition flex items-center gap-1"><i class="fa-solid fa-align-left text-slate-400"></i> Detay & Özet</button>'+
-    '<a href="'+pmUrl(y.pmid)+'" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-[#e31b23] hover:text-red-700 transition flex items-center gap-1"><span>PubMed\'de Oku</span><i class="fa-solid fa-arrow-right text-[10px]"></i></a></div></div>';
+    '<a data-pm="'+esc(y.pmid)+'" href="'+pmUrl(y.pmid)+'" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-[#e31b23] hover:text-red-700 transition flex items-center gap-1"><span>PubMed\'de Oku</span><i class="fa-solid fa-arrow-right text-[10px]"></i></a></div></div>';
   }).join("");
   kutu.querySelectorAll("[data-ac]").forEach(b=>b.onclick=()=>ac(liste[+b.dataset.ac]));
+  kutu.querySelectorAll("[data-fav]").forEach(b=>b.onclick=()=>{favToggle(b.dataset.fav);cizYayin()});
+  kutu.querySelectorAll("[data-pm]").forEach(a=>a.addEventListener("click",()=>oku(a.dataset.pm)));
 }
 
 function ac(y){
@@ -321,6 +369,9 @@ function ac(y){
   $("#mRozet").textContent=k.ad;
   $("#mBaslik").textContent=y.baslik_tr||y.baslik_en;
   $("#mMeta").textContent=[y.yazarlar,y.dergi,y.yil,"PMID "+y.pmid].filter(Boolean).join(" | ");
+  $("#mCumle").classList.toggle("hidden",!y.cumle); $("#mCumleMetin").textContent=y.cumle||"";
+  const ck=$("#mCumleKopya"); ck.innerHTML='<i class="fa-regular fa-copy"></i> Cümleyi kopyala';
+  ck.onclick=async()=>{try{await navigator.clipboard.writeText(y.cumle||"");ck.textContent="Kopyalandı ✓"}catch(e){ck.textContent="Kopyalanamadı"}};
   $("#mSaha").classList.toggle("hidden",!y.saha_notu); $("#mSahaMetin").textContent=y.saha_notu||"";
   $("#mOzetBaslik").textContent=tr?"Türkçe Özet":"Özet (İngilizce)";
   $("#mOzet").textContent=tr?y.ozet_tr:y.ozet_en;
@@ -328,7 +379,11 @@ function ac(y){
   $("#mEnDetay").classList.toggle("hidden",!tr); $("#mEn").textContent=y.ozet_en||"";
   $("#mLink").href=pmUrl(y.pmid);
   const kop=$("#mKopya"); kop.innerHTML='<i class="fa-regular fa-copy"></i> Görüşme özeti kopyala';
-  kop.onclick=async()=>{try{await navigator.clipboard.writeText((y.baslik_tr||y.baslik_en)+"\n"+[y.dergi,y.yil].filter(Boolean).join(", ")+"\n"+pmUrl(y.pmid));kop.textContent="Kopyalandı ✓"}catch(e){kop.textContent="Kopyalanamadı"}};
+  kop.onclick=async()=>{try{await navigator.clipboard.writeText((y.baslik_tr||y.baslik_en)+"\n"+[y.dergi,y.yil].filter(Boolean).join(", ")+(y.cumle?"\n\n"+y.cumle:"")+"\n"+pmUrl(y.pmid));kop.textContent="Kopyalandı ✓"}catch(e){kop.textContent="Kopyalanamadı"}};
+  const pm=String(y.pmid), mf=$("#mFav");
+  const mfCiz=()=>{mf.innerHTML=st.fav.has(pm)?'<i class="fa-solid fa-star text-amber-500"></i> Favorilerde':'<i class="fa-regular fa-star"></i> Favorilere ekle'};
+  mfCiz(); mf.onclick=()=>{favToggle(pm);mfCiz();cizYayin()};
+  oku(pm);
   const m=$("#modal"); m.classList.remove("hidden"); m.classList.add("flex"); $("#mKapat").focus();
 }
 function kapat(){const m=$("#modal"); m.classList.add("hidden"); m.classList.remove("flex")}
