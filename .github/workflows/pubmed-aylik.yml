@@ -36,6 +36,8 @@ jobs:
         env:
           YONETICI_SIFRE: ${{ secrets.YONETICI_SIFRE }}
           KULLANICILAR: ${{ secrets.KULLANICILAR }}
+          SERVIS_URL: ${{ secrets.SERVIS_URL }}
+          SERVIS_ANAHTAR: ${{ secrets.SERVIS_ANAHTAR }}
           RAKIPLER_JSON: ${{ secrets.RAKIPLER_JSON }}
         run: python scripts/guvenlik.py kapat
       - name: Değişiklik varsa kaydet
