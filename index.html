@@ -228,7 +228,8 @@ function favKaydet(){try{localStorage.setItem("fv_fav_"+st.kimlik,JSON.stringify
 async function api(a,veri){
   if(!st.servis){servisNotuGuncelle();return null}
   try{
-    const r=await fetch(st.servis.url,{method:"POST",body:JSON.stringify(Object.assign({k:st.servis.anahtar,u:st.kimlik,a:a},veri||{}))});
+    const q=encodeURIComponent(JSON.stringify(Object.assign({k:st.servis.anahtar,u:st.kimlik,a:a},veri||{})));
+       const r=await fetch(st.servis.url+(st.servis.url.indexOf("?")<0?"?":"&")+"q="+q);
     const j=await r.json();
     if(j&&!j.hata){st.servisHata="";servisNotuGuncelle();return j}
     st.servisHata="servis yanıtı: "+(j&&j.hata?j.hata+(j.ayrinti?" - "+j.ayrinti:""):"boş yanıt");
