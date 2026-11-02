@@ -8,11 +8,13 @@ Komutlar:
 
 Ortam değişkenleri:
   YONETICI_SIFRE   (zorunlu) Yönetici şifresi; veri anahtarını açmak için. Uzun ve rastgele seçin.
-  KULLANICILAR     (zorunlu: kapat) Her satır: "Ad Soyad" veya "Ad Soyad;şifre".
-                   Kullanıcı adı = soyad hariç adlar, şifre = soyad (belirtilmezse).
+  KULLANICILAR     (kapat) Her satır: "Ad Soyad" veya "Ad Soyad;şifre". Kullanıcı adı = soyad hariç adlar,
+                   şifre = soyad (belirtilmezse). Servis tablosundaki 'Kullanicilar' sayfası doluysa o esas alınır.
   SERVIS_URL, SERVIS_ANAHTAR (opsiyonel) Favori/okunma servisi (şifreli pakete konur). Ayrıca kullanıcıların
                    siteden değiştirdiği şifreler (şifre kutuları) servisten alınıp data/giris.json'a işlenir.
   RAKIPLER_JSON    (opsiyonel) Doluysa rakipler verisi dosya yerine bundan alınır.
+  KOK_YENILE       "evet" ise veri anahtarı yenilenir: listeden çıkarılan kullanıcıların eski anahtarı artık
+                   işe yaramaz. Herkesin şifresi KULLANICILAR/tablodaki ilk şifresine döner.
 """
 import os, sys, json, base64, hashlib, re, unicodedata, secrets, urllib.request, urllib.parse
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
@@ -56,21 +58,37 @@ def yonetici_anahtar():
             sys.exit("HATA: YONETICI_SIFRE mevcut data/giris.json ile uyuşmuyor. Şifreyi değiştirdiyseniz eski şifreyi geri yazın.")
     return None, sifre
 
+def satir_coz(satir):
+    """'Ad Soyad' veya 'Ad Soyad;şifre' -> (kimlik, 'Ad Soyad', şifre, özel_mi). Geçersizse None."""
+    ad, _, sif = satir.strip().partition(";")
+    kelimeler = ad.split()
+    if len(kelimeler) < 2: return None
+    return norm(" ".join(kelimeler[:-1])), " ".join(kelimeler), (sif.strip() or kelimeler[-1]), bool(sif.strip())
+
 def kullanicilari_oku():
-    ham = os.environ.get("KULLANICILAR", "")
+    """Kullanıcı listesi. Google Tablo'daki 'Kullanicilar' sayfası doluysa esas odur; KULLANICILAR secret'ı
+    yalnızca özel şifre ('Ad Soyad;şifre') tanımlamak içindir. Tablo boşsa/ulaşılamazsa secret kullanılır."""
+    secret = {}
+    for satir in os.environ.get("KULLANICILAR", "").splitlines():
+        if not satir.strip() or satir.strip().startswith("#"): continue
+        c = satir_coz(satir)
+        if c is None: sys.exit(f"HATA: 'Ad Soyad' biçiminde olmayan satır: {satir!r}")
+        secret[c[0]] = c
+    tablo = servis_liste("kullanicilar")
     liste, gorulen = [], set()
-    for satir in ham.splitlines():
-        satir = satir.strip()
-        if not satir or satir.startswith("#"): continue
-        ad, _, sif = satir.partition(";")
-        kelimeler = ad.split()
-        if len(kelimeler) < 2: sys.exit(f"HATA: 'Ad Soyad' biçiminde olmayan satır: {satir!r}")
-        kid = norm(" ".join(kelimeler[:-1]))
-        sifre = sif.strip() or kelimeler[-1]
-        if kid in gorulen: sys.exit(f"HATA: Aynı kullanıcı adı iki kez: {kid}")
-        gorulen.add(kid)
-        liste.append((kid, " ".join(kelimeler), sifre))
-    if not liste: sys.exit("HATA: KULLANICILAR secret'ı boş.")
+    if tablo:
+        print(f"Kullanıcı listesi Google Tablo'dan alındı ({len(tablo)} satır).")
+        for satir in tablo:
+            c = satir_coz(str(satir))
+            if c is None: print(f"  uyarı: tablodaki '{satir}' satırı 'Ad Soyad' biçiminde değil, atlandı."); continue
+            if c[0] in gorulen: print(f"  uyarı: tabloda aynı kullanıcı adı iki kez ({c[0]}), ikincisi atlandı."); continue
+            gorulen.add(c[0])
+            if c[0] in secret and secret[c[0]][3]: c = secret[c[0]]   # özel şifre secret'ta tanımlı
+            liste.append(c[:3])
+    else:
+        if tablo is not None: print("Tablodaki kullanıcı listesi boş; KULLANICILAR secret'ı kullanılıyor.")
+        for c in secret.values(): liste.append(c[:3])
+    if not liste: sys.exit("HATA: Kullanıcı listesi boş (ne tablo ne KULLANICILAR secret'ı dolu).")
     return liste
 
 def kutu_gecerli(k):
@@ -79,24 +97,36 @@ def kutu_gecerli(k):
     except Exception:
         return False
 
-def kutulari_al():
-    """Kullanıcıların siteden değiştirdiği şifre kutuları: {kimlik: {s,w}}. Servise ulaşılamazsa None."""
+def servis_liste(aksiyon):
+    """Servisten (Apps Script) bir listeyi alır. Ulaşılamazsa None."""
     url, anahtar = os.environ.get("SERVIS_URL", "").strip(), os.environ.get("SERVIS_ANAHTAR", "").strip()
     if not url or not anahtar: return None
     try:
-        q = urllib.parse.quote(json.dumps({"k": anahtar, "u": "0" * 64, "a": "kutular"}))
+        q = urllib.parse.quote(json.dumps({"k": anahtar, "u": "0" * 64, "a": aksiyon}))
         with urllib.request.urlopen(url + ("&" if "?" in url else "?") + "q=" + q, timeout=60) as r:
             j = json.loads(r.read().decode("utf-8"))
         if "liste" not in j: raise ValueError(j.get("hata", "beklenmeyen yanıt"))
+        return j["liste"]
+    except Exception as e:
+        print(f"UYARI: servisten '{aksiyon}' alınamadı ({e}).")
+        return None
+
+def kutulari_al():
+    """Kullanıcıların siteden değiştirdiği şifre kutuları: {kimlik: {s,w}}. Servise ulaşılamazsa None."""
+    liste = servis_liste("kutular")
+    if liste is None:
+        print("      Mevcut kullanıcı kayıtları korunuyor.")
+        return None
+    try:
         sonuc = {}
-        for satir in j["liste"]:
+        for satir in liste:
             try: k = json.loads(satir["kutu"])
             except Exception: continue
             if re.fullmatch(r"[0-9a-f]{64}", str(satir.get("u", ""))) and kutu_gecerli(k):
                 sonuc[satir["u"]] = {"s": k["s"], "w": k["w"]}
         return sonuc
     except Exception as e:
-        print(f"UYARI: şifre kutuları servisten alınamadı ({e}); mevcut kullanıcı kayıtları korunuyor.")
+        print(f"UYARI: şifre kutuları işlenemedi ({e}); mevcut kullanıcı kayıtları korunuyor.")
         return None
 
 def sifrele(anahtar, nesne):
@@ -117,8 +147,13 @@ def ac():
 
 def kapat():
     anahtar, ysifre = yonetici_anahtar()
+    yenile = os.environ.get("KOK_YENILE", "").strip().lower() == "evet"
     if anahtar is None:
         anahtar = secrets.token_bytes(32); print("Yeni veri anahtarı üretildi.")
+    elif yenile:
+        anahtar = secrets.token_bytes(32)
+        print("Veri anahtarı YENİLENDİ: tüm kullanıcılar ilk şifreleriyle (soyadı veya tanımlı şifre) girecek.")
+        servis_liste("kutular_temizle")   # eski anahtara ait şifre kutularını siler
     kullanicilar = kullanicilari_oku()
     rak = json.loads(os.environ["RAKIPLER_JSON"]) if os.environ.get("RAKIPLER_JSON") else json.load(open(RAK, encoding="utf-8"))
     bundle = {"yayinlar": json.load(open(YAY, encoding="utf-8")), "rakipler": rak,
@@ -132,7 +167,7 @@ def kapat():
     open(VERI, "wb").write(sifrele(anahtar, bundle))
     giris = {"v": 1, "iter": ITER, "kullanicilar": {idhash("_yonetici"): sar(anahtar, ysifre)}}
     if os.environ.get("SERVIS_URL"): giris["servis_url"] = os.environ["SERVIS_URL"].strip()
-    kutular = kutulari_al()
+    kutular = {} if yenile else kutulari_al()
     eski = {}
     if os.path.exists(GIRIS):
         try: eski = json.load(open(GIRIS, encoding="utf-8")).get("kullanicilar", {})
