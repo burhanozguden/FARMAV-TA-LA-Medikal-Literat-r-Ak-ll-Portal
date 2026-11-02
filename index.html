@@ -85,6 +85,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   </div>
 </section>
 
+<div id="bostaUyari" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-[60] bg-slate-900 text-white text-xs font-medium px-4 py-2.5 rounded-xl shadow-lg" role="alert"></div>
 <div id="uygulama" class="hidden">
 <div id="sifreUyari" class="hidden bg-amber-50 border-b border-amber-200 text-amber-900 text-xs px-4 py-2 text-center"><i class="fa-solid fa-key mr-1"></i> İlk şifrenizi kullanıyorsunuz. Güvenlik için <button id="sifreUyariBtn" class="font-bold underline">şifrenizi değiştirin</button>.</div>
 <section class="bg-gradient-to-b from-slate-900 via-[#0b1f3f] to-slate-900 text-white py-10 px-4 sm:px-6 relative overflow-hidden">
@@ -403,7 +404,7 @@ function uygulamayiAc(b,kimlikHash){
   $("#cikis").classList.remove("hidden"); $("#profilBtn").classList.toggle("hidden",!st.servis);
   yukle(b); favBtnGuncelle();
   $("#sirala").classList.toggle("hidden",!st.servis);
-  servisNotuGuncelle(); servisSenkron(); if(st.servis){ oturumuBaslat(); kayitGetir(kimlikHash).then(r=>{ if(r.kutuVar===false) $("#sifreUyari").classList.remove("hidden") }).catch(()=>{}); }
+  hareketsizlikBaslat(); servisNotuGuncelle(); servisSenkron(); if(st.servis){ oturumuBaslat(); kayitGetir(kimlikHash).then(r=>{ if(r.kutuVar===false) $("#sifreUyari").classList.remove("hidden") }).catch(()=>{}); }
 }
 $("#girisForm").addEventListener("submit",async e=>{
   e.preventDefault();
@@ -534,9 +535,35 @@ function cizYorumSekme(){
 }
 $("#yorBenim").onchange=cizYorumSekme;
 
+/* ---------- Hareketsizlikte oturumu kapat ---------- */
+const BOSTA_MS=120000, BOSTA_UYARI_MS=90000;   // 2 dk sonra çıkış, 90. sn'de uyarı
+let sonHareket=Date.now(), sonYazim=0, bostaBasladi=false;
+function hareketKaydet(){
+  sonHareket=Date.now();
+  if(sonHareket-sonYazim>2000){ sonYazim=sonHareket; try{sessionStorage.setItem("fv_t",String(sonHareket))}catch(e){} }
+  $("#bostaUyari").classList.add("hidden");
+}
+function bostaKontrol(){
+  if($("#uygulama").classList.contains("hidden")) return;
+  const g=Date.now()-sonHareket;
+  if(g>=BOSTA_MS){ try{sessionStorage.clear();sessionStorage.setItem("fv_bosta","1")}catch(e){} location.reload(); return }
+  const u=$("#bostaUyari");
+  if(g>=BOSTA_UYARI_MS){ u.textContent="Hareketsizlik nedeniyle oturum "+Math.max(1,Math.ceil((BOSTA_MS-g)/1000))+" saniye içinde kapanacak. Devam etmek için ekrana dokunun."; u.classList.remove("hidden") }
+  else u.classList.add("hidden");
+}
+function hareketsizlikBaslat(){
+  hareketKaydet();
+  if(bostaBasladi) return; bostaBasladi=true;
+  ["mousemove","mousedown","keydown","scroll","wheel","touchstart","click"].forEach(o=>document.addEventListener(o,hareketKaydet,{passive:true,capture:true}));
+  document.addEventListener("visibilitychange",bostaKontrol);
+  setInterval(bostaKontrol,5000);
+}
+try{ if(sessionStorage.getItem("fv_bosta")){ sessionStorage.removeItem("fv_bosta"); const e=$("#gHata"); e.textContent="Hareketsizlik nedeniyle oturumunuz sonlandırıldı. Lütfen tekrar giriş yapın."; e.classList.remove("hidden") } }catch(e){}
+
 (async()=>{ // aynı sekmede yenileme sonrası oturumu sürdür
   try{
     const k=sessionStorage.getItem("fv_k"), i=sessionStorage.getItem("fv_i"); if(!k||!i) return;
+    if(Date.now()-(+sessionStorage.getItem("fv_t")||0)>BOSTA_MS){ sessionStorage.clear(); sessionStorage.setItem("fv_bosta","1"); location.reload(); return }
     const b=await verCoz(Uint8Array.from(atob(k),c=>c.charCodeAt(0)),i); uygulamayiAc(b,i);
   }catch(e){ try{sessionStorage.clear()}catch(_){} }
 })();
