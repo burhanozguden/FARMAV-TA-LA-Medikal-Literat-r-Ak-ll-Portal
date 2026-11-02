@@ -3,6 +3,11 @@ on:
   schedule:
     - cron: "0 5 * * 1"   # her pazartesi 08:00 (Türkiye); bekleyen çeviriler haftalık tamamlanır
   workflow_dispatch:       # Actions sekmesinden elle de çalıştırılabilir
+    inputs:
+      kok_yenile:
+        description: "Veri anahtarını yenile (listeden çıkardığınız kişilerin erişimini kesmek için; herkes ilk şifresine döner)"
+        type: boolean
+        default: false
 permissions:
   contents: write
 jobs:
@@ -39,6 +44,7 @@ jobs:
           SERVIS_URL: ${{ secrets.SERVIS_URL }}
           SERVIS_ANAHTAR: ${{ secrets.SERVIS_ANAHTAR }}
           RAKIPLER_JSON: ${{ secrets.RAKIPLER_JSON }}
+          KOK_YENILE: ${{ inputs.kok_yenile && 'evet' || '' }}
         run: python scripts/guvenlik.py kapat
       - name: Değişiklik varsa kaydet
         run: |
