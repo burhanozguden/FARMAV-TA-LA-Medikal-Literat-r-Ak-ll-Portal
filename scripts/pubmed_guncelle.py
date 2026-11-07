@@ -59,6 +59,54 @@ TIP = {"Meta-Analysis": "Meta-analiz", "Systematic Review": "Sistematik derleme"
        "Randomized Controlled Trial": "RKÇ", "Clinical Trial": "Klinik çalışma",
        "Review": "Derleme", "Observational Study": "Gözlemsel"}
 
+AYLAR = {m: i + 1 for i, m in enumerate(["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"])}
+
+def tarih_cikar(m, bugun=None):
+    """Yayın tarihini 'YYYY-MM-DD' (gün/ay yoksa 'YYYY-MM' veya 'YYYY') olarak döndürür.
+    Önce elektronik yayın tarihi (ArticleDate), yoksa dergi sayısı tarihi kullanılır; gelecek tarih asla yazılmaz."""
+    bugun = bugun or dt.date.today()
+    def parca(el):
+        y = (el.findtext("Year") or "").strip()
+        if not y.isdigit(): return None
+        ay = (el.findtext("Month") or "").strip()
+        ay = int(ay) if ay.isdigit() else AYLAR.get(ay[:3].lower(), 0)
+        g = (el.findtext("Day") or "").strip()
+        g = int(g) if g.isdigit() and ay else 0
+        return (int(y), ay if 1 <= ay <= 12 else 0, g if 1 <= g <= 31 else 0)
+    adaylar = []
+    for x in m.findall(".//ArticleDate"):
+        t = parca(x)
+        if t: adaylar.append(t)
+    if not adaylar:
+        pd = m.find(".//JournalIssue/PubDate")
+        t = parca(pd) if pd is not None else None
+        if t: adaylar.append(t)
+        else:
+            md = (m.findtext(".//JournalIssue/PubDate/MedlineDate") or "")[:4]
+            if md.isdigit(): adaylar.append((int(md), 0, 0))
+    for y, a, g in adaylar:
+        if (y, a or 1, g or 1) <= (bugun.year, bugun.month, bugun.day):
+            return "%04d" % y + ("-%02d" % a if a else "") + ("-%02d" % g if a and g else "")
+    return ""
+
+def tarihleri_doldur(mevcut, bugun):
+    """Eski kayıtlarda 'tarih' alanı yoksa PubMed'den yalnızca tarihi çekip ekler (çeviri gerekmez)."""
+    eksik = [p for p, y in mevcut.items() if "tarih" not in y]
+    if not eksik: return 0
+    print(f"{len(eksik)} yayın için yayın tarihi çekiliyor.")
+    doldu = 0
+    for i in range(0, len(eksik), 100):
+        grup = eksik[i:i + 100]
+        xml = eutils("efetch.fcgi", db="pubmed", id=",".join(grup), retmode="xml")
+        time.sleep(0.4)
+        for m in ET.fromstring(xml).findall(".//PubmedArticle"):
+            pmid = m.findtext("MedlineCitation/PMID")
+            if pmid in mevcut:
+                mevcut[pmid]["tarih"] = tarih_cikar(m, bugun); doldu += 1
+    for p in eksik:
+        mevcut[p].setdefault("tarih", "")
+    return doldu
+
 def cek(pmidler):
     sonuc = {}
     for i in range(0, len(pmidler), 100):
@@ -90,7 +138,7 @@ def cek(pmidler):
             doi = next((x.text for x in m.findall(".//ArticleIdList/ArticleId") if x.get("IdType") == "doi"), "")
             sonuc[pmid] = {"pmid": pmid, "baslik_en": metin(m.find(".//ArticleTitle")),
                            "dergi": m.findtext(".//Journal/Title") or "", "yil": int(yil) if yil.isdigit() else None,
-                           "yazarlar": ", ".join(yazarlar), "doi": doi, "tip": tip, "ozet_en": ozet}
+                           "tarih": tarih_cikar(m), "yazarlar": ", ".join(yazarlar), "doi": doi, "tip": tip, "ozet_en": ozet}
     return sonuc
 
 SISTEM = ("Sen tıbbi bir çevirmensin. Verilen PubMed başlığını ve özetini Türkçeye sadık biçimde çevir. "
@@ -304,6 +352,7 @@ def main():
             y["kategori"] = kategoriler[pmid]
             y["grup"] = sorted(gruplar[pmid])
 
+    tarihleri_doldur(mevcut, bugun)
     kaydet(mevcut, bugun)   # PubMed verisi çeviri öncesi de kaydedilir
 
     cevrilen, ardisik, baslangic = 0, 0, time.time()
