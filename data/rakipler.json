@@ -1,0 +1,112 @@
+{
+ "aciklama": "Yalnızca Farmavita ürünleri (Möller's, Culturelle). Rakip bilgisi portalda gösterilmez; rakip markalar yalnızca aramada marka adı yazılınca ilgili makaleleri bulmak için kullanılır.",
+ "urunlerim": [
+  {
+   "marka": "Möller's Omega-3 Sıvı (Limon / Elma / Tutti Frutti)",
+   "kategori": "omega3",
+   "etiket": "codliver",
+   "firma": "Möller's (Norveç) · Türkiye distribütörü Farmavita İlaç",
+   "ozellikler": [
+    [
+     "Ambalaj",
+     "150 ml, 250 ml cam şişe"
+    ],
+    [
+     "Kaynak yağ",
+     "Morina balığı karaciğeri"
+    ],
+    [
+     "EPA",
+     "370 mg"
+    ],
+    [
+     "DHA",
+     "550 mg"
+    ],
+    [
+     "EPA + DHA toplam",
+     "920 mg"
+    ],
+    [
+     "Toplam omega-3",
+     "1170 mg"
+    ],
+    [
+     "A vitamini",
+     "250 µg"
+    ],
+    [
+     "D3 vitamini",
+     "10 µg (%200 BRD)"
+    ],
+    [
+     "E vitamini",
+     "3 mg"
+    ],
+    [
+     "Doz",
+     "3-4 yaş 2,5 ml; 4-10 yaş 5 ml; 11 yaş üstü ve yetişkin 5 ml"
+    ],
+    [
+     "Saklama",
+     "Açıldıktan sonra buzdolabı"
+    ],
+    [
+     "Sertifikalar",
+     "Orkla GOED, Nutrasource/IFOS, GMP, ISO 22000"
+    ]
+   ],
+   "not": "Tüm değerler günlük tek doz (5 ml) başınadır. Ürün ilaç değil, takviye edici gıdadır."
+  },
+  {
+   "marka": "Culturelle Probiyotik (Saşe, doğal çilek aromalı)",
+   "kategori": "probiyotik",
+   "etiket": "lgg",
+   "firma": "Culturelle · Türkiye distribütörü Farmavita İlaç",
+   "ozellikler": [
+    [
+     "Form",
+     "Saşe, doğal çilek aromalı"
+    ],
+    [
+     "Ambalaj",
+     "10 saşe, 30 saşe"
+    ],
+    [
+     "Suş 1",
+     "Bifidobacterium animalis subsp. lactis DSMZ 32269 (BLC1): 3,5×10⁹ kob"
+    ],
+    [
+     "Suş 2",
+     "Lactobacillus rhamnosus GG DSMZ 32550 (SP-1): 1,5×10⁹ kob"
+    ],
+    [
+     "Toplam",
+     "5×10⁹ kob"
+    ],
+    [
+     "Prebiyotik",
+     "Fruktooligosakkarit (FOS) 500 mg"
+    ],
+    [
+     "C vitamini",
+     "12 mg (%15 BRD)"
+    ],
+    [
+     "D vitamini",
+     "5 µg (%100 BRD)"
+    ],
+    [
+     "Alerjen",
+     "Gluten, laktoz ve diğer gıda alerjenlerini içermez; koruyucu ve renklendirici içermez; tatlandırıcı içerir"
+    ],
+    [
+     "Doz",
+     "3-10 yaş günde 1 saşe; 11 yaş üstü günde 2 saşe; soğuk gıda veya içeceğe karıştırılır"
+    ]
+   ],
+   "not": "kob = koloni oluşturan birim. LGG suş kodu DSMZ 32550 (SP-1); LGG literatürünün klasik depo numarası ATCC 53103. Eşdeğerlik sorusu için Farmavita medikal biriminden yazılı teyit alınmalıdır. Ürün ilaç değil, takviye edici gıdadır."
+  }
+ ],
+ "rakipler": []
+}

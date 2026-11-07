@@ -1,5 +1,5 @@
 {
- "aciklama": "PubMed arama sorguları. Yeni suş/form eklemek için bu listeye bir satır ekleyin; bir sonraki aylık çalışmada otomatik çekilir. kategori: probiyotik | omega3 | form. grup: kendi | rakip.",
+ "aciklama": "PubMed arama sorguları. Yeni suş/form eklemek için bu listeye bir satır ekleyin; bir sonraki aylık çalışmada otomatik çekilir. kategori: probiyotik | omega3 | form | sitikolin. grup: kendi | rakip.",
  "sorgular": [
   {
    "id": "lgg",
@@ -98,6 +98,20 @@
    "kategori": "omega3",
    "grup": "rakip",
    "sorgu": "(\"salmon oil\"[Title/Abstract]) AND (\"omega-3\"[Title/Abstract] OR \"EPA\"[Title/Abstract] OR \"DHA\"[Title/Abstract])"
+  },
+  {
+   "id": "b94",
+   "ad": "B. lactis B94 (Maflor)",
+   "kategori": "probiyotik",
+   "grup": "rakip",
+   "sorgu": "\"B94\"[Title/Abstract] AND \"Bifidobacterium\"[Title/Abstract]"
+  },
+  {
+   "id": "sitikolin",
+   "ad": "Sitikolin (CDP-kolin)",
+   "kategori": "sitikolin",
+   "grup": "rakip",
+   "sorgu": "\"citicoline\"[Title/Abstract] OR \"CDP-choline\"[Title/Abstract] OR \"cytidine diphosphate choline\"[Title/Abstract]"
   }
  ]
 }
