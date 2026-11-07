@@ -27,7 +27,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 <header class="sticky top-0 z-40 glass-header border-b border-slate-200/80">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-20">
-      <div class="flex items-center gap-3">
+      <a id="logoBtn" href="./" class="flex items-center gap-3 rounded-lg" aria-label="Sayfanın başına git" title="Sayfanın başına git">
         <div class="w-10 h-10 flex-shrink-0">
           <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-sm">
             <polygon points="50,10 90,50 72,50 50,28 28,50 10,50" fill="#e31b23"/>
@@ -41,7 +41,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
           </div>
           <p class="text-[10px] font-medium text-slate-400 tracking-wider uppercase">Medikal Literatür & Akıllı Portal</p>
         </div>
-      </div>
+      </a>
       <div class="hidden md:flex items-center gap-4 border-l border-slate-200 pl-6">
         <div class="flex items-center gap-2 bg-amber-50/80 border border-amber-200/60 px-3 py-1.5 rounded-full">
           <i class="fa-solid fa-fish text-amber-600 text-sm"></i>
@@ -55,7 +55,21 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
       <div class="flex items-center gap-2 text-xs">
         <span class="relative flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span></span>
         <span class="hidden sm:inline font-medium text-slate-500">PubMed Akışı</span>
-        <span id="kullaniciAd" class="hidden sm:inline text-slate-700 font-semibold ml-2"></span><button id="profilBtn" class="hidden ml-2 px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-100"><i class="fa-regular fa-address-card mr-1"></i>Ekip & Profil</button><button id="cikis" class="hidden ml-2 px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-100">Çıkış</button>
+        <div class="relative ml-2" id="hesapKap">
+          <button id="hesapBtn" class="hidden items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-xl border border-slate-200 text-slate-700 font-semibold hover:bg-slate-100" aria-haspopup="menu" aria-expanded="false">
+            <span id="hesapHarf" class="w-7 h-7 rounded-lg bg-[#0b1f3f] text-white flex items-center justify-center text-xs font-bold">?</span>
+            <span id="kullaniciAd" class="hidden sm:inline max-w-[8rem] truncate"></span>
+            <i class="fa-solid fa-chevron-down text-[9px] text-slate-400"></i>
+          </button>
+          <div id="hesapMenu" role="menu" class="hidden absolute right-0 top-full mt-2 w-60 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 p-1.5 text-xs">
+            <div class="px-3 py-2 border-b border-slate-100 mb-1"><div id="hesapAd" class="font-bold text-slate-900 truncate"></div><div class="text-[10px] text-slate-400">Farmavita saha ekibi</div></div>
+            <button role="menuitem" data-hm="rehber" class="hm w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 font-medium flex items-center gap-2.5"><i class="fa-solid fa-address-book w-4 text-slate-400"></i>Ekip rehberi</button>
+            <button role="menuitem" data-hm="profil" class="hm w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 font-medium flex items-center gap-2.5"><i class="fa-regular fa-id-card w-4 text-slate-400"></i>Profilim</button>
+            <button role="menuitem" data-hm="sifre" class="hm w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 font-medium flex items-center gap-2.5"><i class="fa-solid fa-key w-4 text-slate-400"></i>Şifre değiştir</button>
+            <div class="border-t border-slate-100 my-1"></div>
+            <button role="menuitem" id="cikis" class="w-full text-left px-3 py-2 rounded-lg hover:bg-red-50 text-red-600 font-semibold flex items-center gap-2.5"><i class="fa-solid fa-arrow-right-from-bracket w-4"></i>Çıkış yap</button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="flex md:hidden items-center justify-center gap-2 pb-3 border-t border-slate-100 pt-2">
@@ -109,7 +123,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   <div class="flex items-center gap-2 mb-6 overflow-x-auto scrollbar-none" role="tablist" aria-label="Bölümler" id="sekmeler">
     <button data-sekme="lit" class="sekme px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap"><i class="fa-solid fa-book-medical mr-1.5"></i>Literatür</button>
     <button data-sekme="urun" class="sekme px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap"><i class="fa-solid fa-capsules mr-1.5"></i>Ürünlerimiz</button>
-    <button data-sekme="rak" class="sekme px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap"><i class="fa-solid fa-scale-balanced mr-1.5"></i>Rakip Analizi</button>
     <button data-sekme="fav" class="sekme px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap"><i class="fa-solid fa-star mr-1.5 text-amber-500"></i>Favorilerim <span id="favSayi" class="ml-1 text-[10px] opacity-70">0</span></button>
     <button data-sekme="yor" class="sekme px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap"><i class="fa-regular fa-comments mr-1.5"></i>Yorumlar</button>
   </div>
@@ -143,12 +156,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   <div id="urun" class="hidden">
     <h2 class="text-lg font-bold text-slate-900 mb-4">Ürünlerimiz</h2>
     <div id="urunler" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
-  </div>
-
-  <div id="rak" class="hidden">
-    <h2 class="text-lg font-bold text-slate-900 mb-1">Rakip Ürünler</h2>
-    <p class="text-xs text-slate-500 mb-4">Bilgiler ambalaj ve resmi sitelerden elle girilir. "Doğrulanmadı" etiketli satırlar saha görüşmesinde kullanılmadan önce kontrol edilmelidir.</p>
-    <div class="overflow-x-auto bg-white rounded-2xl border border-slate-200/80 custom-shadow"><table id="tablo" class="w-full text-xs text-left" style="min-width:1000px"></table></div>
   </div>
 
   <div id="fav" class="hidden">
@@ -268,24 +275,28 @@ const $ = s => document.querySelector(s);
 const KAT = {
   probiyotik:{ad:"Probiyotik", cls:"bg-emerald-50 text-emerald-700 border-emerald-200", ikon:"fa-bacteria", kenar:"border-l-emerald-500"},
   omega3:{ad:"Omega-3", cls:"bg-amber-50 text-amber-700 border-amber-200", ikon:"fa-fish", kenar:"border-l-amber-500"},
+  sitikolin:{ad:"Sitikolin", cls:"bg-violet-50 text-violet-700 border-violet-200", ikon:"fa-brain", kenar:"border-l-violet-500"},
   form:{ad:"Form kıyaslaması", cls:"bg-blue-50 text-blue-700 border-blue-200", ikon:"fa-scale-balanced", kenar:"border-l-blue-500"}
 };
-const st = {yay:[], sorgu:[], rak:{urunlerim:[],rakipler:[]}, k:"tumu", q:"", yil:"", tip:"", etiket:"", dal:"", sekme:"lit", fav:new Set(), sayac:{}, yorumSay:{}, adlar:{}, acikPmid:"", favSadece:false, sirala:"yeni", servis:null, servisHata:"", kimlik:""};
+const st = {yay:[], sorgu:[], rak:{urunlerim:[]}, k:"tumu", q:"", yil:"", tip:"", etiket:"", dal:"", sekme:"lit", fav:new Set(), sayac:{}, yorumSay:{}, adlar:{}, acikPmid:"", favSadece:false, sirala:"yeni", servis:null, servisHata:"", kimlik:""};
 const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const pmUrl = p => /^\d+$/.test(String(p)) ? "https://pubmed.ncbi.nlm.nih.gov/"+p+"/" : "#";
+const tarihAnahtar = y => { const t=String(y.tarih||""); if(/^\d{4}(-\d{2}){0,2}$/.test(t)) return (t+"-00-00").slice(0,10); return String(y.yil||0).padStart(4,"0")+"-00-00"; };
+const tarihGoster = y => { const t=String(y.tarih||"").split("-"); if(t.length===3) return t[2]+"."+t[1]+"."+t[0]; if(t.length===2) return t[1]+"."+t[0]; return String(y.yil||""); };
+const yeniMi = y => { const t=String(y.tarih||""); if(!/^\d{4}-\d{2}-\d{2}$/.test(t)) return false; const g=(Date.now()-new Date(t+"T00:00:00").getTime())/864e5; return g>=0 && g<=30; };
 const bos = v => v ? esc(v) : "—";
 const AKTIF = "bg-[#0b1f3f] text-white shadow-sm", PASIF = "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100";
 
 function yukle(b){
   const y=b.yayinlar||{};
-  st.yay=y.yayinlar||[]; st.sorgu=(b.sorgular||{}).sorgular||[]; st.rak=b.rakipler||{urunlerim:[],rakipler:[]};
+  st.yay=y.yayinlar||[]; st.sorgu=(b.sorgular||{}).sorgular||[]; st.rak=b.rakipler||{urunlerim:[]};
   if(y.son_guncelleme){const [a,m,g]=y.son_guncelleme.split("-"); $("#gunc").textContent=g+"."+m+"."+a}
   if(y.ceviri_bekleyen){
     const u=$("#ceviriUyari"); u.classList.remove("hidden");
     u.innerHTML='<i class="fa-solid fa-language mr-1"></i> '+y.ceviri_bekleyen+' yayının Türkçe özeti henüz hazır değil; İngilizce özet gösteriliyor.'+(y.ceviri_son_hata?' <span class="text-slate-400">Neden: '+esc(y.ceviri_son_hata)+'</span>':'');
   }
-  filtreDoldur(); guncelleDugmeler(); cizYayin(); cizUrun(); cizRakip();
-  const h=location.hash.replace("#",""); sekme(["urun","rak","fav","yor"].includes(h)?h:"lit");
+  filtreDoldur(); guncelleDugmeler(); cizYayin(); cizUrun();
+  const h=location.hash.replace("#",""); sekme(["urun","fav","yor"].includes(h)?h:"lit");
 }
 
 /* ---------- Favoriler & okunma sayacı ---------- */
@@ -400,8 +411,9 @@ function uygulamayiAc(b,kimlikHash){
   $("#giris").classList.add("hidden"); $("#uygulama").classList.remove("hidden");
   st.ad=((b.adlar||{})[kimlikHash]||""); st.adlar=b.adlar||{};
   const ad=st.ad.split(" ")[0];
-  if(ad){$("#kullaniciAd").textContent=ad; $("#kullaniciAd").classList.remove("hidden")}
-  $("#cikis").classList.remove("hidden"); $("#profilBtn").classList.toggle("hidden",!st.servis);
+  $("#kullaniciAd").textContent=ad||"Hesap"; $("#hesapAd").textContent=st.ad||"Hesabım"; $("#hesapHarf").textContent=(st.ad||"?").trim().charAt(0).toLocaleUpperCase("tr");
+  $("#hesapBtn").classList.remove("hidden"); $("#hesapBtn").classList.add("flex");
+  document.querySelectorAll(".hm").forEach(b=>b.classList.toggle("hidden",!st.servis));
   yukle(b); favBtnGuncelle();
   $("#sirala").classList.toggle("hidden",!st.servis);
   hareketsizlikBaslat(); servisNotuGuncelle(); servisSenkron(); if(st.servis){ oturumuBaslat(); kayitGetir(kimlikHash).then(r=>{ if(r.kutuVar===false) $("#sifreUyari").classList.remove("hidden") }).catch(()=>{}); }
@@ -469,11 +481,15 @@ async function profilAc(sekme){
   rehberCiz();
 }
 function profilKapat(){const m=$("#profilModal"); m.classList.add("hidden"); m.classList.remove("flex")}
-$("#profilBtn").onclick=()=>profilAc("rehber");
+function hesapMenuKapat(){$("#hesapMenu").classList.add("hidden");$("#hesapBtn").setAttribute("aria-expanded","false")}
+$("#hesapBtn").onclick=e=>{e.stopPropagation();const m=$("#hesapMenu"),ac=m.classList.contains("hidden");m.classList.toggle("hidden",!ac);$("#hesapBtn").setAttribute("aria-expanded",ac)};
+document.querySelectorAll(".hm").forEach(b=>b.onclick=()=>{hesapMenuKapat();profilAc(b.dataset.hm)});
+document.addEventListener("click",e=>{if(!e.target.closest("#hesapKap"))hesapMenuKapat()});
+$("#logoBtn").onclick=e=>{e.preventDefault();window.scrollTo({top:0,behavior:"smooth"})};
 $("#sifreUyariBtn").onclick=()=>profilAc("sifre");
 $("#pKapat").onclick=profilKapat;
 $("#profilModal").addEventListener("click",e=>{if(e.target.id==="profilModal")profilKapat()});
-document.addEventListener("keydown",e=>{if(e.key==="Escape")profilKapat()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){profilKapat();hesapMenuKapat()}});
 const mesaj=(id,t,ok)=>{const e=$(id); e.textContent=t; e.className="text-[11px] "+(ok?"text-emerald-600":"text-red-600")};
 $("#ps-profil").addEventListener("submit",async e=>{
   e.preventDefault(); mesaj("#pMesaj","Kaydediliyor...",true);
@@ -604,6 +620,36 @@ function filtreDoldur(){
   [...new Set(st.yay.map(y=>y.tip).filter(Boolean))].forEach(v=>$("#tip").insertAdjacentHTML("beforeend",'<option value="'+esc(v)+'">'+esc(v)+'</option>'));
 }
 
+/* ---------- Gizli marka araması: marka adı yazılınca o ürünün içeriğiyle ilgili makaleler gelir ---------- */
+const ETKT_OMEGA=["omega3-rtg","omega3-ee","omega3-karsilastirma"];
+const MARKALAR=[
+  {ad:"Möller's",k:["moller","mollers"],e:["codliver","omega3-rtg"],i:"morina karaciğeri yağı ve trigliserid omega-3"},
+  {ad:"Culturelle",k:["culturelle"],e:["lgg","bb12"],i:"LGG ve BB-12"},
+  {ad:"Forbiome",k:["forbiome"],e:["lgg","bb12"],i:"LGG ve BB-12"},
+  {ad:"NBT Duobalance",k:["duobalance","nbt"],e:["lgg"],i:"LGG"},
+  {ad:"Enterogermina",k:["enterogermina"],e:["bclausii"],i:"Bacillus clausii"},
+  {ad:"BiGaia",k:["bigaia","biogaia"],e:["reuteri"],i:"L. reuteri DSM 17938"},
+  {ad:"Maflor",k:["maflor"],e:["b94"],i:"B. lactis B94"},
+  {ad:"Reflor / Diyacure",k:["reflor","diyacure"],e:["sboulardii"],i:"Saccharomyces boulardii"},
+  {ad:"Ocean",k:["ocean"],e:ETKT_OMEGA,i:"balık yağı omega-3"},
+  {ad:"Youplus",k:["youplus"],e:ETKT_OMEGA,i:"balık yağı omega-3"},
+  {ad:"Naturalnest",k:["naturalnest"],e:ETKT_OMEGA,i:"balık yağı omega-3"},
+  {ad:"Nutraxin",k:["nutraxin"],e:ETKT_OMEGA,i:"balık yağı omega-3"},
+  {ad:"Newvit",k:["newvit"],e:ETKT_OMEGA,i:"balık yağı omega-3"},
+  {ad:"Sorvagen",k:["sorvagen"],e:["sitikolin"],i:"sitikolin"},
+  {ad:"Cognimore",k:["cognimore"],e:["sitikolin"],i:"sitikolin"},
+  {ad:"Phyto-CC",k:["phytocc","phyto"],e:["sitikolin"],i:"sitikolin"}
+];
+const aramaNorm = t => String(t||"").toLocaleLowerCase("tr").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ı/g,"i").replace(/[^a-z0-9 ]+/g,"");
+function aramaCoz(q){
+  const kalan=[], marka=[];
+  String(q||"").trim().split(/\s+/).filter(Boolean).forEach(w=>{
+    const n=aramaNorm(w);
+    const m=MARKALAR.find(b=>b.k.some(k=>k===n||(n.length>=5&&n.length<k.length&&k.startsWith(n))));
+    if(m){ if(!marka.includes(m)) marka.push(m) } else kalan.push(w);
+  });
+  return {kalan,marka,etiket:new Set(marka.flatMap(m=>m.e))};
+}
 function eslesir(y){
   const kendi=(y.grup||[]).includes("kendi"), rakip=(y.grup||[]).includes("rakip");
   if(st.k==="probiyotik" && !(y.kategori==="probiyotik" && kendi)) return false;
@@ -616,8 +662,12 @@ function eslesir(y){
   if(st.dal && !dallarOf(y).includes(st.dal)) return false;
   if(st.favSadece && !st.fav.has(String(y.pmid))) return false;
   if(st.q){
-    const h=[y.baslik_tr,y.baslik_en,y.dergi,y.pmid,y.yazarlar,y.saha_notu,(y.etiketler||[]).map(etiketAdi).join(" ")].join(" ").toLocaleLowerCase("tr");
-    return st.q.toLocaleLowerCase("tr").split(/\s+/).every(w=>h.includes(w));
+    const c=st.aramaC||(st.aramaC=aramaCoz(st.q));
+    if(c.marka.length && !(y.etiketler||[]).some(e=>c.etiket.has(e))) return false;
+    if(c.kalan.length){
+      const h=[y.baslik_tr,y.baslik_en,y.dergi,y.pmid,y.yazarlar,y.saha_notu,(y.etiketler||[]).map(etiketAdi).join(" ")].join(" ").toLocaleLowerCase("tr");
+      return c.kalan.every(w=>h.includes(w.toLocaleLowerCase("tr")));
+    }
   }
   return true;
 }
@@ -625,8 +675,10 @@ const etiketAdi = id => (st.sorgu.find(x=>x.id===id)||{ad:id}).ad;
 
 function cizYayin(){
   const bulunan=st.yay.filter(eslesir), kutu=$("#liste");
-  const liste=st.sirala==="okunan"?[...bulunan].sort((a,b)=>(+st.sayac[b.pmid]||0)-(+st.sayac[a.pmid]||0)||(b.yil||0)-(a.yil||0)):bulunan;
-  $("#durum").innerHTML = st.yay.length ? liste.length+" yayın"+(st.etiket?' · <button id="etTemizle" class="text-[#e31b23] font-semibold">'+esc(etiketAdi(st.etiket))+' filtresini kaldır ✕</button>':"") : "";
+  const tk=(a,b)=>tarihAnahtar(b).localeCompare(tarihAnahtar(a));
+  const liste=st.sirala==="okunan"?[...bulunan].sort((a,b)=>(+st.sayac[b.pmid]||0)-(+st.sayac[a.pmid]||0)||tk(a,b)):[...bulunan].sort(tk);
+  const mk=st.q?(st.aramaC||(st.aramaC=aramaCoz(st.q))).marka:[];
+  $("#durum").innerHTML = st.yay.length ? liste.length+" yayın"+(mk.length?' · <span class="text-slate-500">'+mk.map(m=>esc(m.ad)+' içeriği ('+esc(m.i)+')').join(", ")+' için makaleler</span>':"")+(st.etiket?' · <button id="etTemizle" class="text-[#e31b23] font-semibold">'+esc(etiketAdi(st.etiket))+' filtresini kaldır ✕</button>':"") : "";
   const t=$("#etTemizle"); if(t) t.onclick=()=>{st.etiket="";cizYayin()};
   if(!liste.length){
     kutu.innerHTML='<div class="col-span-full text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300 p-8"><i class="fa-solid fa-folder-open text-4xl text-slate-300 mb-3"></i><h3 class="text-base font-bold text-slate-700">'+(st.yay.length?"Aramanızla Eşleşen Makale Bulunamadı":"Henüz yayın yok")+'</h3><p class="text-xs text-slate-400 mt-1">'+(st.yay.length?"Lütfen farklı anahtar kelimeler deneyin veya filtreleri temizleyin.":"GitHub'da Actions sekmesinden \"PubMed aylık güncelleme\" iş akışını bir kez çalıştırın.")+'</p></div>';
@@ -640,7 +692,7 @@ function cizYayin(){
       (rakip?'<span class="text-[11px] font-bold px-2.5 py-1 rounded-lg border bg-slate-50 text-slate-600 border-slate-200">Rakip</span>':'')+
       (y.tip?'<span class="text-[11px] font-bold px-2.5 py-1 rounded-lg border bg-blue-50 text-blue-700 border-blue-200">'+esc(y.tip)+'</span>':'')+
       dallarOf(y).map(id=>dalRozet(id,true)).join('')+
-    '</div><div class="flex items-center gap-2"><span class="text-[11px] font-medium text-slate-400 whitespace-nowrap"><i class="fa-regular fa-calendar-alt mr-1"></i>'+esc(y.yil)+'</span><button data-fav="'+esc(y.pmid)+'" aria-label="Favorilere ekle / çıkar" aria-pressed="'+st.fav.has(String(y.pmid))+'" class="p-1 rounded-md hover:bg-amber-50"><i class="fa-'+(st.fav.has(String(y.pmid))?'solid text-amber-500':'regular text-slate-300')+' fa-star text-base"></i></button></div></div>'+
+    '</div><div class="flex items-center gap-2">'+(yeniMi(y)?'<span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#e31b23] text-white whitespace-nowrap">En yeni</span>':'')+'<span class="text-[11px] font-medium text-slate-400 whitespace-nowrap"><i class="fa-regular fa-calendar-alt mr-1"></i>'+esc(tarihGoster(y))+'</span><button data-fav="'+esc(y.pmid)+'" aria-label="Favorilere ekle / çıkar" aria-pressed="'+st.fav.has(String(y.pmid))+'" class="p-1 rounded-md hover:bg-amber-50"><i class="fa-'+(st.fav.has(String(y.pmid))?'solid text-amber-500':'regular text-slate-300')+' fa-star text-base"></i></button></div></div>'+
     '<h3 class="text-base font-bold text-slate-900 group-hover:text-[#0b1f3f] transition leading-snug mb-2">'+esc(y.baslik_tr||y.baslik_en)+'</h3>'+
     '<p class="text-xs text-slate-500 font-medium mb-4 flex items-center gap-1.5"><i class="fa-solid fa-book-open text-slate-400"></i> '+esc(y.dergi)+' • PMID '+esc(y.pmid)+(st.servis&&st.sayac[y.pmid]?' • <i class="fa-regular fa-eye"></i> '+esc(st.sayac[y.pmid])+' okunma':'')+(st.servis&&st.yorumSay[y.pmid]?' • <i class="fa-regular fa-comment"></i> '+esc(st.yorumSay[y.pmid]):'')+'</p>'+
     (y.saha_notu?'<div class="bg-gradient-to-r from-amber-50 to-orange-50/50 border-l-4 border-amber-500 p-3.5 rounded-r-xl text-xs text-slate-700 mb-5"><strong class="text-amber-900 font-bold block mb-1"><i class="fa-solid fa-lightbulb text-amber-600"></i> Saha & Klinik Hap Bilgi:</strong>'+esc(y.saha_notu)+'</div>':'')+
@@ -660,7 +712,7 @@ function ac(y){
   $("#mRozet").className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md mb-2 inline-block border "+k.cls;
   $("#mRozet").textContent=k.ad;
   $("#mBaslik").textContent=y.baslik_tr||y.baslik_en;
-  $("#mMeta").textContent=[y.yazarlar,y.dergi,y.yil,"PMID "+y.pmid].filter(Boolean).join(" | ");
+  $("#mMeta").textContent=[y.yazarlar,y.dergi,tarihGoster(y),"PMID "+y.pmid].filter(Boolean).join(" | ");
   $("#mCumle").classList.toggle("hidden",!y.cumle); $("#mCumleMetin").textContent=y.cumle||"";
   const ck=$("#mCumleKopya"); ck.innerHTML='<i class="fa-regular fa-copy"></i> Cümleyi kopyala';
   ck.onclick=async()=>{try{await navigator.clipboard.writeText(y.cumle||"");ck.textContent="Kopyalandı ✓"}catch(e){ck.textContent="Kopyalanamadı"}};
@@ -689,35 +741,24 @@ function filtreyeGit(e){st.etiket=e;st.k="tumu";guncelleDugmeler();sekme("lit");
 const yayinSayisi = e => st.yay.filter(y=>(y.etiketler||[]).includes(e)).length;
 
 function cizUrun(){
-  $("#urunler").innerHTML=(st.rak.urunlerim||[]).map((u,i)=>{
+  const L=st.rak.urunlerim||[];
+  $("#urunler").innerHTML=L.length?L.map(u=>{
     const k=KAT[u.kategori]||KAT.form;
-    const satir=[["Etken madde / suş",u.etken],["Form",u.form],["Doz",u.doz],["Ek etken maddeler",u.ek],["Odak noktası",u.hedef],["Notlar",u.notlar]].map(([a,b])=>'<p class="text-xs text-slate-600 mb-1.5"><strong class="text-slate-800">'+a+':</strong> '+bos(b)+'</p>').join("");
+    const satir=(u.ozellikler||[]).map(([a,b])=>'<div class="flex gap-3 py-1.5 border-b border-slate-100 last:border-0 text-xs"><dt class="w-28 sm:w-32 flex-shrink-0 font-semibold text-slate-800">'+esc(a)+'</dt><dd class="text-slate-600 min-w-0">'+esc(b)+'</dd></div>').join("");
     return '<div class="bg-white rounded-2xl p-6 custom-shadow border border-slate-200/80 border-l-4 '+k.kenar+' flex flex-col justify-between"><div>'+
       '<span class="text-[11px] font-bold px-2.5 py-1 rounded-lg border '+k.cls+'"><i class="fa-solid '+k.ikon+' mr-1"></i>'+esc(k.ad)+'</span>'+
-      '<h3 class="text-base font-bold text-slate-900 mt-3 mb-3">'+esc(u.marka)+'</h3>'+satir+'</div>'+
+      '<h3 class="text-base font-bold text-slate-900 mt-3 mb-0.5">'+esc(u.marka)+'</h3>'+
+      (u.firma?'<p class="text-[11px] text-slate-400 mb-3">'+esc(u.firma)+'</p>':'')+
+      '<dl>'+satir+'</dl>'+
+      (u.not?'<p class="text-[11px] text-slate-500 leading-snug mt-3 bg-slate-50 border border-slate-200 rounded-lg p-2.5">'+esc(u.not)+'</p>':'')+'</div>'+
       (u.etiket?'<div class="pt-3 mt-3 border-t border-slate-100"><button data-et="'+esc(u.etiket)+'" class="text-xs font-bold text-[#e31b23] hover:text-red-700">İlgili yayınlar ('+yayinSayisi(u.etiket)+') <i class="fa-solid fa-arrow-right text-[10px]"></i></button></div>':'')+'</div>';
-  }).join("");
+  }).join(""):'<p class="text-xs text-slate-400">Ürün bilgisi bulunamadı.</p>';
   $("#urunler").querySelectorAll("[data-et]").forEach(b=>b.onclick=()=>filtreyeGit(b.dataset.et));
-}
-
-function cizRakip(){
-  const bas=["Marka","Kategori","Etken / suş","Form","Doz","Ek etken madde","Odak noktası","Kaynak","Durum","Yayınlar"];
-  const satirlar=(st.rak.rakipler||[]).map(r=>{
-    const k=KAT[r.kategori]||KAT.form;
-    const h=v=>'<td class="px-3 py-3 align-top text-slate-600">'+bos(v)+'</td>';
-    return '<tr class="border-t border-slate-100 hover:bg-slate-50/60"><td class="px-3 py-3 align-top font-bold text-slate-900">'+esc(r.marka)+'</td>'+
-      '<td class="px-3 py-3 align-top"><span class="text-[11px] font-bold px-2 py-0.5 rounded-lg border '+k.cls+'">'+esc(k.ad)+'</span></td>'+
-      h(r.etken)+h(r.form)+h(r.doz)+h(r.ek)+h(r.hedef)+h([r.kaynak,r.tarih].filter(Boolean).join(", "))+
-      '<td class="px-3 py-3 align-top"><span class="text-[11px] font-semibold px-2 py-0.5 rounded-lg border '+(r.dogrulandi?'bg-emerald-50 text-emerald-700 border-emerald-200':'bg-amber-50 text-amber-700 border-amber-200')+'">'+(r.dogrulandi?'Doğrulandı':'Doğrulanmadı')+'</span></td>'+
-      '<td class="px-3 py-3 align-top">'+(r.etiket?'<button data-et="'+esc(r.etiket)+'" class="font-bold text-[#e31b23] hover:text-red-700 whitespace-nowrap">'+yayinSayisi(r.etiket)+' yayın</button>':'—')+'</td></tr>';
-  }).join("");
-  $("#tablo").innerHTML='<thead class="bg-slate-50 text-slate-500"><tr>'+bas.map(b=>'<th class="px-3 py-3 font-semibold">'+b+'</th>').join("")+'</tr></thead><tbody>'+satirlar+'</tbody>';
-  $("#tablo").querySelectorAll("[data-et]").forEach(b=>b.onclick=()=>filtreyeGit(b.dataset.et));
 }
 
 function sekme(ad){
   st.sekme=ad;
-  ["lit","urun","rak","fav","yor"].forEach(s=>$("#"+s).classList.toggle("hidden",s!==ad));
+  ["lit","urun","fav","yor"].forEach(s=>$("#"+s).classList.toggle("hidden",s!==ad));
   if(ad==="fav") cizFav(); if(ad==="yor") yorumSekmeYukle();
   $("#araKutusu").classList.toggle("hidden",ad!=="lit");
   document.querySelectorAll(".sekme").forEach(b=>{const a=b.dataset.sekme===ad; b.className="sekme px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap "+(a?AKTIF:PASIF); b.setAttribute("aria-selected",a)});
@@ -728,7 +769,7 @@ function guncelleDugmeler(){
 }
 document.querySelectorAll(".sekme").forEach(b=>b.onclick=()=>sekme(b.dataset.sekme));
 document.querySelectorAll(".kat").forEach(b=>b.onclick=()=>{st.k=b.dataset.k;guncelleDugmeler();cizYayin()});
-let zm; $("#q").addEventListener("input",e=>{clearTimeout(zm);zm=setTimeout(()=>{st.q=e.target.value.trim();cizYayin()},200)});
+let zm; $("#q").addEventListener("input",e=>{clearTimeout(zm);zm=setTimeout(()=>{st.q=e.target.value.trim();st.aramaC=null;cizYayin()},200)});
 $("#yil").onchange=e=>{st.yil=e.target.value;cizYayin()};
 $("#tip").onchange=e=>{st.tip=e.target.value;cizYayin()};
 sekme("lit"); guncelleDugmeler();
