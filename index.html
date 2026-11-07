@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Farmavita İlaç | Medikal Literatür & Klinik Portal</title>
+<script>
+(function(){var t="sistem";try{t=localStorage.getItem("fv_tema")||"sistem"}catch(e){}
+var k=t==="koyu"||(t==="sistem"&&window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches);
+document.documentElement.classList.toggle("dark",k)})();
+</script>
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,6 +24,130 @@ body{font-family:'Inter',sans-serif;background-color:#f8fafc}
 .custom-shadow{box-shadow:0 4px 20px -2px rgba(11,31,63,.05)}
 .scrollbar-none::-webkit-scrollbar{display:none}.scrollbar-none{scrollbar-width:none}
 .pre{white-space:pre-wrap}
+.tm{color:#64748b}.tm-a{background:#fff;color:#0b1f3f;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+/* ---- Koyu tema ---- */
+html.dark{color-scheme:dark}
+html.dark .tm{color:#a3a3a3}
+html.dark .tm-a{background:#2e2e2e!important;color:#fff!important}
+html.dark body{background-color:#0a0a0a;color:#d4d4d4}
+html.dark .glass-header{background:rgba(10,10,10,.92);border-color:#262626}
+html.dark .custom-shadow{box-shadow:0 4px 20px -2px rgba(0,0,0,.45)}
+html.dark .bg-white{background-color:#141414!important}
+html.dark .hover\:bg-white:hover{background-color:#202020!important}
+html.dark .bg-slate-50{background-color:#101010!important}
+html.dark .hover\:bg-slate-50:hover{background-color:#202020!important}
+html.dark .bg-slate-100{background-color:#1c1c1c!important}
+html.dark .hover\:bg-slate-100:hover{background-color:#202020!important}
+html.dark .bg-slate-200{background-color:#262626!important}
+html.dark .hover\:bg-slate-200:hover{background-color:#202020!important}
+html.dark .hover\:bg-slate-200\/60:hover{background-color:#262626!important}
+html.dark .bg-slate-900\/60{background-color:rgba(0,0,0,.78)!important}
+html.dark .text-slate-900{color:#f5f5f5!important}
+html.dark .hover\:text-slate-900:hover{color:#f8fafc!important}
+html.dark .group-hover\:text-slate-900{color:#f8fafc!important}
+html.dark .text-slate-800{color:#e5e5e5!important}
+html.dark .hover\:text-slate-800:hover{color:#f8fafc!important}
+html.dark .group-hover\:text-slate-800{color:#f8fafc!important}
+html.dark .text-slate-700{color:#d4d4d4!important}
+html.dark .hover\:text-slate-700:hover{color:#f8fafc!important}
+html.dark .group-hover\:text-slate-700{color:#f8fafc!important}
+html.dark .text-slate-600{color:#a3a3a3!important}
+html.dark .hover\:text-slate-600:hover{color:#f8fafc!important}
+html.dark .group-hover\:text-slate-600{color:#f8fafc!important}
+html.dark .text-slate-500{color:#8a8a8a!important}
+html.dark .hover\:text-slate-500:hover{color:#f8fafc!important}
+html.dark .group-hover\:text-slate-500{color:#f8fafc!important}
+html.dark .text-slate-400{color:#737373!important}
+html.dark .hover\:text-slate-400:hover{color:#f8fafc!important}
+html.dark .group-hover\:text-slate-400{color:#f8fafc!important}
+html.dark .text-\[\#0b1f3f\]{color:#e5e5e5!important}
+html.dark .hover\:text-\[\#0b1f3f\]:hover{color:#f8fafc!important}
+html.dark .group-hover\:text-\[\#0b1f3f\]{color:#f8fafc!important}
+html.dark .border-slate-200{border-color:#2a2a2a!important}
+html.dark .border-slate-300{border-color:#2a2a2a!important}
+html.dark .border-slate-100{border-color:#2a2a2a!important}
+html.dark .border-slate-200\/80{border-color:#2a2a2a!important}
+html.dark .border-slate-800{border-color:#404040!important}
+html.dark .placeholder-slate-400::placeholder{color:#737373}
+html.dark .bg-\[\#0b1f3f\]{background-color:#2e2e2e!important;color:#fff!important;box-shadow:inset 0 0 0 1px #404040}
+html.dark .hover\:bg-slate-800:hover{background-color:#3a3a3a!important}
+html.dark .bg-amber-50{background-color:rgba(245,158,11,.13)!important}
+html.dark .bg-amber-50\/80{background-color:rgba(245,158,11,.13)!important}
+html.dark .text-amber-600{color:#fcd34d!important}
+html.dark .text-amber-700{color:#fcd34d!important}
+html.dark .text-amber-800{color:#fcd34d!important}
+html.dark .text-amber-900{color:#fcd34d!important}
+html.dark .text-amber-950{color:#fcd34d!important}
+html.dark .border-amber-200{border-color:rgba(245,158,11,.35)!important}
+html.dark .border-amber-200\/60{border-color:rgba(245,158,11,.35)!important}
+html.dark .bg-emerald-50{background-color:rgba(16,185,129,.13)!important}
+html.dark .bg-emerald-50\/80{background-color:rgba(16,185,129,.13)!important}
+html.dark .text-emerald-600{color:#6ee7b7!important}
+html.dark .text-emerald-700{color:#6ee7b7!important}
+html.dark .text-emerald-800{color:#6ee7b7!important}
+html.dark .text-emerald-900{color:#6ee7b7!important}
+html.dark .text-emerald-950{color:#6ee7b7!important}
+html.dark .border-emerald-200{border-color:rgba(16,185,129,.35)!important}
+html.dark .border-emerald-200\/60{border-color:rgba(16,185,129,.35)!important}
+html.dark .bg-blue-50{background-color:rgba(59,130,246,.13)!important}
+html.dark .bg-blue-50\/80{background-color:rgba(59,130,246,.13)!important}
+html.dark .text-blue-600{color:#93c5fd!important}
+html.dark .text-blue-700{color:#93c5fd!important}
+html.dark .text-blue-800{color:#93c5fd!important}
+html.dark .text-blue-900{color:#93c5fd!important}
+html.dark .text-blue-950{color:#93c5fd!important}
+html.dark .border-blue-200{border-color:rgba(59,130,246,.35)!important}
+html.dark .border-blue-200\/60{border-color:rgba(59,130,246,.35)!important}
+html.dark .bg-sky-50{background-color:rgba(14,165,233,.13)!important}
+html.dark .bg-sky-50\/80{background-color:rgba(14,165,233,.13)!important}
+html.dark .text-sky-600{color:#7dd3fc!important}
+html.dark .text-sky-700{color:#7dd3fc!important}
+html.dark .text-sky-800{color:#7dd3fc!important}
+html.dark .text-sky-900{color:#7dd3fc!important}
+html.dark .text-sky-950{color:#7dd3fc!important}
+html.dark .border-sky-200{border-color:rgba(14,165,233,.35)!important}
+html.dark .border-sky-200\/60{border-color:rgba(14,165,233,.35)!important}
+html.dark .bg-red-50{background-color:rgba(239,68,68,.13)!important}
+html.dark .bg-red-50\/80{background-color:rgba(239,68,68,.13)!important}
+html.dark .text-red-600{color:#fca5a5!important}
+html.dark .text-red-700{color:#fca5a5!important}
+html.dark .text-red-800{color:#fca5a5!important}
+html.dark .text-red-900{color:#fca5a5!important}
+html.dark .text-red-950{color:#fca5a5!important}
+html.dark .border-red-200{border-color:rgba(239,68,68,.35)!important}
+html.dark .border-red-200\/60{border-color:rgba(239,68,68,.35)!important}
+html.dark .bg-violet-50{background-color:rgba(139,92,246,.13)!important}
+html.dark .bg-violet-50\/80{background-color:rgba(139,92,246,.13)!important}
+html.dark .text-violet-600{color:#c4b5fd!important}
+html.dark .text-violet-700{color:#c4b5fd!important}
+html.dark .text-violet-800{color:#c4b5fd!important}
+html.dark .text-violet-900{color:#c4b5fd!important}
+html.dark .text-violet-950{color:#c4b5fd!important}
+html.dark .border-violet-200{border-color:rgba(139,92,246,.35)!important}
+html.dark .border-violet-200\/60{border-color:rgba(139,92,246,.35)!important}
+html.dark .bg-orange-50{background-color:rgba(249,115,22,.13)!important}
+html.dark .bg-orange-50\/80{background-color:rgba(249,115,22,.13)!important}
+html.dark .text-orange-600{color:#fdba74!important}
+html.dark .text-orange-700{color:#fdba74!important}
+html.dark .text-orange-800{color:#fdba74!important}
+html.dark .text-orange-900{color:#fdba74!important}
+html.dark .text-orange-950{color:#fdba74!important}
+html.dark .border-orange-200{border-color:rgba(249,115,22,.35)!important}
+html.dark .border-orange-200\/60{border-color:rgba(249,115,22,.35)!important}
+html.dark .hover\:bg-red-50:hover{background-color:rgba(239,68,68,.15)!important}
+html.dark .hover\:bg-amber-50:hover{background-color:rgba(245,158,11,.15)!important}
+html.dark .from-amber-50{--tw-gradient-from:rgba(245,158,11,.13)!important;--tw-gradient-to:rgba(245,158,11,0)!important;--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)!important}
+html.dark .to-orange-50\/50{--tw-gradient-to:rgba(249,115,22,.10)!important;--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)!important}
+html.dark input,textarea,select{background-color:#101010;color:#e5e5e5;border-color:#2a2a2a}
+html.dark .bg-white\/10{background-color:rgba(255,255,255,.08)!important}
+html.dark .text-white{color:#fff!important}
+html.dark .text-red-300{color:#fca5a5!important}
+html.dark .text-\[\#e31b23\]{color:#ff5a61!important}
+html.dark .hm{color:#d4d4d4}
+html.dark table{color:#d4d4d4}
+html.dark ::selection{background:#3a3a3a}
+html.dark section.bg-gradient-to-b{background-image:linear-gradient(to bottom,#0a0a0a,#141414,#0a0a0a)!important}
+html.dark .bg-blue-600\/10,html.dark .bg-red-600\/10{background-color:rgba(255,255,255,.03)!important}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #e31b23;outline-offset:2px}
 </style>
 </head>
@@ -67,6 +196,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
             <button role="menuitem" data-hm="profil" class="hm w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 font-medium flex items-center gap-2.5"><i class="fa-regular fa-id-card w-4 text-slate-400"></i>Profilim</button>
             <button role="menuitem" data-hm="sifre" class="hm w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 font-medium flex items-center gap-2.5"><i class="fa-solid fa-key w-4 text-slate-400"></i>Şifre değiştir</button>
             <div class="border-t border-slate-100 my-1"></div>
+            <div class="px-3 py-2"><div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5"><i class="fa-solid fa-circle-half-stroke mr-1"></i>Görünüm</div>
+              <div class="grid grid-cols-3 gap-1 p-1 bg-slate-100 rounded-xl" id="temaSec">
+                <button data-tema="acik" class="tm px-2 py-1.5 rounded-lg font-semibold">Açık</button>
+                <button data-tema="koyu" class="tm px-2 py-1.5 rounded-lg font-semibold">Koyu</button>
+                <button data-tema="sistem" class="tm px-2 py-1.5 rounded-lg font-semibold">Sistem</button>
+              </div></div>
+            <div class="border-t border-slate-100 my-1"></div>
             <button role="menuitem" id="cikis" class="w-full text-left px-3 py-2 rounded-lg hover:bg-red-50 text-red-600 font-semibold flex items-center gap-2.5"><i class="fa-solid fa-arrow-right-from-bracket w-4"></i>Çıkış yap</button>
           </div>
         </div>
@@ -91,6 +227,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
         <input id="gKul" name="username" type="text" autocomplete="username" autocapitalize="none" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Adınız"></div>
       <div><label for="gSif" class="block text-xs font-semibold text-slate-200 mb-1.5">Şifre</label>
         <input id="gSif" name="password" type="password" autocomplete="current-password" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Şifreniz"></div>
+      <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none"><input id="gHatirla" type="checkbox" class="w-4 h-4 rounded accent-[#e31b23]"> Beni bu cihazda hatırla <span class="text-slate-400">(yalnızca kullanıcı adı)</span></label>
       <p id="gHata" class="hidden text-xs text-red-300 font-medium" role="alert"></p>
       <p class="text-[11px] text-slate-400 leading-snug">Ekip içi kullanım için giriş zamanı, süre ve incelenen makaleler kayıt altına alınır.</p>
       <button id="gBtn" type="submit" class="w-full bg-[#e31b23] hover:bg-red-700 text-white text-sm font-bold py-3 rounded-xl transition">Giriş Yap</button>
@@ -424,6 +561,7 @@ $("#girisForm").addEventListener("submit",async e=>{
   btn.disabled=true; btn.textContent="Kontrol ediliyor...";
   try{
     const kul=$("#gKul").value.trim(), b=await girisYap(kul,$("#gSif").value);
+    try{ if($("#gHatirla").checked) localStorage.setItem("fv_kul",kul); else localStorage.removeItem("fv_kul") }catch(e){}
     $("#gSif").value=""; uygulamayiAc(b,await idHash(kul));
   }catch(err){
     hata.textContent = err.message==="kimlik" ? "Kullanıcı adı veya şifre hatalı." : "Giriş şu an yapılamadı. Lütfen daha sonra tekrar deneyin.";
@@ -431,6 +569,7 @@ $("#girisForm").addEventListener("submit",async e=>{
   }
   btn.disabled=false; btn.textContent="Giriş Yap";
 });
+(function(){ try{ const k=localStorage.getItem("fv_kul"); if(k){ $("#gKul").value=k; $("#gHatirla").checked=true; $("#gSif").focus() } }catch(e){} })();
 $("#cikis").addEventListener("click",()=>{try{sessionStorage.clear()}catch(e){} location.reload()});
 
 /* ---------- Yorumlar ---------- */
@@ -481,6 +620,16 @@ async function profilAc(sekme){
   rehberCiz();
 }
 function profilKapat(){const m=$("#profilModal"); m.classList.add("hidden"); m.classList.remove("flex")}
+function temaUygula(t,kaydet){
+  const koyu=t==="koyu"||(t==="sistem"&&matchMedia("(prefers-color-scheme: dark)").matches);
+  document.documentElement.classList.toggle("dark",koyu);
+  document.querySelectorAll(".tm").forEach(b=>{const a=b.dataset.tema===t;b.classList.toggle("tm-a",a);b.setAttribute("aria-pressed",a)});
+  if(kaydet){try{localStorage.setItem("fv_tema",t)}catch(e){}}
+}
+function temaOku(){let t="sistem";try{t=localStorage.getItem("fv_tema")||"sistem"}catch(e){}return t}
+document.querySelectorAll(".tm").forEach(b=>b.onclick=e=>{e.stopPropagation();temaUygula(b.dataset.tema,true)});
+try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(temaOku()==="sistem")temaUygula("sistem")})}catch(e){}
+temaUygula(temaOku());
 function hesapMenuKapat(){$("#hesapMenu").classList.add("hidden");$("#hesapBtn").setAttribute("aria-expanded","false")}
 $("#hesapBtn").onclick=e=>{e.stopPropagation();const m=$("#hesapMenu"),ac=m.classList.contains("hidden");m.classList.toggle("hidden",!ac);$("#hesapBtn").setAttribute("aria-expanded",ac)};
 document.querySelectorAll(".hm").forEach(b=>b.onclick=()=>{hesapMenuKapat();profilAc(b.dataset.hm)});
@@ -636,6 +785,7 @@ const MARKALAR=[
   {ad:"Naturalnest",k:["naturalnest"],e:ETKT_OMEGA,i:"balık yağı omega-3"},
   {ad:"Nutraxin",k:["nutraxin"],e:ETKT_OMEGA,i:"balık yağı omega-3"},
   {ad:"Newvit",k:["newvit"],e:ETKT_OMEGA,i:"balık yağı omega-3"},
+  {ad:"Sitikolin",k:["sitikolin","citicoline"],e:["sitikolin"],i:"sitikolin"},
   {ad:"Sorvagen",k:["sorvagen"],e:["sitikolin"],i:"sitikolin"},
   {ad:"Cognimore",k:["cognimore"],e:["sitikolin"],i:"sitikolin"},
   {ad:"Phyto-CC",k:["phytocc","phyto"],e:["sitikolin"],i:"sitikolin"}
@@ -656,6 +806,8 @@ function eslesir(y){
   if(st.k==="omega3" && !(y.kategori==="omega3" && kendi)) return false;
   if(st.k==="form" && y.kategori!=="form") return false;
   if(st.k==="rakip" && !rakip) return false;
+  // Ana ekranda (Tümü) rakip makaleleri görünmez; yalnızca marka araması, etiket filtresi veya "Rakipler" düğmesiyle açılır
+  if(st.k==="tumu" && !kendi && !st.etiket && !(st.q && (st.aramaC||(st.aramaC=aramaCoz(st.q))).marka.length)) return false;
   if(st.yil && String(y.yil)!==st.yil) return false;
   if(st.tip && y.tip!==st.tip) return false;
   if(st.etiket && !(y.etiketler||[]).includes(st.etiket)) return false;
