@@ -1,0 +1,462 @@
+#!/usr/bin/env python3
+"""PubMed'den son 24 ayın yayınlarını çeker, data/yayinlar.json dosyasını günceller.
+Ortam değişkenleri (hepsi opsiyonel):
+  NCBI_API_KEY, NCBI_EMAIL  -> PubMed hız limiti / nezaket
+  GEMINI_API_KEY            -> Türkçe çeviri için (Google Gemini)
+  NVIDIA_API_KEY            -> Türkçe çeviri için (NVIDIA Build / NIM, 'nvapi-' ile başlar)
+  NVIDIA_MODEL              -> varsayılan meta/llama-3.3-70b-instruct (build.nvidia.com'dan model adını kontrol edin)
+  ANTHROPIC_API_KEY         -> Türkçe çeviri için (Claude); birden fazla anahtar varsa sırayla Gemini, NVIDIA, Claude denenir
+  GEMINI_MODEL              -> varsayılan gemini-2.5-flash (Google'ın güncel model adını kontrol edin)
+  CLAUDE_MODEL              -> varsayılan claude-haiku-5-5
+  CUMLE_KAPSAM              -> 'kendi' (varsayılan) veya 'hepsi': görüşme cümlesi hangi yayınlar için üretilsin
+  MAX_CEVIRI                -> bir çalışmada en fazla kaç özet çevrilsin (varsayılan 100)
+"""
+import json, os, re, time, datetime as dt, urllib.request, urllib.parse, urllib.error
+import xml.etree.ElementTree as ET
+
+BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+KOK = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+YAYIN = os.path.join(KOK, "data", "yayinlar.json")
+SORGU = os.path.join(KOK, "data", "sorgular.json")
+NCBI_KEY = os.getenv("NCBI_API_KEY", "")
+EMAIL = os.getenv("NCBI_EMAIL", "")
+CLAUDE_KEY = os.getenv("ANTHROPIC_API_KEY", "")
+MODEL = os.getenv("CLAUDE_MODEL") or "claude-haiku-5-5"
+GEMINI_KEY = os.getenv("GEMINI_API_KEY", "")
+NVIDIA_KEY = os.getenv("NVIDIA_API_KEY", "")
+NVIDIA_MODEL = os.getenv("NVIDIA_MODEL") or "meta/llama-3.3-70b-instruct"
+ANY_KEY = bool(GEMINI_KEY or NVIDIA_KEY or CLAUDE_KEY)
+GEMINI_MODEL = os.getenv("GEMINI_MODEL") or "gemini-2.5-flash"
+MAX_CEVIRI = int(os.getenv("MAX_CEVIRI") or "100")
+MAX_DAKIKA = int(os.getenv("MAX_DAKIKA") or "45")
+CEVIRI_ARA_SN = float(os.getenv("CEVIRI_ARA_SN") or ("7" if (GEMINI_KEY or NVIDIA_KEY) else "1"))   # ücretsiz katman dakika limitleri için
+PENCERE_AY = 24
+RETMAX = 100
+
+def eutils(ad, **p):
+    p.update(tool="farmavita-portal")
+    if NCBI_KEY: p["api_key"] = NCBI_KEY
+    if EMAIL: p["email"] = EMAIL
+    url = BASE + ad + "?" + urllib.parse.urlencode(p)
+    for deneme in range(3):
+        try:
+            with urllib.request.urlopen(url, timeout=60) as r:
+                return r.read()
+        except Exception as e:
+            print("  uyarı:", e); time.sleep(2 * (deneme + 1))
+    raise SystemExit("PubMed'e ulaşılamadı: " + ad)
+
+# Kapsam: yalnızca insan çalışmaları; editoryal/mektup/yorum/geri çekilmiş yayınlar yok.
+HAYVAN_SORGU = "(animals[mh] NOT humans[mh])"
+TIP_DISI_SORGU = ('(editorial[pt] OR letter[pt] OR comment[pt] OR news[pt] OR "published erratum"[pt] '
+                  'OR "retraction of publication"[pt] OR "retracted publication"[pt])')
+# Yaş filtresi KAPALI: farklı yaşlarda yapılmış iyi çalışmalar kaçmasın. Açmak için YAS_FILTRE = True (hedef: 2-18 yaş, MeSH yaş etiketleri)
+YAS_FILTRE = False
+YAS_UYGUN = {"child, preschool", "child", "adolescent"}
+YAS_DISI = {"infant, newborn", "infant", "infant, premature", "adult", "young adult", "middle aged", "aged", "aged, 80 and over"}
+
+def sorgu_filtreli(sorgu):
+    return f"({sorgu}) NOT {HAYVAN_SORGU} NOT {TIP_DISI_SORGU}"
+
+def kapsam_disi(m, yas_muaf=False):
+    """True ise yayın portala alınmaz/portaldan çıkarılır: hayvan çalışması (ve YAS_FILTRE açıksa 2-18 yaş dışı hasta grubu)."""
+    ms = {(d.text or "").strip().lower() for d in m.findall(".//MeshHeadingList/MeshHeading/DescriptorName")}
+    if "animals" in ms and "humans" not in ms:
+        return True
+    if yas_muaf or not YAS_FILTRE:
+        return False
+    if ms:
+        if ms & YAS_UYGUN:
+            return False          # çocuk/ergen de içeriyorsa kalır
+        return bool(ms & YAS_DISI)
+    baslik = metin(m.find(".//ArticleTitle")).lower()   # henüz MeSH etiketi yok: başlıktan yenidoğan/yaşlı ayıkla
+    return bool(re.search(r"neonat|newborn|preterm|premature (infant|birth)|\belderly\b|older adults?", baslik))
+
+def pmid_ara(sorgu, min_tarih, max_tarih):
+    veri = eutils("esearch.fcgi", db="pubmed", term=sorgu_filtreli(sorgu), retmax=RETMAX, retmode="json",
+                  datetype="pdat", mindate=min_tarih, maxdate=max_tarih, sort="date")
+    time.sleep(0.4)
+    return json.loads(veri)["esearchresult"].get("idlist", [])
+
+def metin(el):
+    return "".join(el.itertext()).strip() if el is not None else ""
+
+TIP = {"Meta-Analysis": "Meta-analiz", "Systematic Review": "Sistematik derleme",
+       "Randomized Controlled Trial": "RKÇ", "Clinical Trial": "Klinik çalışma",
+       "Review": "Derleme", "Observational Study": "Gözlemsel"}
+
+AYLAR = {m: i + 1 for i, m in enumerate(["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"])}
+
+def tarih_cikar(m, bugun=None):
+    """Yayın tarihini 'YYYY-MM-DD' (gün/ay yoksa 'YYYY-MM' veya 'YYYY') olarak döndürür.
+    Önce elektronik yayın tarihi (ArticleDate), yoksa dergi sayısı tarihi kullanılır; gelecek tarih asla yazılmaz."""
+    bugun = bugun or dt.date.today()
+    def parca(el):
+        y = (el.findtext("Year") or "").strip()
+        if not y.isdigit(): return None
+        ay = (el.findtext("Month") or "").strip()
+        ay = int(ay) if ay.isdigit() else AYLAR.get(ay[:3].lower(), 0)
+        g = (el.findtext("Day") or "").strip()
+        g = int(g) if g.isdigit() and ay else 0
+        return (int(y), ay if 1 <= ay <= 12 else 0, g if 1 <= g <= 31 else 0)
+    adaylar = []
+    for x in m.findall(".//ArticleDate"):
+        t = parca(x)
+        if t: adaylar.append(t)
+    if not adaylar:
+        pd = m.find(".//JournalIssue/PubDate")
+        t = parca(pd) if pd is not None else None
+        if t: adaylar.append(t)
+        else:
+            md = (m.findtext(".//JournalIssue/PubDate/MedlineDate") or "")[:4]
+            if md.isdigit(): adaylar.append((int(md), 0, 0))
+    for y, a, g in adaylar:
+        if (y, a or 1, g or 1) <= (bugun.year, bugun.month, bugun.day):
+            return "%04d" % y + ("-%02d" % a if a else "") + ("-%02d" % g if a and g else "")
+    return ""
+
+def tarihleri_doldur(mevcut, bugun):
+    """Eski kayıtlarda 'tarih' alanı yoksa PubMed'den yalnızca tarihi çekip ekler (çeviri gerekmez)."""
+    eksik = [p for p, y in mevcut.items() if "tarih" not in y]
+    if not eksik: return 0
+    print(f"{len(eksik)} yayın için yayın tarihi çekiliyor.")
+    doldu = 0
+    for i in range(0, len(eksik), 100):
+        grup = eksik[i:i + 100]
+        xml = eutils("efetch.fcgi", db="pubmed", id=",".join(grup), retmode="xml")
+        time.sleep(0.4)
+        for m in ET.fromstring(xml).findall(".//PubmedArticle"):
+            pmid = m.findtext("MedlineCitation/PMID")
+            if pmid in mevcut:
+                mevcut[pmid]["tarih"] = tarih_cikar(m, bugun); doldu += 1
+    for p in eksik:
+        mevcut[p].setdefault("tarih", "")
+    return doldu
+
+def kapsam_temizle(mevcut, muaf_idler):
+    """Portalda zaten olan, henüz kontrol edilmemiş yayınları kapsam (hayvan çalışması) için denetler; dışındakileri siler."""
+    bekleyen = [p for p, y in mevcut.items() if not y.get("kapsam_kontrol")]
+    if not bekleyen: return 0
+    print(f"{len(bekleyen)} mevcut yayın kapsam (hayvan çalışması) için denetleniyor.")
+    silinen = 0
+    for i in range(0, len(bekleyen), 100):
+        grup = bekleyen[i:i + 100]
+        xml = eutils("efetch.fcgi", db="pubmed", id=",".join(grup), retmode="xml")
+        time.sleep(0.4)
+        for m in ET.fromstring(xml).findall(".//PubmedArticle"):
+            pmid = m.findtext("MedlineCitation/PMID")
+            if pmid not in mevcut: continue
+            muaf = bool(set(mevcut[pmid].get("etiketler", [])) & muaf_idler)
+            if kapsam_disi(m, muaf):
+                del mevcut[pmid]; silinen += 1
+            else:
+                mevcut[pmid]["kapsam_kontrol"] = 1
+    print(f"Kapsam dışı {silinen} yayın portaldan çıkarıldı.")
+    return silinen
+
+def cek(pmidler, yas_muaf=frozenset()):
+    sonuc = {}
+    for i in range(0, len(pmidler), 100):
+        grup = pmidler[i:i + 100]
+        xml = eutils("efetch.fcgi", db="pubmed", id=",".join(grup), retmode="xml")
+        time.sleep(0.4)
+        for m in ET.fromstring(xml).findall(".//PubmedArticle"):
+            pmid = m.findtext("MedlineCitation/PMID")
+            parcalar = []
+            for a in m.findall(".//Abstract/AbstractText"):
+                etiket = a.get("Label")
+                parcalar.append((etiket + ": " if etiket else "") + metin(a))
+            ozet = "\n".join(p for p in parcalar if p.strip())
+            if not ozet:
+                continue
+            if kapsam_disi(m, pmid in yas_muaf):
+                continue
+            yil = m.findtext(".//JournalIssue/PubDate/Year") or (m.findtext(".//JournalIssue/PubDate/MedlineDate") or "")[:4]
+            # Dergi sayısı gelecekteyse (ör. 2027 Ocak sayısı) makalenin gerçek çıkış (elektronik) yılını kullan
+            bu_yil = dt.date.today().year
+            if yil.isdigit() and int(yil) > bu_yil:
+                ey = next((x.findtext("Year") for x in m.findall(".//ArticleDate") if (x.findtext("Year") or "").isdigit()), None)
+                yil = ey if ey and int(ey) <= bu_yil else str(bu_yil)
+            yazarlar = []
+            for au in m.findall(".//AuthorList/Author")[:3]:
+                ad = (au.findtext("LastName") or "") + " " + (au.findtext("Initials") or "")
+                if ad.strip(): yazarlar.append(ad.strip())
+            if len(m.findall(".//AuthorList/Author")) > 3: yazarlar.append("ve ark.")
+            tipler = [t.text for t in m.findall(".//PublicationType") if t.text]
+            tip = next((TIP[t] for t in TIP if t in tipler), "")
+            doi = next((x.text for x in m.findall(".//ArticleIdList/ArticleId") if x.get("IdType") == "doi"), "")
+            sonuc[pmid] = {"pmid": pmid, "baslik_en": metin(m.find(".//ArticleTitle")),
+                           "dergi": m.findtext(".//Journal/Title") or "", "yil": int(yil) if yil.isdigit() else None,
+                           "tarih": tarih_cikar(m), "yazarlar": ", ".join(yazarlar), "doi": doi, "tip": tip, "ozet_en": ozet}
+    return sonuc
+
+SISTEM = ("Sen tıbbi bir çevirmensin. Verilen PubMed başlığını ve özetini Türkçeye sadık biçimde çevir. "
+          "Yalnızca metinde yazan bilgiyi kullan; sayı, sonuç, yorum veya pazarlama ifadesi EKLEME, çıkarma. "
+          "Kısaltmaları (LGG, RKÇ, CFU vb.) koru. Çıktı biçimi: ilk satır 'BASLIK: <Türkçe başlık>', "
+          "sonra boş satır, sonra Türkçe özet (etiketli bölümler varsa etiketleri koru).")
+
+SON_HATA = ""
+
+def gemini_adaylar():
+    """Hesabın erişebildiği metin üreten flash modellerini en uygundan başlayarak sıralar."""
+    import re
+    req = urllib.request.Request("https://generativelanguage.googleapis.com/v1beta/models?pageSize=200",
+                                 headers={"x-goog-api-key": GEMINI_KEY})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        modeller = json.loads(r.read()).get("models", [])
+    aday = []
+    for m in modeller:
+        ad = m.get("name", "").replace("models/", "")
+        if "generateContent" not in m.get("supportedGenerationMethods", []):
+            continue
+        if "flash" not in ad or any(x in ad for x in ("image", "tts", "live", "audio", "embed", "robotics", "vision")):
+            continue
+        v = re.search(r"(\d+(?:\.\d+)?)", ad)
+        aday.append((("preview" in ad or "exp" in ad), ("lite" in ad), -(float(v.group(1)) if v else 0), ad))
+    aday.sort()
+    return [x[-1] for x in aday]
+
+def _gemini_istek(model, kullanici, sistem=None):
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+    govde = {"systemInstruction": {"parts": [{"text": sistem or SISTEM}]},
+             "contents": [{"role": "user", "parts": [{"text": kullanici}]}],
+             "generationConfig": {"temperature": 0.1}}
+    req = urllib.request.Request(url, data=json.dumps(govde).encode(),
+                                 headers={"content-type": "application/json", "x-goog-api-key": GEMINI_KEY})
+    with urllib.request.urlopen(req, timeout=120) as r:
+        return json.loads(r.read())["candidates"][0]["content"]["parts"][0]["text"].strip()
+
+def _gemini(kullanici, sistem=None):
+    global GEMINI_MODEL
+    try:
+        return _gemini_istek(GEMINI_MODEL, kullanici, sistem)
+    except urllib.error.HTTPError as e:
+        if e.code not in (400, 404):
+            raise
+        print(f"  '{GEMINI_MODEL}' kullanılamadı (HTTP {e.code}), güncel modeller aranıyor...")
+    adaylar = gemini_adaylar()
+    print("  Aday modeller:", adaylar[:6])
+    son = None
+    for m in adaylar[:4]:
+        try:
+            cevap = _gemini_istek(m, kullanici, sistem)
+            GEMINI_MODEL = m
+            print("  Seçilen model:", m)
+            return cevap
+        except Exception as e:
+            son = e
+            print(f"  {m} denenemedi: {e}")
+    raise RuntimeError(f"Hiçbir Gemini modeli çalışmadı: {son}")
+
+def _claude(kullanici, sistem=None):
+    istek = {"model": MODEL, "max_tokens": 4000, "system": sistem or SISTEM,
+             "messages": [{"role": "user", "content": kullanici}]}
+    req = urllib.request.Request("https://api.anthropic.com/v1/messages", data=json.dumps(istek).encode(),
+                                 headers={"content-type": "application/json", "x-api-key": CLAUDE_KEY,
+                                          "anthropic-version": "2023-06-01"})
+    with urllib.request.urlopen(req, timeout=120) as r:
+        bloklar = json.loads(r.read()).get("content", [])
+    return "".join(b.get("text", "") for b in bloklar if b.get("type") == "text").strip()
+
+def model_listesi_yaz():
+    try:
+        req = urllib.request.Request("https://integrate.api.nvidia.com/v1/models",
+                                     headers={"Authorization": "Bearer " + NVIDIA_KEY})
+        with urllib.request.urlopen(req, timeout=60) as r:
+            idler = [m["id"] for m in json.loads(r.read()).get("data", [])]
+        sec = [i for i in idler if any(x in i.lower() for x in ("instruct", "chat", "llama", "qwen", "mistral", "gemma"))]
+        print("  NVIDIA'da kullanılabilir bazı modeller:", sec[:40])
+    except Exception as e:
+        print("  Model listesi alınamadı:", e)
+
+def _nvidia(kullanici, sistem=None):
+    govde = {"model": NVIDIA_MODEL, "temperature": 0.1, "max_tokens": 2000, "stream": False,
+             "messages": [{"role": "system", "content": sistem or SISTEM}, {"role": "user", "content": kullanici}]}
+    req = urllib.request.Request("https://integrate.api.nvidia.com/v1/chat/completions", data=json.dumps(govde).encode(),
+                                 headers={"content-type": "application/json", "accept": "application/json",
+                                          "Authorization": "Bearer " + NVIDIA_KEY})
+    try:
+        with urllib.request.urlopen(req, timeout=180) as r:
+            cevap = json.loads(r.read())["choices"][0]["message"]["content"]
+    except urllib.error.HTTPError as e:
+        if e.code in (400, 404, 410):
+            print(f"  NVIDIA modeli '{NVIDIA_MODEL}' kullanılamadı (HTTP {e.code}).")
+            model_listesi_yaz()
+        raise
+    return re.sub(r"<think>.*?</think>", "", cevap, flags=re.S).strip()
+
+KALICI_OLU = set()   # anahtar/model gibi kalıcı hata veren sağlayıcılar (bu çalışma için bırakılır)
+
+def hata_turu(e):
+    """429 ve 5xx gibi geçici hatalarda bekleyip yeniden denenir; 400/401/403/404 kalıcı sayılır."""
+    if isinstance(e, urllib.error.HTTPError):
+        return "gecici" if e.code in (408, 409, 425, 429) or e.code >= 500 else "kalici"
+    return "gecici"   # zaman aşımı, bağlantı kopması, boş/bozuk yanıt
+
+def bekleme_suresi(e, deneme):
+    if isinstance(e, urllib.error.HTTPError) and e.headers:
+        ra = e.headers.get("Retry-After")
+        if ra and str(ra).isdigit():
+            return min(int(ra) + 1, 120)
+    return min(15 * 2 ** deneme, 120)
+
+def saglayicilar():
+    s = []
+    if GEMINI_KEY: s.append(("gemini", _gemini))
+    if NVIDIA_KEY: s.append(("nvidia", _nvidia))
+    if CLAUDE_KEY: s.append(("claude", _claude))
+    return [x for x in s if x[0] not in KALICI_OLU]
+
+def _dene(kullanici, sistem, isle):
+    """Sağlayıcıları sırayla dener; geçici hatalarda bekleyip tekrarlar. isle(cevap) sonucu döndürür veya hata fırlatır."""
+    global SON_HATA
+    for ad, fn in saglayicilar():
+        for deneme in range(4):
+            try:
+                sonuc = isle(fn(kullanici, sistem))
+                SON_HATA = ""   # başarılı işlem sonrası eski hata mesajını temizle
+                return sonuc
+            except Exception as e:
+                ayrinti = getattr(e, "read", lambda: b"")()[:200]
+                SON_HATA = f"[{ad}] {e} {ayrinti}".strip()
+                tur = hata_turu(e)
+                print(f"  işlem hatası ({tur}, deneme {deneme + 1}/4): {SON_HATA}")
+                kota = isinstance(e, urllib.error.HTTPError) and e.code == 429 and b"quota" in ayrinti.lower()
+                if kota and deneme >= 1:
+                    print(f"  {ad}: kota dolmuş görünüyor, bu çalışma için bırakılıyor.")
+                    KALICI_OLU.add(ad)
+                    break
+                if tur == "kalici":
+                    KALICI_OLU.add(ad)
+                    break
+                if deneme < 3:
+                    time.sleep(bekleme_suresi(e, deneme))
+    return None
+
+def cevir(baslik, ozet):
+    def isle(cevap):
+        baslik_tr, _, govde = cevap.partition("\n")
+        if not govde.strip():
+            raise ValueError("Boş çeviri döndü")
+        return baslik_tr.replace("BASLIK:", "").strip(), govde.strip()
+    return _dene(f"Başlık: {baslik}\n\nÖzet:\n{ozet}", None, isle)
+
+SISTEM_CUMLE = ("Sen bir ilaç firmasının tıbbi bilgi ekibinde çalışan deneyimli bir editörsün. Verilen PubMed özetinden, "
+    "saha temsilcisinin hekime aktarabileceği 1-2 cümlelik, akıcı, resmi bir Türkçe bilgilendirme cümlesi yaz. "
+    "Kurallar: (1) Yalnızca özette yazan bilgiyi kullan; sayı, popülasyon, doz, süre veya sonuç UYDURMA. "
+    "(2) Mümkünse çalışma tipini, yılı, katılımcı sayısını/popülasyonu, uygulama (doz/süre) bilgisini ve ana bulguyu ver; özette olmayanı atla. "
+    "(3) 'kanıtlanmıştır', 'tedavi eder', 'önler', 'en iyi', 'üstündür' gibi kesin veya karşılaştırmalı iddialar KULLANMA; "
+    "bulguyu 'bildirilmiştir', 'gözlenmiştir', 'saptanmıştır' gibi ifadelerle aktar. (4) Bulgu istatistiksel olarak anlamlı değilse veya özet sonuç vermiyorsa bunu açıkça belirt. "
+    "(5) Rakip ürün veya marka adı anma. (6) Cümlenin sonunda parantez içinde kaynak ver: (yazar/dergi yıl, PMID). "
+    "Yalnızca cümleleri yaz, başlık veya açıklama ekleme.")
+
+def cumle_uret(y):
+    kullanici = (f"Başlık: {y.get('baslik_en','')}\nDergi: {y.get('dergi','')} {y.get('yil','')}\n"
+                 f"Çalışma tipi: {y.get('tip','')}\nPMID: {y.get('pmid','')}\n\nÖzet:\n{y.get('ozet_en','')}")
+    def isle(cevap):
+        c = cevap.strip().strip('"').strip()
+        if len(c) < 40:
+            raise ValueError("Çok kısa cümle")
+        return c
+    return _dene(kullanici, SISTEM_CUMLE, isle)
+
+def kaydet(mevcut, bugun):
+    alt_yil = bugun.year - 2
+    liste = [y for y in mevcut.values() if (y.get("yil") or 0) >= alt_yil]
+    liste.sort(key=lambda y: (y.get("yil") or 0, y["pmid"]), reverse=True)
+    bekleyen = sum(1 for y in liste if not y.get("ozet_tr"))
+    hata = SON_HATA or ("" if ANY_KEY else "Çeviri anahtarı tanımlı değil (GEMINI_API_KEY, NVIDIA_API_KEY veya ANTHROPIC_API_KEY secret'ı eksik)")
+    json.dump({"son_guncelleme": bugun.isoformat(), "toplam": len(liste), "ceviri_bekleyen": bekleyen,
+               "ceviri_son_hata": hata if bekleyen else "", "yayinlar": liste},
+              open(YAYIN, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    return len(liste), bekleyen
+
+def main():
+    bugun = dt.date.today()
+    bas = (bugun - dt.timedelta(days=PENCERE_AY * 30)).strftime("%Y/%m/%d")
+    bit = bugun.strftime("%Y/%m/%d")
+    sorgular = json.load(open(SORGU, encoding="utf-8"))["sorgular"]
+    mevcut = {y["pmid"]: y for y in json.load(open(YAYIN, encoding="utf-8")).get("yayinlar", [])}
+
+    muaf_idler = {s["id"] for s in sorgular if s.get("yas") is False}   # yaş filtresi uygulanmayan sorgular
+    kapsam_temizle(mevcut, muaf_idler)
+
+    etiketler, kategoriler, gruplar, dallar = {}, {}, {}, {}
+    for s in sorgular:
+        print("Sorgu:", s["id"])
+        for pmid in pmid_ara(s["sorgu"], bas, bit):
+            etiketler.setdefault(pmid, set()).add(s["id"])
+            if s.get("dal"): dallar.setdefault(pmid, set()).add(s["dal"])
+            kategoriler.setdefault(pmid, s["kategori"])
+            gruplar.setdefault(pmid, set()).add(s["grup"])
+
+    yeni_idler = [p for p in etiketler if p not in mevcut]
+    print(f"{len(etiketler)} yayın bulundu, {len(yeni_idler)} yeni.")
+    yas_muaf = {p for p in yeni_idler if etiketler[p] & muaf_idler}
+    for pmid, kayit in cek(yeni_idler, yas_muaf).items():
+        kayit.update(ozet_tr="", baslik_tr="", saha_notu="", ceviri="bekliyor", kapsam_kontrol=1)
+        mevcut[pmid] = kayit
+
+    for y in mevcut.values():   # önceki çalışmalardan kalan gelecek tarihli yılları düzelt
+        if (y.get("yil") or 0) > bugun.year:
+            y["yil"] = bugun.year
+    for pmid, y in mevcut.items():
+        if pmid in etiketler:
+            y["etiketler"] = sorted(set(y.get("etiketler", [])) | etiketler[pmid])
+            y["kategori"] = kategoriler[pmid]
+            y["grup"] = sorted(gruplar[pmid])
+            if pmid in dallar:
+                y["dallar"] = sorted(set(y.get("dallar", [])) | dallar[pmid])
+
+    tarihleri_doldur(mevcut, bugun)
+    kaydet(mevcut, bugun)   # PubMed verisi çeviri öncesi de kaydedilir
+
+    cevrilen, ardisik, baslangic = 0, 0, time.time()
+    # Önce bizim ürünlerle ilgili yayınlar, sonra yeniden eskiye
+    bekleyenler = sorted((y for y in mevcut.values() if not y.get("ozet_tr")),
+                         key=lambda y: ("kendi" not in y.get("grup", []), -(y.get("yil") or 0)))
+    if ANY_KEY:
+        print(f"{len(bekleyenler)} yayın çeviri bekliyor.")
+        for y in bekleyenler:
+            if cevrilen >= MAX_CEVIRI:
+                print(f"Çalışma başına çeviri sınırına ulaşıldı ({MAX_CEVIRI}); kalanlar sonraki çalışmada."); break
+            if (time.time() - baslangic) / 60 >= MAX_DAKIKA:
+                print("Süre sınırına ulaşıldı; kalanlar sonraki çalışmada."); break
+            if not saglayicilar():
+                print("Kullanılabilir çeviri sağlayıcısı kalmadı (kota doldu veya anahtar/model hatası); çeviri durduruldu."); break
+            sonuc = cevir(y["baslik_en"], y["ozet_en"])
+            if sonuc:
+                y["baslik_tr"], y["ozet_tr"], y["ceviri"] = sonuc[0], sonuc[1], "yapay-zeka"
+                cevrilen += 1; ardisik = 0
+                if cevrilen % 10 == 0:
+                    kaydet(mevcut, bugun); print(f"  ... {cevrilen} çeviri kaydedildi")
+            else:
+                ardisik += 1
+                if ardisik >= 8:
+                    print("Üst üste 8 yayın çevrilemedi; durduruldu. Sonraki çalışmada devam edilecek."); break
+            time.sleep(CEVIRI_ARA_SN)
+
+    # Görüşme cümleleri (varsayılan: yalnızca bizim ürünlerle ilgili yayınlar; CUMLE_KAPSAM=hepsi ile genişler)
+    if ANY_KEY and saglayicilar():
+        kapsam = (os.getenv("CUMLE_KAPSAM") or "kendi").lower()
+        hedef = [y for y in mevcut.values() if not y.get("cumle") and y.get("ozet_en")
+                 and (kapsam == "hepsi" or "kendi" in y.get("grup", []))]
+        hedef.sort(key=lambda y: (-(y.get("yil") or 0)))
+        print(f"{len(hedef)} yayın için görüşme cümlesi bekliyor.")
+        uretilen = 0
+        for y in hedef:
+            if uretilen >= MAX_CEVIRI or (time.time() - baslangic) / 60 >= MAX_DAKIKA or not saglayicilar():
+                break
+            c = cumle_uret(y)
+            if c:
+                y["cumle"] = c; uretilen += 1
+                if uretilen % 10 == 0:
+                    kaydet(mevcut, bugun); print(f"  ... {uretilen} cümle kaydedildi")
+            time.sleep(CEVIRI_ARA_SN)
+        print(f"{uretilen} yeni görüşme cümlesi üretildi.")
+
+    toplam, bekleyen = kaydet(mevcut, bugun)
+    print(f"Kaydedildi: {toplam} yayın, {cevrilen} yeni çeviri, {bekleyen} çeviri bekliyor.")
+
+if __name__ == "__main__":
+    main()
