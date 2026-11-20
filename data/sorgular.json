@@ -1,5 +1,5 @@
 {
- "aciklama": "PubMed arama sorguları. Yeni suş/form eklemek için bu listeye bir satır ekleyin; bir sonraki aylık çalışmada otomatik çekilir. kategori: probiyotik | omega3 | form | sitikolin. grup: kendi | rakip.",
+ "aciklama": "PubMed arama sorguları. Yeni suş/form eklemek için bu listeye bir satır ekleyin; bir sonraki aylık çalışmada otomatik çekilir. kategori: probiyotik | omega3 | form | sitikolin. grup: kendi | rakip. Ek alan: dal (kardiyo|noro|endokrin|gastro|nefro|immun) -> yayın o yan dala doğrudan etiketlenir.",
  "sorgular": [
   {
    "id": "lgg",
@@ -112,6 +112,102 @@
    "kategori": "sitikolin",
    "grup": "rakip",
    "sorgu": "\"citicoline\"[Title/Abstract] OR \"CDP-choline\"[Title/Abstract] OR \"cytidine diphosphate choline\"[Title/Abstract]"
+  },
+  {
+   "id": "d-kardiyo-pro",
+   "ad": "Kardiyoloji · LGG / BB-12",
+   "kategori": "probiyotik",
+   "grup": "kendi",
+   "dal": "kardiyo",
+   "sorgu": "(\"Lacticaseibacillus rhamnosus GG\"[Title/Abstract] OR \"Lactobacillus rhamnosus GG\"[Title/Abstract] OR \"LGG\"[Title/Abstract] OR \"BB-12\"[Title/Abstract]) AND (\"blood pressure\"[Title/Abstract] OR \"hypertension\"[Title/Abstract] OR \"cholesterol\"[Title/Abstract])"
+  },
+  {
+   "id": "d-kardiyo-omega",
+   "ad": "Kardiyoloji · Omega-3",
+   "kategori": "omega3",
+   "grup": "kendi",
+   "dal": "kardiyo",
+   "sorgu": "(\"omega-3\"[Title/Abstract] OR \"EPA\"[Title/Abstract] OR \"DHA\"[Title/Abstract] OR \"fish oil\"[Title/Abstract] OR \"cod liver oil\"[Title/Abstract]) AND (\"blood pressure\"[Title/Abstract] OR \"hypertension\"[Title/Abstract] OR \"cholesterol\"[Title/Abstract] OR \"dyslipidemia\"[Title/Abstract] OR \"hypertriglyceridemia\"[Title/Abstract] OR \"endothelial function\"[Title/Abstract] OR \"cardiovascular\"[Title/Abstract])"
+  },
+  {
+   "id": "d-noro-pro",
+   "ad": "Nöroloji · LGG / BB-12",
+   "kategori": "probiyotik",
+   "grup": "kendi",
+   "dal": "noro",
+   "sorgu": "(\"Lacticaseibacillus rhamnosus GG\"[Title/Abstract] OR \"Lactobacillus rhamnosus GG\"[Title/Abstract] OR \"LGG\"[Title/Abstract] OR \"BB-12\"[Title/Abstract]) AND (\"autism\"[Title/Abstract] OR \"ADHD\"[Title/Abstract] OR \"attention deficit\"[Title/Abstract] OR \"anxiety\"[Title/Abstract])"
+  },
+  {
+   "id": "d-noro-omega",
+   "ad": "Nöroloji · Omega-3",
+   "kategori": "omega3",
+   "grup": "kendi",
+   "dal": "noro",
+   "sorgu": "(\"omega-3\"[Title/Abstract] OR \"EPA\"[Title/Abstract] OR \"DHA\"[Title/Abstract] OR \"fish oil\"[Title/Abstract] OR \"cod liver oil\"[Title/Abstract]) AND (\"autism\"[Title/Abstract] OR \"ADHD\"[Title/Abstract] OR \"attention deficit\"[Title/Abstract] OR \"cognition\"[Title/Abstract] OR \"cognitive\"[Title/Abstract] OR \"neurodevelopment\"[Title/Abstract] OR \"anxiety\"[Title/Abstract] OR \"depression\"[Title/Abstract] OR \"migraine\"[Title/Abstract] OR \"epilepsy\"[Title/Abstract])"
+  },
+  {
+   "id": "d-endokrin-pro",
+   "ad": "Endokrinoloji · LGG / BB-12",
+   "kategori": "probiyotik",
+   "grup": "kendi",
+   "dal": "endokrin",
+   "sorgu": "(\"Lacticaseibacillus rhamnosus GG\"[Title/Abstract] OR \"Lactobacillus rhamnosus GG\"[Title/Abstract] OR \"LGG\"[Title/Abstract] OR \"BB-12\"[Title/Abstract]) AND (\"obesity\"[Title/Abstract] OR \"overweight\"[Title/Abstract] OR \"fatty liver\"[Title/Abstract] OR \"NAFLD\"[Title/Abstract] OR \"MASLD\"[Title/Abstract] OR \"diabetes\"[Title/Abstract])"
+  },
+  {
+   "id": "d-endokrin-omega",
+   "ad": "Endokrinoloji · Omega-3",
+   "kategori": "omega3",
+   "grup": "kendi",
+   "dal": "endokrin",
+   "sorgu": "(\"omega-3\"[Title/Abstract] OR \"EPA\"[Title/Abstract] OR \"DHA\"[Title/Abstract] OR \"fish oil\"[Title/Abstract] OR \"cod liver oil\"[Title/Abstract]) AND (\"obesity\"[Title/Abstract] OR \"overweight\"[Title/Abstract] OR \"fatty liver\"[Title/Abstract] OR \"NAFLD\"[Title/Abstract] OR \"MASLD\"[Title/Abstract] OR \"insulin resistance\"[Title/Abstract] OR \"type 1 diabetes\"[Title/Abstract] OR \"type 2 diabetes\"[Title/Abstract] OR \"metabolic syndrome\"[Title/Abstract])"
+  },
+  {
+   "id": "d-gastro-pro",
+   "ad": "Gastroenteroloji · LGG / BB-12",
+   "kategori": "probiyotik",
+   "grup": "kendi",
+   "dal": "gastro",
+   "sorgu": "(\"Lacticaseibacillus rhamnosus GG\"[Title/Abstract] OR \"Lactobacillus rhamnosus GG\"[Title/Abstract] OR \"LGG\"[Title/Abstract] OR \"BB-12\"[Title/Abstract]) AND (\"antibiotic-associated diarrhea\"[Title/Abstract] OR \"acute gastroenteritis\"[Title/Abstract] OR \"diarrhea\"[Title/Abstract] OR \"abdominal pain\"[Title/Abstract] OR \"irritable bowel\"[Title/Abstract] OR \"constipation\"[Title/Abstract] OR \"Helicobacter pylori\"[Title/Abstract] OR \"inflammatory bowel disease\"[Title/Abstract] OR \"Crohn\"[Title/Abstract] OR \"ulcerative colitis\"[Title/Abstract] OR \"celiac\"[Title/Abstract])"
+  },
+  {
+   "id": "d-gastro-omega",
+   "ad": "Gastroenteroloji · Omega-3",
+   "kategori": "omega3",
+   "grup": "kendi",
+   "dal": "gastro",
+   "sorgu": "(\"omega-3\"[Title/Abstract] OR \"EPA\"[Title/Abstract] OR \"DHA\"[Title/Abstract] OR \"fish oil\"[Title/Abstract] OR \"cod liver oil\"[Title/Abstract]) AND (\"inflammatory bowel disease\"[Title/Abstract] OR \"Crohn\"[Title/Abstract] OR \"ulcerative colitis\"[Title/Abstract] OR \"fatty liver\"[Title/Abstract] OR \"NAFLD\"[Title/Abstract])"
+  },
+  {
+   "id": "d-nefro-pro",
+   "ad": "Nefroloji · LGG / BB-12",
+   "kategori": "probiyotik",
+   "grup": "kendi",
+   "dal": "nefro",
+   "sorgu": "(\"Lacticaseibacillus rhamnosus GG\"[Title/Abstract] OR \"Lactobacillus rhamnosus GG\"[Title/Abstract] OR \"LGG\"[Title/Abstract] OR \"BB-12\"[Title/Abstract]) AND (\"urinary tract infection\"[Title/Abstract] OR \"chronic kidney disease\"[Title/Abstract] OR \"kidney\"[Title/Abstract])"
+  },
+  {
+   "id": "d-nefro-omega",
+   "ad": "Nefroloji · Omega-3",
+   "kategori": "omega3",
+   "grup": "kendi",
+   "dal": "nefro",
+   "sorgu": "(\"omega-3\"[Title/Abstract] OR \"EPA\"[Title/Abstract] OR \"DHA\"[Title/Abstract] OR \"fish oil\"[Title/Abstract] OR \"cod liver oil\"[Title/Abstract]) AND (\"chronic kidney disease\"[Title/Abstract] OR \"nephrotic syndrome\"[Title/Abstract] OR \"IgA nephropathy\"[Title/Abstract] OR \"dialysis\"[Title/Abstract] OR \"kidney\"[Title/Abstract])"
+  },
+  {
+   "id": "d-immun-pro",
+   "ad": "İmmünoloji / Alerji · LGG / BB-12",
+   "kategori": "probiyotik",
+   "grup": "kendi",
+   "dal": "immun",
+   "sorgu": "(\"Lacticaseibacillus rhamnosus GG\"[Title/Abstract] OR \"Lactobacillus rhamnosus GG\"[Title/Abstract] OR \"LGG\"[Title/Abstract] OR \"BB-12\"[Title/Abstract]) AND (\"atopic dermatitis\"[Title/Abstract] OR \"eczema\"[Title/Abstract] OR \"allergy\"[Title/Abstract] OR \"allergic\"[Title/Abstract] OR \"asthma\"[Title/Abstract] OR \"respiratory tract infection\"[Title/Abstract] OR \"food allergy\"[Title/Abstract])"
+  },
+  {
+   "id": "d-immun-omega",
+   "ad": "İmmünoloji / Alerji · Omega-3",
+   "kategori": "omega3",
+   "grup": "kendi",
+   "dal": "immun",
+   "sorgu": "(\"omega-3\"[Title/Abstract] OR \"EPA\"[Title/Abstract] OR \"DHA\"[Title/Abstract] OR \"fish oil\"[Title/Abstract] OR \"cod liver oil\"[Title/Abstract]) AND (\"asthma\"[Title/Abstract] OR \"atopic dermatitis\"[Title/Abstract] OR \"eczema\"[Title/Abstract] OR \"allergy\"[Title/Abstract] OR \"allergic\"[Title/Abstract])"
   }
  ]
 }
