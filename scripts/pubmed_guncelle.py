@@ -46,8 +46,34 @@ def eutils(ad, **p):
             print("  uyarı:", e); time.sleep(2 * (deneme + 1))
     raise SystemExit("PubMed'e ulaşılamadı: " + ad)
 
+# Kapsam: yalnızca insan çalışmaları; editoryal/mektup/yorum/geri çekilmiş yayınlar yok.
+HAYVAN_SORGU = "(animals[mh] NOT humans[mh])"
+TIP_DISI_SORGU = ('(editorial[pt] OR letter[pt] OR comment[pt] OR news[pt] OR "published erratum"[pt] '
+                  'OR "retraction of publication"[pt] OR "retracted publication"[pt])')
+# Yaş filtresi KAPALI: farklı yaşlarda yapılmış iyi çalışmalar kaçmasın. Açmak için YAS_FILTRE = True (hedef: 2-18 yaş, MeSH yaş etiketleri)
+YAS_FILTRE = False
+YAS_UYGUN = {"child, preschool", "child", "adolescent"}
+YAS_DISI = {"infant, newborn", "infant", "infant, premature", "adult", "young adult", "middle aged", "aged", "aged, 80 and over"}
+
+def sorgu_filtreli(sorgu):
+    return f"({sorgu}) NOT {HAYVAN_SORGU} NOT {TIP_DISI_SORGU}"
+
+def kapsam_disi(m, yas_muaf=False):
+    """True ise yayın portala alınmaz/portaldan çıkarılır: hayvan çalışması (ve YAS_FILTRE açıksa 2-18 yaş dışı hasta grubu)."""
+    ms = {(d.text or "").strip().lower() for d in m.findall(".//MeshHeadingList/MeshHeading/DescriptorName")}
+    if "animals" in ms and "humans" not in ms:
+        return True
+    if yas_muaf or not YAS_FILTRE:
+        return False
+    if ms:
+        if ms & YAS_UYGUN:
+            return False          # çocuk/ergen de içeriyorsa kalır
+        return bool(ms & YAS_DISI)
+    baslik = metin(m.find(".//ArticleTitle")).lower()   # henüz MeSH etiketi yok: başlıktan yenidoğan/yaşlı ayıkla
+    return bool(re.search(r"neonat|newborn|preterm|premature (infant|birth)|\belderly\b|older adults?", baslik))
+
 def pmid_ara(sorgu, min_tarih, max_tarih):
-    veri = eutils("esearch.fcgi", db="pubmed", term=sorgu, retmax=RETMAX, retmode="json",
+    veri = eutils("esearch.fcgi", db="pubmed", term=sorgu_filtreli(sorgu), retmax=RETMAX, retmode="json",
                   datetype="pdat", mindate=min_tarih, maxdate=max_tarih, sort="date")
     time.sleep(0.4)
     return json.loads(veri)["esearchresult"].get("idlist", [])
@@ -107,7 +133,28 @@ def tarihleri_doldur(mevcut, bugun):
         mevcut[p].setdefault("tarih", "")
     return doldu
 
-def cek(pmidler):
+def kapsam_temizle(mevcut, muaf_idler):
+    """Portalda zaten olan, henüz kontrol edilmemiş yayınları kapsam (hayvan çalışması) için denetler; dışındakileri siler."""
+    bekleyen = [p for p, y in mevcut.items() if not y.get("kapsam_kontrol")]
+    if not bekleyen: return 0
+    print(f"{len(bekleyen)} mevcut yayın kapsam (hayvan çalışması) için denetleniyor.")
+    silinen = 0
+    for i in range(0, len(bekleyen), 100):
+        grup = bekleyen[i:i + 100]
+        xml = eutils("efetch.fcgi", db="pubmed", id=",".join(grup), retmode="xml")
+        time.sleep(0.4)
+        for m in ET.fromstring(xml).findall(".//PubmedArticle"):
+            pmid = m.findtext("MedlineCitation/PMID")
+            if pmid not in mevcut: continue
+            muaf = bool(set(mevcut[pmid].get("etiketler", [])) & muaf_idler)
+            if kapsam_disi(m, muaf):
+                del mevcut[pmid]; silinen += 1
+            else:
+                mevcut[pmid]["kapsam_kontrol"] = 1
+    print(f"Kapsam dışı {silinen} yayın portaldan çıkarıldı.")
+    return silinen
+
+def cek(pmidler, yas_muaf=frozenset()):
     sonuc = {}
     for i in range(0, len(pmidler), 100):
         grup = pmidler[i:i + 100]
@@ -121,6 +168,8 @@ def cek(pmidler):
                 parcalar.append((etiket + ": " if etiket else "") + metin(a))
             ozet = "\n".join(p for p in parcalar if p.strip())
             if not ozet:
+                continue
+            if kapsam_disi(m, pmid in yas_muaf):
                 continue
             yil = m.findtext(".//JournalIssue/PubDate/Year") or (m.findtext(".//JournalIssue/PubDate/MedlineDate") or "")[:4]
             # Dergi sayısı gelecekteyse (ör. 2027 Ocak sayısı) makalenin gerçek çıkış (elektronik) yılını kullan
@@ -329,18 +378,23 @@ def main():
     sorgular = json.load(open(SORGU, encoding="utf-8"))["sorgular"]
     mevcut = {y["pmid"]: y for y in json.load(open(YAYIN, encoding="utf-8")).get("yayinlar", [])}
 
-    etiketler, kategoriler, gruplar = {}, {}, {}
+    muaf_idler = {s["id"] for s in sorgular if s.get("yas") is False}   # yaş filtresi uygulanmayan sorgular
+    kapsam_temizle(mevcut, muaf_idler)
+
+    etiketler, kategoriler, gruplar, dallar = {}, {}, {}, {}
     for s in sorgular:
         print("Sorgu:", s["id"])
         for pmid in pmid_ara(s["sorgu"], bas, bit):
             etiketler.setdefault(pmid, set()).add(s["id"])
+            if s.get("dal"): dallar.setdefault(pmid, set()).add(s["dal"])
             kategoriler.setdefault(pmid, s["kategori"])
             gruplar.setdefault(pmid, set()).add(s["grup"])
 
     yeni_idler = [p for p in etiketler if p not in mevcut]
     print(f"{len(etiketler)} yayın bulundu, {len(yeni_idler)} yeni.")
-    for pmid, kayit in cek(yeni_idler).items():
-        kayit.update(ozet_tr="", baslik_tr="", saha_notu="", ceviri="bekliyor")
+    yas_muaf = {p for p in yeni_idler if etiketler[p] & muaf_idler}
+    for pmid, kayit in cek(yeni_idler, yas_muaf).items():
+        kayit.update(ozet_tr="", baslik_tr="", saha_notu="", ceviri="bekliyor", kapsam_kontrol=1)
         mevcut[pmid] = kayit
 
     for y in mevcut.values():   # önceki çalışmalardan kalan gelecek tarihli yılları düzelt
@@ -351,6 +405,8 @@ def main():
             y["etiketler"] = sorted(set(y.get("etiketler", [])) | etiketler[pmid])
             y["kategori"] = kategoriler[pmid]
             y["grup"] = sorted(gruplar[pmid])
+            if pmid in dallar:
+                y["dallar"] = sorted(set(y.get("dallar", [])) | dallar[pmid])
 
     tarihleri_doldur(mevcut, bugun)
     kaydet(mevcut, bugun)   # PubMed verisi çeviri öncesi de kaydedilir
