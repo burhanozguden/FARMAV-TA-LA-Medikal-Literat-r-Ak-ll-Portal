@@ -778,9 +778,9 @@ const DALLAR=[
 const dalAdi=id=>(DALLAR.find(d=>d.id===id)||{ad:id}).ad;
 function dallarOf(y){
   if(y._dal) return y._dal;
-  if(Array.isArray(y.dallar)) return y._dal=y.dallar.filter(id=>DALLAR.some(d=>d.id===id));
   const m=[y.baslik_en,y.ozet_en,y.baslik_tr,y.ozet_tr].join(" ").toLowerCase();
-  return y._dal=DALLAR.filter(d=>d.g.test(m)||new Set(m.match(d.z)||[]).size>=2).map(d=>d.id);
+  const etiketli=Array.isArray(y.dallar)?y.dallar:[];   // sorgudan gelen kesin dal etiketi + anahtar kelime eşleşmesi
+  return y._dal=DALLAR.filter(d=>etiketli.includes(d.id)||d.g.test(m)||new Set(m.match(d.z)||[]).size>=2).map(d=>d.id);
 }
 function dalRozet(id,kucuk){return '<span class="'+(kucuk?'text-[10px]':'text-[11px]')+' font-semibold px-2 py-0.5 rounded-md border bg-sky-50 text-sky-800 border-sky-200">'+esc(dalAdi(id))+'</span>'}
 
